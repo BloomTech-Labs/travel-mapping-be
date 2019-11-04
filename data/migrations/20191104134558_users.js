@@ -1,31 +1,32 @@
 
 exports.up = function(knex) {
   
+  // Users Table
   return knex.schema.createTable('users', table => {
 
-    // id
-    table.increments().primary();
+    // user_id
+    table.bigIncrements('user_id').primary();
 
     // display_name
     table.string('display_name', 255)
-      .notNullable()
+      .notNullable();
 
     // email
     table.string('email', 255)
       .notNullable()
-      .unique()
+      .unique();
 
     // is_admin
-    table.boolean('is_admin', false)
+    table.boolean('is_admin', false);
     
     // created_at
     table.timestamp('created_at')
-      .defaultTo(knex.fn.now())
+      .defaultTo(knex.fn.now());
 
   });
 
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTableIfExists('users')
+  return knex.schema.dropTableIfExists('users');
 };
