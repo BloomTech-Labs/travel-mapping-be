@@ -7,7 +7,7 @@ exports.up = function(knex) {
     // media_id
     table.bigInteger('media_id')
       .notNullable()
-      .references('id')
+      .references('media_id')
       .inTable('media')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
@@ -15,7 +15,7 @@ exports.up = function(knex) {
     // album_id
     table.bigInteger('album_id')
       .notNullable()
-      .references('id')
+      .references('album_id')
       .inTable('albums')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');

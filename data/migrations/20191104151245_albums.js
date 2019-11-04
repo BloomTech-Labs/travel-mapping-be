@@ -25,7 +25,7 @@ exports.up = function(knex) {
     table.string('title', 255);
 
     // description
-    table.text('description');
+    table.text('description', 'longtext');
 
     // created_at
     table.timestamp('created_at')

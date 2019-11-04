@@ -20,7 +20,7 @@ exports.up = function(knex) {
       .notNullable();
 
     // caption
-    table.text('caption');
+    table.text('caption', 'longtext');
 
     // type
     table.enu('type', ['photo', 'video'])
