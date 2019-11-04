@@ -12,7 +12,9 @@ exports.up = function(knex) {
       .unsigned()
       .notNullable()
       .references('user_id')
-      .inTable('users');
+      .inTable('users')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
 
     // access
     table.enu('access', ['public', 'private'])

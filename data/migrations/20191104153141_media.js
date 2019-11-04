@@ -11,7 +11,9 @@ exports.up = function(knex) {
     table.bigInteger('user_id')
       .notNullable()
       .references('user_id')
-      .inTable('users');
+      .inTable('users')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
 
     // title
     table.string('title', 255)
