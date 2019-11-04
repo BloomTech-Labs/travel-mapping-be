@@ -1,8 +1,8 @@
 
 exports.up = function(knex) {
-    return knex.shema
+    return knex.schema
     .createTable('albums', tbl =>  {
-        tbl.increments().primary;
+        tbl.increments().primary();
         tbl.integer('user_id')
         .unsigned()
         .notNullable()
