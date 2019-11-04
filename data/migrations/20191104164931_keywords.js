@@ -11,9 +11,9 @@ exports.up = function(knex) {
     table.string('name', 255)
       .notNullable();
 
-      // created_at
-      table.timestamp('created_at')
-        .defaultTo(knex.fn.now());
+    // created_at
+    table.timestamp('created_at')
+      .defaultTo(knex.fn.now());
   });
 };
 
