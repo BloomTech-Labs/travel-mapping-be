@@ -1,5 +1,7 @@
 
 exports.up = function(knex) {
+
+  // Media Table
   return knex.schema.createTable( 'media', table => {
 
     // media_id
