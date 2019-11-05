@@ -31,7 +31,7 @@ const PORT = process.env.PORT || 4000;
 
 
 server.get('/', (req, res) => {
-  res.send(process.env.RUN_ENV);
+  res.send(process.env.NODE_ENV);
 });
 
 
