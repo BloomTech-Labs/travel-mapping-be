@@ -6,7 +6,8 @@
   "author": "Morgan Peterson <47166767+MorganPeterson1313@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "migrate:latest": "knex migrate:latest"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
