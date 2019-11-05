@@ -1,4 +1,5 @@
 require('dotenv').config();
+const apiRouter = require('./api/apiRouter');
 const express = require('express');
 const server  = express();
 const cors    = require("cors");
@@ -27,8 +28,9 @@ const PORT = process.env.PORT || 4000;
 
 
 
+const middleware = [apiRouter, ]
 
-
+server.use(middleware);
 
 server.get('/', (req, res) => {
   res.send(process.env.NODE_ENV);
