@@ -18,6 +18,10 @@ module.exports = {
           conn.run("PRAGMA foreign_keys = ON", done); // turn on FK enforcement
         },
       }
-    }
+    },
+    staging: {
+      client: 'pg',
+      connection: process.env.DATABASE_URL
+    } 
   }
     
