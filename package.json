@@ -1,7 +1,7 @@
 {
   "name": "piktorlog",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "repository": "https://github.com/Lambda-School-Labs/travel-mapping-be.git",
   "author": "Morgan Peterson <47166767+MorganPeterson1313@users.noreply.github.com>",
   "license": "MIT",
