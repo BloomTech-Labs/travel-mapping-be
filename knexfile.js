@@ -22,7 +22,7 @@ module.exports = {
       }
     },
 
-    [process.env.RUN_ENV]: {
+    production: {
       client: 'pg',
       connection: process.env.DATABASE_URL,
       migrations: {
