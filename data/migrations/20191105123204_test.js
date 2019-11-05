@@ -16,7 +16,7 @@ exports.up = function(knex) {
       .notNullable();
 
     // description
-    table.string('description')
+    table.text('description', 'longtext'))
       .notNullable();
 
     // created_at
