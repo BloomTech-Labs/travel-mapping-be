@@ -1,8 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const server = express();
-const cors = require("cors");
-const helmet = require("helmet");
+const server  = express();
+const cors    = require("cors");
+const helmet  = require("helmet");
 
 
 const PORT = process.env.PORT || 4000;
@@ -30,9 +30,9 @@ const PORT = process.env.PORT || 4000;
 
 
 
-server.get('/', (req,res) =>{
-res.send('Hello from piktorlog');
-})
+server.get('/', (req, res) => {
+  res.send('Hello from piktorlog');
+});
 
 
 server.listen(PORT, () => {
