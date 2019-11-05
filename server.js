@@ -33,7 +33,7 @@ const middleware = [apiRouter, ]
 server.use(middleware);
 
 server.get('/', (req, res) => {
-  res.send(process.env.NODE_ENV);
+  res.send('Hello World!');
 });
 
 
