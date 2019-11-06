@@ -8,7 +8,9 @@
   "scripts": {
     "start": "node server.js",
     "migrate:latest": "knex migrate:latest",
-    "test": "mocha --recursive"
+    "test": "mocha --recursive",
+    "docs": "apidoc -i api/ -o apidoc/",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
