@@ -1,4 +1,4 @@
-const testRouter = require('./routes/test/test');
+const testRouter = require('./test');
 const express    = require('express');
 const router     = express.Router();
 

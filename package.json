@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node server.js",
-    "migrate:latest": "knex migrate:latest"
+    "migrate:latest": "knex migrate:latest",
+    "test": "mocha --recursive"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
