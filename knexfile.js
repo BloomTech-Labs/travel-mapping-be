@@ -3,7 +3,7 @@ module.exports = {
 
     development: {
       client: "sqlite3",
-      useNullAsDefault: true, // needed for sqlite
+      useNullAsDefault: true,
       connection: {
         filename: "./data/piktorlog.db3"
       },
@@ -13,7 +13,6 @@ module.exports = {
       seeds: {
         directory: "./data/seeds"
       },
-      // add the following
       pool: {
         afterCreate: (conn, done) => {
           // runs after a connection is made to the sqlite engine
@@ -22,7 +21,7 @@ module.exports = {
       }
     },
 
-    [process.env.RUN_ENV]: {
+    review: {
       client: 'pg',
       connection: process.env.DATABASE_URL,
       migrations: {
@@ -31,11 +30,28 @@ module.exports = {
       seeds: {
         directory: "./data/seeds"
       },
-      pool: {
-        afterCreate: (conn, done) => {
-          conn.run("PRAGMA foreign_keys = ON", done);
-        },
-      }
+    },
+
+    staging: {
+      client: 'pg',
+      connection: process.env.DATABASE_URL,
+      migrations: {
+        directory: "./data/migrations"
+      },
+      seeds: {
+        directory: "./data/seeds"
+      },
+    },
+
+    production: {
+      client: 'pg',
+      connection: process.env.DATABASE_URL,
+      migrations: {
+        directory: "./data/migrations"
+      },
+      seeds: {
+        directory: "./data/seeds"
+      },
     },
   }
     

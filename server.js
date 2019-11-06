@@ -31,7 +31,7 @@ const PORT = process.env.PORT || 4000;
 
 
 server.get('/', (req, res) => {
-  res.send('Hello from piktorlog');
+  res.send(process.env.RUN_ENV);
 });
 
 
