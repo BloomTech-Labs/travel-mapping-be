@@ -1,11 +1,12 @@
 require('dotenv').config();
 const routes  = require('./api/routes/routes');
 const express = require('express');
+const path    = require('path');
 const server  = express();
 const cors    = require("cors");
 const helmet  = require("helmet");
 
-
+const apiDocs = express.static(path.join(__dirname, 'apidoc'))
 const PORT = process.env.PORT || 4000;
 
 
@@ -28,12 +29,12 @@ const PORT = process.env.PORT || 4000;
 
 
 
-const middleware = [routes, ]
+const middleware = [routes, apiDocs, ];
 
 server.use(middleware);
 
 server.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send(path.join(__dirname, 'apidoc/index.html'));
 });
 
 

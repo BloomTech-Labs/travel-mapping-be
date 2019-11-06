@@ -6,9 +6,9 @@ router.get('/test', api.test.greeting);
 
 module.exports = router;
 
-/******************************/
-/** API Endpoint Documention **/
-/******************************/
+/***********************************/
+/** Test API Endpoint Documention **/
+/***********************************/
 
 // GET HTTP/1.1 200
 /**
@@ -26,13 +26,13 @@ module.exports = router;
  *        "name": "John Doe",
  *        "title": "John Doe's Test",
  *        "description": "John Doe's test data API endpoint awesome",
- *        "created_at": "123421651243",
+ *        "created_at": "2019-11-06 18:42:57",
  *      }, {
  *        "test_id": "1",
  *        "name": "Jane Smith",
  *        "title": "Jane Smith's Test",
  *        "description": "Jane Smith's test data API endpoint awesome",
- *        "created_at": "123421651243",
+ *        "created_at": "2019-11-06 18:42:57",
  *      }]
  */
 
