@@ -1,6 +1,6 @@
 const express = require('express');
 const router  = express.Router();
-const api     = require('../controllers/controllers');
+const api     = require('../middleware/middleware');
 
 // GET HTTP/1.1 Get a list of tests
 // #region

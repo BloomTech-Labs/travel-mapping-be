@@ -86,4 +86,4 @@ typings/
 .prettierrc
 
 # SQLite
-data/*.db3
+data/piktorlog.db3

@@ -6,7 +6,7 @@
     "name": "Create_Test",
     "group": "Test",
     "version": "0.1.0",
-    "filename": "api/routes/test.js",
+    "filename": "controllers/routes/test.js",
     "groupTitle": "Test"
   },
   {
@@ -103,7 +103,7 @@
         }
       ]
     },
-    "filename": "api/routes/test.js",
+    "filename": "controllers/routes/test.js",
     "groupTitle": "Test"
   },
   {
@@ -133,7 +133,7 @@
         }
       ]
     },
-    "filename": "api/routes/test.js",
+    "filename": "controllers/routes/test.js",
     "groupTitle": "Test"
   }
 ]

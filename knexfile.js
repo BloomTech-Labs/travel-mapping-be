@@ -5,13 +5,13 @@ module.exports = {
       client: "sqlite3",
       useNullAsDefault: true,
       connection: {
-        filename: "./data/piktorlog.db3"
+        filename: "./models/piktorlog.db3"
       },
       migrations: {
-        directory: "./data/migrations"
+        directory: "./models/migrations"
       },
       seeds: {
-        directory: "./data/seeds"
+        directory: "./models/seeds"
       },
       pool: {
         afterCreate: (conn, done) => {
@@ -25,10 +25,10 @@ module.exports = {
       client: 'pg',
       connection: process.env.DATABASE_URL,
       migrations: {
-        directory: "./data/migrations"
+        directory: "./models/migrations"
       },
       seeds: {
-        directory: "./data/seeds"
+        directory: "./models/seeds"
       },
     },
 
@@ -36,10 +36,10 @@ module.exports = {
       client: 'pg',
       connection: process.env.DATABASE_URL,
       migrations: {
-        directory: "./data/migrations"
+        directory: "./models/migrations"
       },
       seeds: {
-        directory: "./data/seeds"
+        directory: "./models/seeds"
       },
     },
 
@@ -47,10 +47,10 @@ module.exports = {
       client: 'pg',
       connection: process.env.DATABASE_URL,
       migrations: {
-        directory: "./data/migrations"
+        directory: "./models/migrations"
       },
       seeds: {
-        directory: "./data/seeds"
+        directory: "./models/seeds"
       },
     },
   }
