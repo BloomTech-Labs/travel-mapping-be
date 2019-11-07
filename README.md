@@ -71,12 +71,12 @@ You can access the server at http://localhost:4000/
 
 ```
 {
-  user_id: BIGINT
+  user_id:      BIGINT
   display_name: VARCHAR
-  email: VARCHAR
-  is_admin: BOOLEAN
+  email:        VARCHAR
+  is_admin:     BOOLEAN
   is_superuser: BOOLEAN
-  created_at: DATETIME
+  created_at:   DATETIME
 }
 ```
 
