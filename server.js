@@ -1,5 +1,5 @@
 require('dotenv').config();
-const routes  = require('./api/routes/routes');
+const routes  = require('./controllers/routes/routes');
 const express = require('express');
 const path    = require('path');
 const server  = express();
@@ -42,3 +42,5 @@ server.listen(PORT, () => {
   console.log(`Listening on port ${PORT}...`);
   
 });
+
+module.exports = server;
