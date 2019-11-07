@@ -63,24 +63,7 @@ You can access the server at http://localhost:4000/
 | PUT    | `/users/:userId`        | owners, supervisors |                                                    |
 | DELETE | `/users/:userId`        | owners, supervisors |                                                    |
 
-# Data Model
-
-🚫This is just an example. Replace this with your data model
-
-#### 2️⃣ ORGANIZATIONS
-
----
-
-```
-{
-  id: UUID
-  name: STRING
-  industry: STRING
-  paid: BOOLEAN
-  customer_id: STRING
-  subscription_id: STRING
-}
-```
+# Data Models
 
 #### USERS
 
@@ -88,17 +71,12 @@ You can access the server at http://localhost:4000/
 
 ```
 {
-  id: UUID
-  organization_id: UUID foreign key in ORGANIZATIONS table
-  first_name: STRING
-  last_name: STRING
-  role: STRING [ 'owner', 'supervisor', 'employee' ]
-  email: STRING
-  phone: STRING
-  cal_visit: BOOLEAN
-  emp_visit: BOOLEAN
-  emailpref: BOOLEAN
-  phonepref: BOOLEAN
+  user_id: BIGINT
+  display_name: VARCHAR
+  email: VARCHAR
+  is_admin: BOOLEAN
+  is_superuser: BOOLEAN
+  created_at: DATETIME
 }
 ```
 
