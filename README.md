@@ -6,16 +6,28 @@
 
 #### Backend delpoyed at [piktorlog.herokuapp.com](https://piktorlog.herokuapp.com/) <br>
 
-## 1️⃣ Getting started
+## Getting started
 
-To get the server running locally:
+To get the server running locally, run the following commands:
 
-🚫 adjust these scripts to match your project
-
-- Clone this repo
-- **yarn install** to install all required dependencies
-- **yarn server** to start the local server
-- **yarn test** to start server using testing environment
+Clone this repository and move into the project directory
+```
+git clone "https://github.com/Lambda-School-Labs/travel-mapping-be.git"
+cd travel-mapping-be
+```
+ Install dependencies
+```
+npm install
+```
+Set up the database
+```
+npm run migrate
+npm run seed
+```
+Start the development server
+```
+npm run dev
+```
 
 ### Backend framework goes here
 
