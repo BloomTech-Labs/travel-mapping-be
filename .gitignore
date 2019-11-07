@@ -84,3 +84,6 @@ typings/
 
 # Prettier Config
 .prettierrc
+
+# SQLite
+data/piktorlog.db3

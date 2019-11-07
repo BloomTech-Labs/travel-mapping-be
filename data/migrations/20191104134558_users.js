@@ -18,6 +18,9 @@ exports.up = function(knex) {
 
     // is_admin
     table.boolean('is_admin', false);
+
+     // is_superuser
+     table.boolean('is_superuser', false);
     
     // created_at
     table.timestamp('created_at')
