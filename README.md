@@ -71,12 +71,41 @@ You can access the server at http://localhost:4000/
 
 ```
 {
-  user_id:      BIGINT
+  user_id: BIGINT
   display_name: VARCHAR
-  email:        VARCHAR
-  is_admin:     BOOLEAN
+  email: VARCHAR
+  is_admin: BOOLEAN
   is_superuser: BOOLEAN
-  created_at:   DATETIME
+  created_at: DATETIME
+}
+```
+
+#### INVITATIONS
+
+---
+
+```
+{
+  invitation_id: BIGINT
+  user_id: BIGINT
+  invited_user_id: BIGINT
+  album_id: BIGINT
+  created_at: DATETIME
+}
+```
+
+#### COLLABORATORS
+
+---
+
+```
+{
+  collaborator_id: BIGINT
+  user_id: BIGINT
+  album_id: BIGINT
+  permissions: ENUM
+  expires_on: DATETIME
+  created_at: DATETIME
 }
 ```
 
@@ -91,6 +120,75 @@ You can access the server at http://localhost:4000/
   title: VARCHAR
   description: TEXT
   access: ENUM
+  created_at: DATETIME
+}
+```
+
+#### ALBUMSMETA
+
+---
+
+```
+{
+  albumMeta_id: BIGINT
+  album_id: BIGINT
+  name: VARCHAR
+  value: VARCHAR
+}
+```
+
+#### MEDIA
+
+---
+
+```
+{
+  media_id: BIGINT
+  user_id: BIGINT
+  title: VARCHAR
+  caption: TEXT
+  type: ENUM
+  created_at: DATETIME
+}
+```
+
+#### MEDIAMETA
+
+---
+
+```
+{
+  mediaMeta_id: BIGINT
+  media_id: BIGINT
+  name: VARCHAR
+  value: VARCHAR
+}
+```
+
+#### KEYWORDS
+
+---
+
+```
+{
+  keyword_id: BIGINT
+  name: VARCHAR
+  created_at: DATETIME
+}
+```
+
+#### COMMENTS
+
+---
+
+```
+{
+  comment_id: BIGINT
+  user_id: BIGINT
+  media_id: BIGINT
+  album_id: BIGINT
+  parent_id: BIGINT
+  text: TEXT
   created_at: DATETIME
 }
 ```
