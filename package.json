@@ -9,7 +9,7 @@
     "start": "node server.js",
     "migrate": "knex migrate:latest",
     "seed": "knex seed:run",
-    "test": "mocha --recursive",
+    "test": "mocha --recursive --exit",
     "docs": "apidoc -i api/ -o apidoc/",
     "dev": "nodemon server.js"
   },
