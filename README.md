@@ -29,6 +29,8 @@ Start the development server
 npm run dev
 ```
 
+You can access the server at http://localhost:4000/
+
 ### Backend framework goes here
 
 🚫 Why did you choose this framework?
