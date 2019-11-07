@@ -8,7 +8,7 @@
 
 ## Getting started
 
-To get the server running locally, run the following commands:
+To get the server running locally:
 
 Clone this repository and move into the project directory
 ```
