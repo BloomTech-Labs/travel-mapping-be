@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be.svg?branch=master)](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be)
 
+https://img.shields.io/uptimerobot/ratio/7/m783768889-993418b1cb12f5cddc0afb4c
+
 # API Documentation
 
 #### Backend delpoyed at [piktorlog.herokuapp.com](https://piktorlog.herokuapp.com/) <br>
