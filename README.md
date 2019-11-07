@@ -65,6 +65,8 @@ You can access the server at http://localhost:4000/
 
 # Data Models
 
+View the [Entity Relationship Diagram (ERD)](https://dbdiagram.io/d/5dc051d6edf08a25543d7ebf) for a more detailed representation.
+
 #### USERS
 
 ---
