@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be.svg?branch=master)](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be)
+[![Build Status](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be.svg?branch=master)](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be) ![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m783768889-993418b1cb12f5cddc0afb4c)
 
-https://img.shields.io/uptimerobot/ratio/7/m783768889-993418b1cb12f5cddc0afb4c
+
 
 # API Documentation
 
