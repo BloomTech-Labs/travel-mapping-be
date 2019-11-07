@@ -41,7 +41,7 @@ describe('Database Test models', () => {
 
     });
 
-    it('should pass an array to a callback function that contains one integer', done => {
+    it('should pass an array to a callback function that contains one number', done => {
 
       models.test.createTest(TEST_DATA, (err, data) => {
         expect(data.length).to.equal(1);
