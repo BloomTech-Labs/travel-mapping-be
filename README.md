@@ -4,7 +4,7 @@
 
 # API Documentation
 
-#### Backend delpoyed at [piktorlog.herokuapp.com](https://piktorlog.herokuapp.com/) <br>
+#### Backend deployed at [piktorlog.herokuapp.com](https://piktorlog.herokuapp.com/) <br>
 
 ## Getting started
 
