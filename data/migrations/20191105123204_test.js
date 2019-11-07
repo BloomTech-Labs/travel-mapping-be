@@ -1,8 +1,8 @@
 
 exports.up = function(knex) {
   
-  // Test Table
-  return knex.schema.createTable('test', table => {
+  // Tests Table
+  return knex.schema.createTable('tests', table => {
 
     // test_id
     table.bigIncrements('test_id').primary();
@@ -26,5 +26,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.dropTableIfExists('test');
+  return knex.dropTableIfExists('tests');
 };
