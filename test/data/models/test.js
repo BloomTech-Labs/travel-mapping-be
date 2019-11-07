@@ -41,13 +41,34 @@ describe('Database Test models', () => {
 
     });
 
-    it('should pass an array to a callback that contains one integer', done => {
+    it('should pass an array to a callback function that contains one integer', done => {
 
       models.test.createTest(TEST_DATA, (err, data) => {
         expect(data.length).to.equal(1);
         expect(data).to.be.an('array');
         expect(typeof data[0] === 'number').to.equal(true);
         done();
+      });
+
+    });
+
+    it('should pass null to a callback function', done => {
+
+      models.test.createTest(TEST_DATA, (err, data) => {
+        expect(err).to.equal(null);
+        done();
+      });
+
+    });
+
+    it('should pass an error object to a callback function', done => {
+
+      models.test.createTest(TEST_DATA, (err, data) => {
+        expect(err).to.equal(null);
+        models.test.createTest(TEST_DATA, (err, data) => {
+          expect(typeof err === 'object').to.equal(true);
+          done();
+        });
       });
 
     });
