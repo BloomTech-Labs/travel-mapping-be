@@ -80,6 +80,21 @@ You can access the server at http://localhost:4000/
 }
 ```
 
+#### ALBUMS
+
+---
+
+```
+{
+  album_id: BIGINT
+  user_id: BIGINT
+  title: VARCHAR
+  description: TEXT
+  access: ENUM
+  created_at: DATETIME
+}
+```
+
 ## 2️⃣ Actions
 
 🚫 This is an example, replace this with the actions that pertain to your backend
