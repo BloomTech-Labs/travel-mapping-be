@@ -84,3 +84,4 @@ typings/
 
 # Prettier Config
 .prettierrc
+.eslintrc.json
