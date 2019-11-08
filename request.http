@@ -1,5 +1,5 @@
 @hostname = localhost
-@port = 3000
+@port = 4000
 @host = {{hostname}}:{{port}}
 @register = api/register
 @login = api/login

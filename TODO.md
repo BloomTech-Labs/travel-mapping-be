@@ -12,6 +12,27 @@
 
 - https://auth0.com/docs/connections/calling-an-external-idp-api
 
-// TODO Define the API endpoints
+// TODO [done] npm install express cors express-jwt jwks-rsa body-parser express-jwt-authz --save
 
-// TODO npm install express cors express-jwt jwks-rsa body-parser express-jwt-authz --save
+// TODO [done] create auth0 branch
+
+// TODO [done] move files in src to api
+
+// TODO [done] change env domain and id to actual domain/id
+
+// TODO [done] Create the middleware function to validate the Access Token.
+
+// TODO [done, not our concern at the moment] Enable the use of the middleware in our routes.
+
+// TODO [done] Enable the use of request body parsing middleware
+
+// FIXME add todo headers open, pending, review,
+
+```txt
+In order to test the working scenario as well we need to:
+
+Get an Access Token. For details on how to do so refer to: Get an Access Token.
+Invoke the API while adding an Authorization header to our request with the value Bearer ACCESS_TOKEN (where ACCESS_TOKEN is the value of the token we retrieved in the first step).
+```
+
+// TODO build out test endpoint

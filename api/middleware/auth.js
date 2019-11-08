@@ -1,7 +1,7 @@
-const jwt = require("express-jwt");
-const jwksRsa = require("jwks-rsa");
+const jwt = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
 
-const { AUTH0_DOMAIN, API_ID } = process.env;
+const { AUTH0_DOMAIN, AUTH0_AUDIENCE } = process.env;
 
 exports.checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
@@ -10,7 +10,7 @@ exports.checkJwt = jwt({
     jwksRequestsPerMinute: 5,
     jwksUri: `https://${AUTH0_DOMAIN}/.well-known/jwks.json`
   }),
-  audience: API_ID,
+  audience: AUTH0_AUDIENCE,
   issuer: `https://${AUTH0_DOMAIN}/`,
-  algorithm: ["RS256"]
+  algorithm: ['RS256']
 });
