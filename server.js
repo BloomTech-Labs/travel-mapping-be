@@ -6,7 +6,7 @@ const server  = express();
 const cors    = require("cors");
 const helmet  = require("helmet");
 const PORT    = process.env.PORT || 4000;
-const Sentry = require('@sentry/node');
+const Sentry  = require('@sentry/node');
 
 // #region
 // server.use((req , res , next) => {
