@@ -7,3 +7,9 @@ const Sentry  = require('@sentry/node');
 router.post('/users', (req, res, next) => {
   res.send('hello world');
 });
+
+router.get('/users', (req, res, next) => {
+  res.json([{ test: 'test' }]);
+});
+
+module.exports = router;
