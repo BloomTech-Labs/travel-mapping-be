@@ -1,0 +1,53 @@
+@hostname = localhost
+@port = 3000
+@host = {{hostname}}:{{port}}
+@register = api/register
+@login = api/login
+@contentType = application/json
+@id = 1
+@recipes_id = 1
+
+GET http://{{host}}/
+
+###
+POST http://{{host}}/{{register}} HTTP/1.1
+Content-Type: {{contentType}}
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoidXNlciIsInVzZXJJRCI6MywiaWF0IjoxNTY4MDY5NDAwLCJleHAiOjE1NjgwNzY2MDB9.gdUxl0H46CJt8-qGs2M-EvcvNBI61VaQWGVgLHjzfMw
+
+{
+  "family_name": "Boose",
+  "first_name": "Jamelle",
+  "last_name": "Boose",
+  "email": "jboose2@gmail.com",
+  "password": "catdog123"
+}
+
+###
+
+POST http://{{host}}/{{register}} HTTP/1.1
+Content-Type: {{contentType}}
+# Authorization: bearer {{token}}
+
+{
+  "username": "jboose2+cat@gmail.com",
+  "password": "catdog123"
+}
+
+{"id":2,
+"username":"jboose2+cat@gmail.com","password":"$2a$10$GoNs5tgZQExdfKObgt8fwudjUf3.rV.BNmuj9tMIuD5CFZXaQEF32"
+}
+
+
+
+###
+
+POST http://{{host}}/{{login}} HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: 
+# Authorization: bearer {{token}}
+
+{
+  "email": "jboose2@gmail.com",
+  "password": "catdog123"
+}

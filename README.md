@@ -1,25 +1,33 @@
-[![Build Status](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be.svg?branch=staging)](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be)
-
-🚫 Note: All lines that start with 🚫 are instructions and should be deleted before this is posted to your portfolio. This is intended to be a guideline. Feel free to add your own flare to it.
-
-🚫 The numbers 1️⃣ through 3️⃣ next to each item represent the week that part of the docs needs to be comepleted by.  Make sure to delete the numbers by the end of Labs.
-
-🚫 Each student has a required minimum number of meaningful PRs each week per the rubric.  Contributing to docs does NOT count as a PR to meet your weekly requirements.
+[![Build Status](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be.svg?branch=master)](https://travis-ci.org/Lambda-School-Labs/travel-mapping-be) [![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m783768889-993418b1cb12f5cddc0afb4c)](https://stats.uptimerobot.com/B8JgKu7poJ)
 
 # API Documentation
 
-#### 1️⃣ Backend delpoyed at [🚫name service here](🚫add URL here) <br>
+#### Backend deployed at [piktorlog.herokuapp.com](https://piktorlog.herokuapp.com/) <br>
 
-## 1️⃣ Getting started
+## Getting started
 
 To get the server running locally:
 
-🚫 adjust these scripts to match your project
+Clone this repository and move into the project directory
+```
+git clone "https://github.com/Lambda-School-Labs/travel-mapping-be.git"
+cd travel-mapping-be
+```
+ Install dependencies
+```
+npm install
+```
+Set up the database
+```
+npm run migrate
+npm run seed
+```
+Start the development server
+```
+npm run dev
+```
 
-- Clone this repo
-- **yarn install** to install all required dependencies
-- **yarn server** to start the local server
-- **yarn test** to start server using testing environment
+You can access the server at http://localhost:4000/
 
 ### Backend framework goes here
 
@@ -53,24 +61,9 @@ To get the server running locally:
 | PUT    | `/users/:userId`        | owners, supervisors |                                                    |
 | DELETE | `/users/:userId`        | owners, supervisors |                                                    |
 
-# Data Model
+# Data Models
 
-🚫This is just an example. Replace this with your data model
-
-#### 2️⃣ ORGANIZATIONS
-
----
-
-```
-{
-  id: UUID
-  name: STRING
-  industry: STRING
-  paid: BOOLEAN
-  customer_id: STRING
-  subscription_id: STRING
-}
-```
+View the [Entity Relationship Diagram (ERD)](https://dbdiagram.io/d/5dc051d6edf08a25543d7ebf) for a more detailed representation.
 
 #### USERS
 
@@ -78,17 +71,125 @@ To get the server running locally:
 
 ```
 {
-  id: UUID
-  organization_id: UUID foreign key in ORGANIZATIONS table
-  first_name: STRING
-  last_name: STRING
-  role: STRING [ 'owner', 'supervisor', 'employee' ]
-  email: STRING
-  phone: STRING
-  cal_visit: BOOLEAN
-  emp_visit: BOOLEAN
-  emailpref: BOOLEAN
-  phonepref: BOOLEAN
+  user_id: BIGINT
+  display_name: VARCHAR
+  email: VARCHAR
+  is_admin: BOOLEAN
+  is_superuser: BOOLEAN
+  created_at: DATETIME
+}
+```
+
+#### INVITATIONS
+
+---
+
+```
+{
+  invitation_id: BIGINT
+  user_id: BIGINT
+  invited_user_id: BIGINT
+  album_id: BIGINT
+  created_at: DATETIME
+}
+```
+
+#### COLLABORATORS
+
+---
+
+```
+{
+  collaborator_id: BIGINT
+  user_id: BIGINT
+  album_id: BIGINT
+  permissions: ENUM
+  expires_on: DATETIME
+  created_at: DATETIME
+}
+```
+
+#### ALBUMS
+
+---
+
+```
+{
+  album_id: BIGINT
+  user_id: BIGINT
+  title: VARCHAR
+  description: TEXT
+  access: ENUM
+  created_at: DATETIME
+}
+```
+
+#### ALBUMSMETA
+
+---
+
+```
+{
+  albumMeta_id: BIGINT
+  album_id: BIGINT
+  name: VARCHAR
+  value: VARCHAR
+}
+```
+
+#### MEDIA
+
+---
+
+```
+{
+  media_id: BIGINT
+  user_id: BIGINT
+  title: VARCHAR
+  caption: TEXT
+  type: ENUM
+  created_at: DATETIME
+}
+```
+
+#### MEDIAMETA
+
+---
+
+```
+{
+  mediaMeta_id: BIGINT
+  media_id: BIGINT
+  name: VARCHAR
+  value: VARCHAR
+}
+```
+
+#### KEYWORDS
+
+---
+
+```
+{
+  keyword_id: BIGINT
+  name: VARCHAR
+  created_at: DATETIME
+}
+```
+
+#### COMMENTS
+
+---
+
+```
+{
+  comment_id: BIGINT
+  user_id: BIGINT
+  media_id: BIGINT
+  album_id: BIGINT
+  parent_id: BIGINT
+  text: TEXT
+  created_at: DATETIME
 }
 ```
 

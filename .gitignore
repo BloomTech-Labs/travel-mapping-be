@@ -85,4 +85,6 @@ typings/
 # Prettier Config
 .prettierrc
 .eslintrc.json
-process.env
+
+# SQLite
+data/piktorlog.db3
