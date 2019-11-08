@@ -1,6 +1,9 @@
 const express = require('express');
 const router  = express.Router();
 const api     = require('../middleware/middleware');
+const Sentry  = require('@sentry/node');
+
+const sentryError   = Sentry.Handlers.errorHandler(); // Sentry error handler.
 
 // GET HTTP/1.1 Get a list of tests
 // #region
@@ -80,5 +83,9 @@ router.get('/test', api.test.greeting);
  *  @apiVersion 0.1.0
  */
 // #endregion
+
+router.use(sentryError, (err, req, res, next) => {
+
+});
 
 module.exports = router;
