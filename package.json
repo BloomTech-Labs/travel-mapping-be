@@ -10,7 +10,7 @@
     "migrate": "knex migrate:latest",
     "seed": "knex seed:run",
     "test": "mocha --recursive --exit",
-    "docs": "apidoc -i controllers/ -o apidoc/",
+    "docs": "apidoc -i api/ -o apidoc/",
     "dev": "nodemon server.js"
   },
   "dependencies": {
