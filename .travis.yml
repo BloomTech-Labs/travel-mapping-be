@@ -10,4 +10,6 @@ notifications:
     - brandon.g.elzy@gmail.com
   on_success: never
   on_failure: always
+env:
+ - NODE_ENV=testing
   
