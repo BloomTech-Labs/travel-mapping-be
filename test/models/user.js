@@ -23,6 +23,7 @@ describe('User models tests', () => {
     it('should pass an empty array of users to a callback function', done => {
 
       models.user.retrieveUsers((retrieveErr, usersArr) => {
+        expect(usersArr).to.be.an('array');
         expect(usersArr.length).to.equal(0);
         done();
       });
@@ -62,7 +63,19 @@ describe('User models tests', () => {
 
     });
 
-    
+    it('should pass an error object to a callback function when a user is not created', done => {
+
+      models.user.createUser(TEST_DATA, (err, userIdArr) => {
+        if (err) throw new Error();
+        else {
+          models.user.createUser(TEST_DATA, (createErr, userIdArr) => {
+            expect(createErr).to.be.an('error');
+            done();
+          });
+        }
+      });
+
+    });
 
   });
 

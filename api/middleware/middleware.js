@@ -1,5 +1,4 @@
-const test = require('./test');
 
 module.exports = {
-  test,
+  test: require('./test'),
 }
