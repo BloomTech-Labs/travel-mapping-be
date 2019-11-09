@@ -7,8 +7,12 @@ const createTest = (test_data, done) => {
   // created test into the callback function. If there is an error, it will
   // only pass the error message to the callback function.
 
+  // validate data
+  
+
+
   db('tests').insert(test_data)
-    .then(test => done(null, test))
+    .then(testId => done(null, testId))
     .catch(error => done(error));
 
 };

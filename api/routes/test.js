@@ -1,35 +1,34 @@
-const express = require('express');
-const router  = express.Router();
-const api     = require('../middleware/middleware');
-const Sentry  = require('@sentry/node');
-
-const sentryError   = Sentry.Handlers.errorHandler(); // Sentry error handler.
+const express     = require('express');
+const router      = express.Router();
+const api         = require('../middleware/middleware');
+const Sentry      = require('@sentry/node');
+const sentryError = Sentry.Handlers.errorHandler(); // Sentry error handler.
 
 // GET HTTP/1.1 Get a list of tests
 // #region
 /**
  *  @api {get} /test Get a list of tests
  *  @apiName Get-test-list
- *  @apiGroup Test
+ *  @apiGroup Tests
  *  @apiVersion 0.1.0
  * 
  *  @apiSuccess {Object[]} tests A List of test objects.
  * 
  *  @apiSuccessExample {json} Example Response:
  *     HTTP/1.1 200 OK
- *      [{
- *        "test_id": "0",
- *        "name": "John Doe",
- *        "title": "John Doe's Test",
- *        "description": "John Doe's test data API endpoint awesome",
- *        "created_at": "2019-11-06 18:42:57",
- *      }, {
- *        "test_id": "1",
- *        "name": "Jane Smith",
- *        "title": "Jane Smith's Test",
- *        "description": "Jane Smith's test data API endpoint awesome",
- *        "created_at": "2019-11-06 18:42:57",
- *      }]
+ *     [{
+ *       "test_id": "0",
+ *       "name": "John Doe",
+ *       "title": "John Doe's Test",
+ *       "description": "John Doe's test data API endpoint awesome",
+ *       "created_at": "2019-11-06 18:42:57",
+ *     }, {
+ *       "test_id": "1",
+ *       "name": "Jane Smith",
+ *       "title": "Jane Smith's Test",
+ *       "description": "Jane Smith's test data API endpoint awesome",
+ *       "created_at": "2019-11-06 18:42:57",
+ *     }]
  */
 // #endregion
 router.get('/test', api.test.greeting);
@@ -39,7 +38,7 @@ router.get('/test', api.test.greeting);
 /**
  *  @api {get} /test/:test_id Get a specific test
  *  @apiName Get-test-by-id
- *  @apiGroup Test
+ *  @apiGroup Tests
  *  @apiVersion 0.1.0
  * 
  *  @apiParam (URL Parameters) {Integer} test_id Unique test ID.
@@ -63,7 +62,7 @@ router.get('/test', api.test.greeting);
  *       "created_at": "2019-11-06 18:42:57",
  *     }
  * 
- *  @apiError TestNotFound The id of the Test was not found.
+ *  @apiError TestNotFound The test was not found.
  * 
  *  @apiErrorExample Example Error:
  *     HTTP/1.1 404 Not Found
@@ -79,7 +78,7 @@ router.get('/test', api.test.greeting);
  /**
  *  @api {post} /test Create a new test
  *  @apiName Create Test
- *  @apiGroup Test
+ *  @apiGroup Tests
  *  @apiVersion 0.1.0
  */
 // #endregion
