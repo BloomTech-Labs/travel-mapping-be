@@ -33,7 +33,7 @@ describe('User models tests', () => {
 
   describe('createUser model', () => {
 
-    before('clear data in users table', done => {
+    beforeEach('clear data in users table', done => {
       db.select()
         .from('users')
         .del()
