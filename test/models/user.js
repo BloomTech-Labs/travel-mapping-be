@@ -41,11 +41,22 @@ describe('User models tests', () => {
         .catch(err => done(err));
     });
 
-    it('should pass an array with one element to a callback function', done => {
+    it('should pass an array with one number element to a callback function', done => {
 
       models.user.createUser(TEST_DATA, (createErr, userIdArr) => {
         expect(userIdArr).to.be.an('array');
         expect(userIdArr.length).to.equal(1);
+        expect(typeof userIdArr[0]).to.equal('number');
+        done();
+      });
+
+    });
+
+    it('should pass null to a callback function after creating a user', done => {
+      
+      models.user.createUser(TEST_DATA, (createErr, userIdArr) => {
+        expect(userIdArr[0]).to.equal(0);
+        expect(createErr).to.equal(null);
         done();
       });
 
