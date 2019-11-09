@@ -11,6 +11,38 @@ const TEST_DATA = {
 
 describe('Test models tests', () => {
 
+  describe('retrieveTests function', () => {
+
+    beforeEach('clear data in tests table', done => {
+      db.select()
+        .from('tests')
+        .del()
+        .then(() => done())
+        .catch(err => done(err));
+    });
+
+    it('should pass an empty array to a callback function', done => {
+
+      models.test.retrieveTests((retrieveErr, testsArr) => {
+
+        expect(testsArr).to.be.an('array');
+        expect(testsArr.length).to.equal(0);
+        done(retrieveErr);
+      });
+
+    });
+
+    it('should pass null to a callback function', done => {
+
+      models.test.retrieveTests((retrieveErr, testsArr) => {
+        expect(retrieveErr).to.equal(null);
+        done(retrieveErr);
+      });
+      
+    });
+
+  });
+
   describe('createTest model', () => {
 
     beforeEach('clear data in tests table', done => {
@@ -21,80 +53,57 @@ describe('Test models tests', () => {
         .catch(err => done(err));
     });
 
-    it('should create a test', done => {
+    it('should pass an array with one number element to a callback function', done => {
 
-      db.select()
-        .from('tests')
-        .then(emptyTests => {
-          expect(emptyTests.length).to.equal(0);
+      models.test.createTest(TEST_DATA, (createErr, testIdArr) => {
 
-          models.test.createTest(TEST_DATA, (err, data) => {
-
-            db.select()
-              .from('tests')
-              .then(tests => {
-                expect(tests.length).to.equal(1);
-                done();
-              })
-              .catch(errTwo => done(errTwo));
-          });
-        })
-        .catch(errOne => done(errOne));
+        expect(testIdArr).to.be.an('array');
+        expect(testIdArr.length).to.equal(1);
+        expect(typeof testIdArr[0]).to.equal('number');
+        done(createErr);
+      
+      });
 
     });
 
     it('should pass an array to a callback function that contains one number', done => {
 
-      models.test.createTest(TEST_DATA, (err, data) => {
-        expect(data.length).to.equal(1);
-        expect(data).to.be.an('array');
-        expect(typeof data[0] === 'number').to.equal(true);
-        done();
+      models.test.createTest(TEST_DATA, (createErr, testIdArr) => {
+
+        expect(testIdArr.length).to.equal(1);
+        expect(testIdArr).to.be.an('array');
+        expect(typeof testIdArr[0] === 'number').to.equal(true);
+        done(createErr);
+
       });
 
     });
 
     it('should pass null to a callback function', done => {
 
-      models.test.createTest(TEST_DATA, (err, data) => {
-        expect(err).to.equal(null);
-        done();
+      models.test.createTest(TEST_DATA, (createErr, testIdArr) => {
+
+        expect(createErr).to.equal(null);
+        done(createErr);
+
       });
 
     });
 
-    it('should pass an error object to a callback function', done => {
+    it('should pass an error to a callback function', done => {
 
-      models.test.createTest(TEST_DATA, (err, data) => {
-        expect(err).to.equal(null);
-        models.test.createTest(TEST_DATA, (err, data) => {
-          expect(typeof err === 'object').to.equal(true);
-          done();
-        });
+      models.test.createTest(TEST_DATA, (createErrOne, testIdArrOne) => {
+
+        if (createErrOne) done(createErrOne);
+        else {
+          models.test.createTest(TEST_DATA, (createErr, testIdArr) => {
+            expect(createErr).to.be.an('error');
+            done();
+          });
+        }
+
       });
 
-    });
-
-  });
-
-  describe('retrieveTests function', () => {
-
-    it('should pass an array as data', done => {
-
-      models.test.retrieveTests((err, data) => {
-        expect(data).to.be.an('array');
-        done();
-      });
-
-    });
-
-    it('should pass null as err', done => {
-
-      models.test.retrieveTests((err, data) => {
-        expect(err).to.equal(null);
-        done();
-      });
-      
     });
 
   });
