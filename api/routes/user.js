@@ -1,21 +1,35 @@
 const express     = require('express');
 const router      = express.Router();
-const api         = require('../middleware/middleware');
+const controllers = require('../controllers/controllers');
+const middleware  = require('../middleware/middleware');
 const Sentry      = require('@sentry/node');
 const sentryError = Sentry.Handlers.errorHandler(); // Sentry error handler.
+const api         = { ...controllers, ...middleware };
 
 // POST HTTP/1.1 201 CREATED
 // #region
 /**
- *  @api {post} /users/register Register a new user
+ *  @api {post} /users/register/?type={type} Register a new user
  *  @apiName Register-new-user
  *  @apiGroup Users
  *  @apiVersion 0.1.0
  * 
+ *  @apiParam (Query Parameters) {String} type Required. The type of user registration. Options: email, google
+ * 
  *  @apiParam (Request Body) {String} display_name The users display name
  *  @apiParam (Request Body) {String} email The users email address
+ *  @apiParam (Request Body) {String} password Required when registering by email. The users password.
  * 
- *  @apiParamExample {json} Example Request
+ *  @apiParamExample {json} Example Request (email)
+ *      /users/register/?type=email
+ *      {
+ *          "display_name": "jdoe25",
+ *          "email": "john.doe@mail.com",
+ *          "password": "gh43##5A!SG$u77*ke"
+ *      }
+ * 
+ *  @apiParamExample {json} Example Request (google)
+ *      /users/register/?type=google
  *      {
  *          "display_name": "jdoe25",
  *          "email": "john.doe@mail.com"
@@ -29,34 +43,35 @@ const sentryError = Sentry.Handlers.errorHandler(); // Sentry error handler.
  *        "user_id": 0
  *     }
  * 
- *   @apiError {Object} EmailAlreadyExists The email already exists in the database
- *   @apiError {Object} InvalidDisplayName The display name is invalid
- *   @apiError {Object} InvalidEmail The email is invalid
+ *   @apiError {Object} EmailAlreadyExists Email already exists in the database
+ *   @apiError {Object} InvalidDisplayName Display name is invalid
+ *   @apiError {Object} InvalidEmail Email is invalid
+ *   @apiError {Object} InvalidPassword Password is invalid
+ *   @apiError {Object} TooManyProps Request body has too many properties
+ *   @apiError {Object} MissingDisplayName Request body is missing the required display_name property
+ *   @apiError {Object} MissingEmail Request body is missing the required email property
+ *   @apiError {Object} MissingPassword Request body is missing the required password property
  * 
- *   @apiErrorExample EmailAlreadyExists
+ *   @apiErrorExample Already Exists
  *      HTTP/1.1 400
  *      {
  *          "error": "email already exists"
  *      }
  * 
- *   @apiErrorExample InvalidDisplayName
+ *   @apiErrorExample Invalid Data
  *      HTTP/1.1 400
  *      {
  *          "error": "display name is not valid"
  *      }
  * 
- *   @apiErrorExample InvalidEmail
+ *   @apiErrorExample Missing Data
  *      HTTP/1.1 400
  *      {
- *          "error": "email is not valid"
+ *          "error": "user object is missing required property: email"
  *      }
  */
 // #endregion
-router.post('/users/register', (req, res, next) => {
-  res.status(201);
-  res.send('hello world');
-}, sentryError);
-
+router.post('/users/register', api.user.registerUser, sentryError);
 
 // GET HTTP/1.1 200 OK
 // #region

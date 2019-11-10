@@ -1,59 +1,122 @@
 const environment = process.env.NODE_ENV || 'development';
-const server = environment === 'testing' 
+const chaiHttp    = require('chai-http');
+const chai        = require('chai');
+const expect      = chai.expect;
+const server      = environment === 'testing' 
   ? require('../../server') 
   : 'http://localhost:4000';
-const chaiHttp = require('chai-http');
-const chai     = require('chai');
-const expect   = chai.expect;
 
 chai.use(chaiHttp);
 
-const TEST_USER_DATA = [{
-  user_id: 100,
+const VALID_USERS = [{
   display_name: 'tuser00',
   email: 'test.user@mail.com',
+  password: ''
 }];
+
+const INVALID_USERS = [{
+  invalidProps: '',
+}];
+
+const registerEmailUrl = '/users/register/?type=email';
 
 describe('User endpoint tests', () => {
 
   describe('/users/register', () => {
 
+    it('should respond with json data', done => {
 
-    it('should respond with a 201 status code', done => {
-
-      const user = TEST_USER_DATA[0];
+      const user = VALID_USERS[0];
 
       chai.request(server)
-        .post('/users/register')
+        .post(registerEmailUrl)
         .send(user)
         .then(res => {
-          expect(res).to.have.status(201);
+
+          expect(res).to.be.json;
           done();
-        }).catch(err => {
-          // console.log(err);
-          done(err);
-        });
+
+        }).catch(err => done(err));
 
     });
 
-    it('should respond with hello world', done => {
+    it('should respond with a 400 status code', done => {
+
+      const user = INVALID_USERS[0];
 
       chai.request(server)
-        .post('/users/register')
+        .post(registerEmailUrl)
+        .send(user)
         .then(res => {
 
-          // res.text
-          // res.body
-
-          expect(res.text).to.equal('hello world');
-
+          expect(res).to.have.status(400);
           done();
-        }).catch(err => {
-          // console.log(err);
-          done(err);
-        });
+
+        }).catch(err => done(err));
 
     });
+
+    it('should respond with a single property', done => {
+
+      const user = INVALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(Object.keys(res.body).length).to.equal(1);
+          done();
+
+        }).catch(err => done(err));
+      
+    });
+
+    it('should respond with an error property', done => {
+
+      const user = INVALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(res.body).to.haveOwnProperty('error');
+          done();
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a string', done => {
+      
+      const user = INVALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(typeof res.body[Object.keys(res.body)[0]]).to.equal('string');
+          done();
+
+        }).catch(err => done(err));
+
+    });
+
+    // it('should respond with a 201 status code', done => {
+
+    //   const user = TEST_USER_DATA[0];
+
+    //   chai.request(server)
+    //     .post(registerEmailUrl)
+    //     .send(user)
+    //     .then(res => {
+    //       expect(res).to.have.status(201);
+    //       done();
+    //     }).catch(err => done(err));
+
+    // });
 
   });
 

@@ -168,13 +168,22 @@
   },
   {
     "type": "post",
-    "url": "/users/register",
+    "url": "/users/register/?type={type}",
     "title": "Register a new user",
     "name": "Register_new_user",
     "group": "Users",
     "version": "0.1.0",
     "parameter": {
       "fields": {
+        "Query Parameters": [
+          {
+            "group": "Query Parameters",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Required. The type of user registration. Options: email, google</p>"
+          }
+        ],
         "Request Body": [
           {
             "group": "Request Body",
@@ -189,13 +198,25 @@
             "optional": false,
             "field": "email",
             "description": "<p>The users email address</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>Required when registering by email. The users password.</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Example Request",
-          "content": "{\n    \"display_name\": \"jdoe25\",\n    \"email\": \"john.doe@mail.com\"\n}",
+          "title": "Example Request (email)",
+          "content": "/users/register/?type=email\n{\n    \"display_name\": \"jdoe25\",\n    \"email\": \"john.doe@mail.com\",\n    \"password\": \"gh43##5A!SG$u77*ke\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request (google)",
+          "content": "/users/register/?type=google\n{\n    \"display_name\": \"jdoe25\",\n    \"email\": \"john.doe@mail.com\"\n}",
           "type": "json"
         }
       ]
@@ -228,38 +249,73 @@
             "type": "Object",
             "optional": false,
             "field": "EmailAlreadyExists",
-            "description": "<p>The email already exists in the database</p>"
+            "description": "<p>Email already exists in the database</p>"
           },
           {
             "group": "Error 4xx",
             "type": "Object",
             "optional": false,
             "field": "InvalidDisplayName",
-            "description": "<p>The display name is invalid</p>"
+            "description": "<p>Display name is invalid</p>"
           },
           {
             "group": "Error 4xx",
             "type": "Object",
             "optional": false,
             "field": "InvalidEmail",
-            "description": "<p>The email is invalid</p>"
+            "description": "<p>Email is invalid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "InvalidPassword",
+            "description": "<p>Password is invalid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "TooManyProps",
+            "description": "<p>Request body has too many properties</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "MissingDisplayName",
+            "description": "<p>Request body is missing the required display_name property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "MissingEmail",
+            "description": "<p>Request body is missing the required email property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "MissingPassword",
+            "description": "<p>Request body is missing the required password property</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "EmailAlreadyExists",
+          "title": "Already Exists",
           "content": "HTTP/1.1 400\n{\n    \"error\": \"email already exists\"\n}",
           "type": "json"
         },
         {
-          "title": "InvalidDisplayName",
+          "title": "Invalid Data",
           "content": "HTTP/1.1 400\n{\n    \"error\": \"display name is not valid\"\n}",
           "type": "json"
         },
         {
-          "title": "InvalidEmail",
-          "content": "HTTP/1.1 400\n{\n    \"error\": \"email is not valid\"\n}",
+          "title": "Missing Data",
+          "content": "HTTP/1.1 400\n{\n    \"error\": \"user object is missing required property: email\"\n}",
           "type": "json"
         }
       ]

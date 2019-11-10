@@ -66,19 +66,6 @@ describe('Test models tests', () => {
 
     });
 
-    it('should pass an array to a callback function that contains one number', done => {
-
-      models.test.createTest(TEST_DATA, (createErr, testIdArr) => {
-
-        expect(testIdArr.length).to.equal(1);
-        expect(testIdArr).to.be.an('array');
-        expect(typeof testIdArr[0] === 'number').to.equal(true);
-        done(createErr);
-
-      });
-
-    });
-
     it('should pass null to a callback function', done => {
 
       models.test.createTest(TEST_DATA, (createErr, testIdArr) => {

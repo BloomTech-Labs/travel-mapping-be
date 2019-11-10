@@ -22,7 +22,7 @@ const Sentry  = require('@sentry/node');
 // #endregion
 
 // Declare variables.
-const apiDocs = express.static(path.join(__dirname, 'apidoc')); // Get the apidoc web page static files.
+const apiDocs = express.static(path.join(__dirname, 'apidoc')); // Get the apidoc web page static assets.
 const environment   = process.env.NODE_ENV || 'development';    // Node environment.
 const sentryRequest = Sentry.Handlers.requestHandler();         // Sentry request handler.
 const sentryError   = Sentry.Handlers.errorHandler();           // Sentry error handler.
@@ -40,7 +40,7 @@ server.use(middleware);
 // Serve the apidoc template web page.
 server.get('/', (req, res) => { res.send(path.join(__dirname, 'apidoc/index.html')) });
 
-// Verify the Sentry integration. (only in development environment)
+// Verify the Sentry integration. (development only)
 if (environment === 'development')
   server.get('/debug-sentry', (req, res) => { throw new Error('My first Sentry error!') }, sentryError);
 

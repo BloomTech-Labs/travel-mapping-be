@@ -16,6 +16,9 @@ exports.up = function(knex) {
       .notNullable()
       .unique();
 
+    // password
+    table.string('password', 255);
+
     // is_admin
     table.boolean('is_admin', false);
 

@@ -1,8 +1,10 @@
 const express     = require('express');
 const router      = express.Router();
-const api         = require('../middleware/middleware');
+const controllers = require('../controllers/controllers');
+const middleware  = require('../middleware/middleware');
 const Sentry      = require('@sentry/node');
 const sentryError = Sentry.Handlers.errorHandler(); // Sentry error handler.
+const api         = { ...controllers, ...middleware };
 
 // GET HTTP/1.1 Get a list of tests
 // #region
