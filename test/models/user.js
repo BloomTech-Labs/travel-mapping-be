@@ -189,10 +189,17 @@ describe('User models tests', () => {
 
     it('should pass null to a callback function after creating a user', done => {
       
-      models.user.createUser(TEST_DATA, (createErr, userIdArr) => {
-        expect(userIdArr[0]).to.equal(0);
-        expect(createErr).to.equal(null);
-        done();
+      const user = VALID_USERS[0];
+
+      models.user.createUser(user, (createErr, userIdArr) => {
+
+        try {
+          expect(createErr).to.equal(null);
+          done();
+        } catch (err) {
+          done(err);
+        }
+        
       });
 
     });

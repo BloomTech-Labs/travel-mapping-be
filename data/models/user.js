@@ -1,6 +1,8 @@
+const validate  = require('../../modules/modules').validate;
 const db        = require('../dbConfig');
 const validator = require('validator');
-const validate  = require('../../modules/modules').validate;
+const bcrypt    = require('bcrypt');
+const salt      = 10;
 
 const retrieveUsers = done => {
 
@@ -98,6 +100,7 @@ const createUser = (user, done) => {
         .select('email')
         .then(emailArr => {
 
+          // Validate user data
           const displayNameExists  = (displayNameArr.length > 0);
           const emailExists        = (emailArr.length > 0);
           const displayNameIsValid = (!validator.contains(display_name, ' ') && validator.isAlphanumeric(display_name));
@@ -110,7 +113,11 @@ const createUser = (user, done) => {
           else if(!emailIsValid)        done(new Error('email is not valid'));
           else if(!passwordIsValid)     done(new Error('password is not valid'));
           else {
-            db('users').insert(user)
+            db('users').insert({
+              display_name,
+              email,
+              password: password ? bcrypt.hashSync(password, salt) : null
+            })
             .then(userIdArr  => done(null, userIdArr))
             .catch(insertErr => done(insertErr));
           }
@@ -118,7 +125,7 @@ const createUser = (user, done) => {
         }).catch(retrieveEmailErr => done(retrieveEmailErr));
 
     }).catch(retrieveDisplayNameErr => done(retrieveDisplayNameErr));
-    
+
 };
 
 module.exports = {
