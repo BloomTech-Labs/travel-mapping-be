@@ -5,8 +5,29 @@ const bcrypt    = require('bcrypt');
 const salt      = 10;
 
 const retrieveUsers = done => {
+  // Takes a callback function as an argument. Gets all
+  // users from the database and passes them as an array
+  // to the callback function.
 
-  done(null, []);
+  db.select()
+    .table('users')
+    .then(userObjArr   => {
+
+      const userList = userObjArr.map(userObj => {
+
+        // Delete the password from the object.
+        userObj.password && (delete userObj.password);
+
+        return Object.assign({}, userObj, {
+          is_admin:     userObj.is_admin     === 0 ? false : true,
+          is_superuser: userObj.is_superuser === 0 ? false : true,
+         });
+      });
+
+
+      done(null, userList);
+    })
+    .catch(retrieveErr => done(retrieveErr));
 
 };
 
@@ -28,13 +49,13 @@ const retrieveUserBy = (typeObj, done) => {
 
         const userObj = userArr[0];
 
-        const user = {
-          ...userObj,
+        // Delete the password from the object.
+        userObj.password && (delete userObj.password);
+        
+        cb(null, Object.assign({}, userObj, {
           is_admin:     userObj.is_admin     === 0 ? false : true,
           is_superuser: userObj.is_superuser === 0 ? false : true,
-        };
-
-        cb(null, user);
+        }));
 
       }
 

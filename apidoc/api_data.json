@@ -211,6 +211,26 @@
         }
       ]
     },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "DoesNotExist",
+            "description": "<p>The user does not exist</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Already Exists",
+          "content": "HTTP/1.1 400\n{\n    \"error\": \"user does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "api/routes/user.js",
     "groupTitle": "Users"
   },
@@ -229,7 +249,7 @@
             "type": "Object[]",
             "optional": false,
             "field": "users",
-            "description": "<p>A List of user objects.</p>"
+            "description": "<p>A List of user objects</p>"
           }
         ]
       },

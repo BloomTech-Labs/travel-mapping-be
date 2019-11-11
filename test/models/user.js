@@ -41,7 +41,7 @@ describe('User models tests', () => {
 
   describe('retrieveUsers model', () => {
 
-    before('clear data in users table', done => {
+    beforeEach('clear data in users table', done => {
       db.select()
         .from('users')
         .del()
@@ -49,12 +49,38 @@ describe('User models tests', () => {
         .catch(err => done(err));
     });
 
-    it('should pass an empty array to a callback function', done => {
+    beforeEach('add data to users table', done => {
+
+      const USERS = [{
+        display_name: 'tuser00',
+        email: 'test.user00@mail.com',
+        password: 'hkTQ%*03'
+      }, {
+        display_name: 'tuser01',
+        email: 'test.user01@mail.com',
+        password: 'hkTQ%*03'
+      }, {
+        display_name: 'tuser02',
+        email: 'test.user02@mail.com',
+        password: 'hkTQ%*03'
+      }];
+
+      db('users').insert(USERS)
+        .then(data => done())
+        .catch(err => done(err));
+    });
+
+    it('should pass an array to a callback function', done => {
 
       models.user.retrieveUsers((retrieveErr, usersArr) => {
-        expect(usersArr).to.be.an('array');
-        expect(usersArr.length).to.equal(0);
-        done();
+
+        try {
+          expect(usersArr).to.be.an('array');
+          done();
+        } catch (err) {
+          done(err);
+        }
+
       });
 
     });
@@ -62,8 +88,69 @@ describe('User models tests', () => {
     it('should pass null to a callback function', done => {
       
       models.user.retrieveUsers((retrieveErr, usersArr) => {
-        expect(retrieveErr).to.equal(null);
-        done();
+
+        try {
+          expect(retrieveErr).to.equal(null);
+          done();
+        } catch (err) {
+          done(err);
+        }
+        
+      });
+
+    });
+
+    it('should pass an array with three elements', done => {
+
+      models.user.retrieveUsers((retrieveErr, userObjArr) => {
+
+        try {
+
+          expect(userObjArr.length).to.equal(3);
+          done();
+  
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an array of objects to a callback function', done => {
+
+        models.user.retrieveUsers((retrieveErr, userObjArr) => {
+
+          try {
+
+            userObjArr.forEach(obj => {
+              expect(obj).to.be.an('object');
+            });
+            done();
+
+          } catch (err) {
+            done(err);
+          }
+
+        });
+
+    });
+
+    it('should not contain a password property', done => {
+
+      models.user.retrieveUsers((retrieveErr, userObjArr) => {
+
+        try {
+
+          userObjArr.forEach(userObj => {
+            expect(userObj).to.not.have.any.keys('password');
+          });
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
       });
 
     });
@@ -158,6 +245,25 @@ describe('User models tests', () => {
             done(err);
           }
 
+        }
+
+      });
+
+    });
+
+    it('should not contain a password property', done => {
+
+      const email = 'john.doe@mail.com';
+
+      models.user.retrieveUserBy({ email }, (retrieveErr, userObj) => {
+
+        try {
+
+          expect(userObj).to.not.have.any.keys('password');
+          done();
+
+        } catch (err) {
+          done(err);
         }
 
       });

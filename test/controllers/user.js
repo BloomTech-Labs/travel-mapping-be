@@ -4,7 +4,7 @@ const chaiHttp    = require('chai-http');
 const chai        = require('chai');
 const expect      = chai.expect;
 const server      = environment === 'testing' 
-  ? require('../../server') 
+  ? require('../../server')
   : 'http://localhost:4000';
 
 chai.use(chaiHttp);
@@ -18,8 +18,16 @@ const TEST_DATA = {
 
 const VALID_USERS = [{
   display_name: 'tuser00',
-  email: 'test.user@mail.com',
-  password: ''
+  email: 'test.user00@mail.com',
+  password: 'hkTQ%*03'
+}, {
+  display_name: 'tuser01',
+  email: 'test.user01@mail.com',
+  password: 'hkTQ%*03'
+}, {
+  display_name: 'tuser02',
+  email: 'test.user02@mail.com',
+  password: 'hkTQ%*03'
 }];
 
 const INVALID_USERS = [{
@@ -29,6 +37,119 @@ const INVALID_USERS = [{
 const registerEmailUrl = '/users/register/?type=email';
 
 describe('User endpoint tests', () => {
+
+  describe('/users', () => {
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
+
+    beforeEach('add data to users table', done => {
+      db('users').insert(VALID_USERS)
+        .then(data => done())
+        .catch(err => done(err));
+    });
+
+    it('should respond with json data', done => {
+
+      chai.request(server)
+        .get('/users')
+        .then(res => {
+
+          try {
+            expect(res).to.be.json;
+            done();
+          } catch (err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a 200 status code', done => {
+
+      chai.request(server)
+        .get('/users')
+        .then(res => {
+
+          try {
+            expect(res).to.have.status(200);
+            done();
+          } catch (err) {
+            done(err);
+          }
+
+      }).catch(err => done(err));
+
+    });
+
+    it('should respond with an array with three elements', done => {
+
+      chai.request(server)
+        .get('/users')
+        .then(res => {
+
+          try {
+            expect(res.body).to.be.an('array');
+            expect(res.body.length).to.equal(3);
+            done();
+          } catch (err) {
+            done(err);
+          }
+
+      }).catch(err => done(err));
+
+    });
+
+    it('should respond with an array containing objects', done => {
+
+      chai.request(server)
+        .get('/users')
+        .then(res => {
+
+          try {
+
+            expect(res.body).to.be.an('array');
+            res.body.forEach(obj => {
+              expect(obj).to.be.an('object');
+            });
+            done();
+
+          } catch (err) {
+            done(err);
+          }
+
+      }).catch(err => done(err));
+
+    });
+
+    it('should not contain is_superuser property', done => {
+
+      chai.request(server)
+        .get('/users')
+        .then(res => {
+
+          try {
+
+            res.body.forEach(userObj => {
+              expect(userObj).to.not.have.any.keys('is_superuser');
+            });
+            done();
+
+          } catch (err) {
+
+          }
+
+        }).catch(err => done(err));
+
+    });
+
+  });
 
   describe('/users/register', () => {
 
@@ -270,7 +391,7 @@ describe('User endpoint tests', () => {
 
     });
 
-    it('should contain a email property', done => {
+    it('should contain an email property', done => {
 
       const getUserId0 = '/users/0';
 
@@ -282,6 +403,25 @@ describe('User endpoint tests', () => {
           done();
 
       }).catch(err => done(err));
+
+    });
+
+    it('should not contain is_superuser property', done => {
+
+      chai.request(server)
+        .get('/users')
+        .then(res => {
+
+          try {
+
+            expect(res.body).to.not.have.any.keys('is_superuser');
+            done();
+
+          } catch (err) {
+
+          }
+
+        }).catch(err => done(err));
 
     });
 

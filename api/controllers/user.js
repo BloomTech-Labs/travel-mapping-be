@@ -2,6 +2,34 @@ const validate = require('../../modules/modules').validate;
 const user     = require('../../data/models/models').user;
 const jwt      = require('jsonwebtoken');
 
+const getUserList = (req, res, next) => {
+
+  try {
+
+    user.retrieveUsers((retrieveErr, userObjArr) => {
+
+      if (retrieveErr) {
+        console.error(retrieveErr);
+        next(retrieveErr);
+      } else {
+
+        const userList = userObjArr.map(userObj => {
+          delete userObj.is_superuser;
+          return userObj;
+        });
+
+        res.status(200).json(userList);
+      }
+
+    });
+
+  } catch (err) {
+    console.error(err);
+    next(new Error('server error'));
+  }
+
+};
+
 const getUserById = (req, res, next) => {
 
   const user_id = req.params.user_id;
@@ -12,18 +40,8 @@ const getUserById = (req, res, next) => {
 
       if (retrieveErr) next(retrieveErr);
       else {
-
-        const { user_id, display_name, email, is_admin, created_at } = userObj;
-
-        const user = {
-          user_id,
-          display_name,
-          email,
-          is_admin,
-          created_at,
-        };
-
-        res.status(200).json(user);
+        delete userObj.is_superuser;
+        res.status(200).json(userObj);
       }
 
     });
@@ -61,7 +79,7 @@ const registerUser = (req, res, next) => {
       });
 
     } catch (err) {
-      console.log(err);
+      console.error(err);
       next(new Error('server error'));
     }
 
@@ -70,6 +88,7 @@ const registerUser = (req, res, next) => {
 };
 
 module.exports = {
+  getUserList,
   getUserById,
   registerUser,
 };

@@ -14,7 +14,7 @@ const api         = { ...controllers, ...middleware };
  *  @apiGroup Users
  *  @apiVersion 0.1.0
  * 
- *  @apiSuccess {Object[]} users A List of user objects.
+ *  @apiSuccess {Object[]} users A List of user objects
  * 
  *  @apiSuccessExample {json} Example Response:
  *     HTTP/1.1 200 OK
@@ -33,9 +33,7 @@ const api         = { ...controllers, ...middleware };
  *     }]
  */
 // #endregion
-router.get('/users', (req, res, next) => {
-  res.json([{ test: 'test' }]);
-}, sentryError);
+router.get('/users', api.user.getUserList, sentryError);
 
 // GET HTTP/1.1 200 OK
 // #region
@@ -64,6 +62,14 @@ router.get('/users', (req, res, next) => {
  *          "email": "john.doe@mail.com",
  *          "is_admin": "false",
  *          "created_at": "2019-11-06 18:42:57"
+ *      }
+ * 
+ *   @apiError {Object} DoesNotExist The user does not exist
+ * 
+ *   @apiErrorExample Already Exists
+ *      HTTP/1.1 400
+ *      {
+ *          "error": "user does not exist"
  *      }
  *  
  */
