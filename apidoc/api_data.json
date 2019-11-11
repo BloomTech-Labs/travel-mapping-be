@@ -190,21 +190,21 @@
             "type": "String",
             "optional": false,
             "field": "display_name",
-            "description": "<p>The users display name</p>"
+            "description": "<p>The users display name (Required)</p>"
           },
           {
             "group": "Request Body",
             "type": "String",
             "optional": false,
             "field": "email",
-            "description": "<p>The users email address</p>"
+            "description": "<p>The users email address (Required)</p>"
           },
           {
             "group": "Request Body",
             "type": "String",
             "optional": false,
             "field": "password",
-            "description": "<p>Required when registering by email. The users password.</p>"
+            "description": "<p>The users password (Required when registering with email)</p>"
           }
         ]
       },
@@ -243,7 +243,7 @@
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"user_id\": 0,\n   \"token\": \"xxxxx.yyyyy.zzzzz\"\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"user_id\": 0,\n   \"token\": \"eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
           "type": "json"
         }
       ]
@@ -251,6 +251,13 @@
     "error": {
       "fields": {
         "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "DisplayNameAlreadyExists",
+            "description": "<p>Display name already exists in the database</p>"
+          },
           {
             "group": "Error 4xx",
             "type": "Object",

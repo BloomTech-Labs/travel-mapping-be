@@ -16,9 +16,9 @@ const api         = { ...controllers, ...middleware };
  * 
  *  @apiParam (Query Parameters) {String} type Required. The type of user registration. Options: email, google
  * 
- *  @apiParam (Request Body) {String} display_name The users display name
- *  @apiParam (Request Body) {String} email The users email address
- *  @apiParam (Request Body) {String} password Required when registering by email. The users password.
+ *  @apiParam (Request Body) {String} display_name The users display name (Required)
+ *  @apiParam (Request Body) {String} email The users email address (Required)
+ *  @apiParam (Request Body) {String} password The users password (Required when registering with email)
  * 
  *  @apiParamExample {json} Example Request (email)
  *      /users/register/?type=email
@@ -42,9 +42,10 @@ const api         = { ...controllers, ...middleware };
  *     HTTP/1.1 201 CREATED
  *     {
  *        "user_id": 0,
- *        "token": "xxxxx.yyyyy.zzzzz"
+ *        "token": "eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
  *     }
  * 
+ *   @apiError {Object} DisplayNameAlreadyExists Display name already exists in the database
  *   @apiError {Object} EmailAlreadyExists Email already exists in the database
  *   @apiError {Object} InvalidDisplayName Display name is invalid
  *   @apiError {Object} InvalidEmail Email is invalid
@@ -105,5 +106,17 @@ router.post('/users/register', api.user.registerUser, sentryError);
 router.get('/users', (req, res, next) => {
   res.json([{ test: 'test' }]);
 }, sentryError);
+
+// Error handler
+router.use((err, req, res, next) => {
+
+  if (err.message === 'server error') res.status(500).json({ error: err.message });
+  else {
+    res.status(400).json({ error: err.message });
+  }
+  console.log(err);
+  res.status(500).json({ error: err.message });
+
+});
 
 module.exports = router;

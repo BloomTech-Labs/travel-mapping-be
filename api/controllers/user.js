@@ -6,24 +6,32 @@ const registerUser = (req, res, next) => {
 
   const validString = validate.registerUserData(req.body, req.query.type);
 
-  if(validString !== 'valid') res.status(400).json({ error: validString });
+  if(validString !== 'valid') next(new Error(validString));
   else {
 
-    user.createUser(req.body, (createErr, userIdArr) => {
+    try {
 
-      if(createErr) next(createErr);
-      else if (userIdArr.length === 1) {
+      user.createUser(req.body, (createErr, userIdArr) => {
 
-        const secret       = process.env.JWT_SECRET;
-        const user_id      = userIdArr[0];
-        const display_name = req.body.display_name;
-        const email        = req.body.email;
-        const token        = jwt.sign({ display_name, email }, secret);
+        if(createErr) next(createErr);
+        else if (userIdArr.length === 1) {
+  
+          const secret       = process.env.JWT_SECRET;
+          const user_id      = userIdArr[0];
+          const display_name = req.body.display_name;
+          const email        = req.body.email;
+          const token        = jwt.sign({ display_name, email }, secret);
+  
+          res.status(201).json({ user_id, token });
+        }
+  
+      });
 
-        res.status(201).json({ user_id, token });
-      }
-
-    });
+    } catch (err) {
+      console.log(err);
+      next(new Error('server error'));
+    }
+    
 
   }
 

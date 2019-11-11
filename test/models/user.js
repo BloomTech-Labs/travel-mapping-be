@@ -204,22 +204,6 @@ describe('User models tests', () => {
 
     });
 
-    it('should pass an error to a callback function when a user is not created', done => {
-
-      models.user.createUser(TEST_DATA, (createErrOne, userIdArrOne) => {
-
-        if (createErrOne) done(createErrOne);
-        else {
-          models.user.createUser(TEST_DATA, (createErr, userIdArr) => {
-            expect(createErr).to.be.an('error');
-            done();
-          });
-        }
-
-      });
-
-    });
-
     it('should pass an error to a callback function when display_name is not valid', done => {
 
       const user = INVALID_USERS[0];
