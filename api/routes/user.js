@@ -6,6 +6,70 @@ const Sentry      = require('@sentry/node');
 const sentryError = Sentry.Handlers.errorHandler(); // Sentry error handler.
 const api         = { ...controllers, ...middleware };
 
+// GET HTTP/1.1 200 OK
+// #region
+/**
+ *  @api {get} /users Get a list of users
+ *  @apiName Get-user-list
+ *  @apiGroup Users
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiSuccess {Object[]} users A List of user objects.
+ * 
+ *  @apiSuccessExample {json} Example Response:
+ *     HTTP/1.1 200 OK
+ *     [{
+ *       "user_id": "0",
+ *       "display_name": "jdoe25",
+ *       "email": "john.doe@mail.com",
+ *       "is_admin": "false",
+ *       "created_at": "2019-11-06 18:42:57",
+ *     }, {
+ *       "test_id": "1",
+ *       "display_name": "jsmith25",
+ *       "email": "jane.smith@mail.com",
+ *       "is_admin": "true",
+ *       "created_at": "2019-11-06 18:42:57",
+ *     }]
+ */
+// #endregion
+router.get('/users', (req, res, next) => {
+  res.json([{ test: 'test' }]);
+}, sentryError);
+
+// GET HTTP/1.1 200 OK
+// #region
+/**
+ *  @api {post} /users/{user_id} Get a specific user
+ *  @apiName Get-specific-user
+ *  @apiGroup Users
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiParam (URL Parameters) {Integer} user_id The users ID
+ * 
+ *  @apiParamExample {json} Example Request
+ *      https://piktorlog.herokuapp.com/users/0
+ * 
+ *  @apiSuccess {Integer} user_id The registered users ID
+ *  @apiSuccess {String} display_name The users display name
+ *  @apiSuccess {String} email The users email address
+ *  @apiSuccess {Boolean} is_admin Determines if the user is an administrator
+ *  @apiSuccess {String} created_at The date/time the user was created
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *      HTTP/1.1 201 CREATED
+ *      {
+ *          "user_id": 0,
+ *          "display_name": "jdoe25",
+ *          "email": "john.doe@mail.com",
+ *          "is_admin": "false",
+ *          "created_at": "2019-11-06 18:42:57"
+ *      }
+ *  
+ */
+// #endregion
+router.get('/users/:user_id', api.user.getUserById, sentryError);
+
 // POST HTTP/1.1 201 CREATED
 // #region
 /**
@@ -75,37 +139,6 @@ const api         = { ...controllers, ...middleware };
  */
 // #endregion
 router.post('/users/register', api.user.registerUser, sentryError);
-
-// GET HTTP/1.1 200 OK
-// #region
-/**
- *  @api {get} /users Get a list of users
- *  @apiName Get-user-list
- *  @apiGroup Users
- *  @apiVersion 0.1.0
- * 
- *  @apiSuccess {Object[]} users A List of user objects.
- * 
- *  @apiSuccessExample {json} Example Response:
- *     HTTP/1.1 200 OK
- *     [{
- *       "user_id": "0",
- *       "display_name": "jdoe25",
- *       "email": "john.doe@mail.com",
- *       "is_admin": "false",
- *       "created_at": "2019-11-06 18:42:57",
- *     }, {
- *       "test_id": "1",
- *       "display_name": "jsmith25",
- *       "email": "jane.smith@mail.com",
- *       "is_admin": "true",
- *       "created_at": "2019-11-06 18:42:57",
- *     }]
- */
-// #endregion
-router.get('/users', (req, res, next) => {
-  res.json([{ test: 'test' }]);
-}, sentryError);
 
 // Error handler
 router.use((err, req, res, next) => {

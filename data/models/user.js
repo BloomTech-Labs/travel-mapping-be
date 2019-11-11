@@ -23,15 +23,20 @@ const retrieveUserBy = (typeObj, done) => {
     .select()
     .then(userArr => {
 
-      const userObj = userArr[0];
+      if (userArr.length === 0) cb(new Error('user does not exist'))
+      else {
 
-      const user = {
-        ...userObj,
-        is_admin:     userObj.is_admin     === 0 ? false : true,
-        is_superuser: userObj.is_superuser === 0 ? false : true,
-      };
+        const userObj = userArr[0];
 
-      cb(null, user);
+        const user = {
+          ...userObj,
+          is_admin:     userObj.is_admin     === 0 ? false : true,
+          is_superuser: userObj.is_superuser === 0 ? false : true,
+        };
+
+        cb(null, user);
+
+      }
 
     }).catch(retrieveErr => cb(retrieveErr));
 

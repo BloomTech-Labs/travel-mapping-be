@@ -137,6 +137,84 @@ define({ "api": [
     "groupTitle": "Tests"
   },
   {
+    "type": "post",
+    "url": "/users/{user_id}",
+    "title": "Get a specific user",
+    "name": "Get_specific_user",
+    "group": "Users",
+    "version": "0.1.0",
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The users ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "https://piktorlog.herokuapp.com/users/0",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The registered users ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "display_name",
+            "description": "<p>The users display name</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>The users email address</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "is_admin",
+            "description": "<p>Determines if the user is an administrator</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "created_at",
+            "description": "<p>The date/time the user was created</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 201 CREATED\n{\n    \"user_id\": 0,\n    \"display_name\": \"jdoe25\",\n    \"email\": \"john.doe@mail.com\",\n    \"is_admin\": \"false\",\n    \"created_at\": \"2019-11-06 18:42:57\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/user.js",
+    "groupTitle": "Users"
+  },
+  {
     "type": "get",
     "url": "/users",
     "title": "Get a list of users",

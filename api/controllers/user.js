@@ -2,6 +2,39 @@ const validate = require('../../modules/modules').validate;
 const user     = require('../../data/models/models').user;
 const jwt      = require('jsonwebtoken');
 
+const getUserById = (req, res, next) => {
+
+  const user_id = req.params.user_id;
+  
+  try {
+
+    user.retrieveUserBy({ user_id }, (retrieveErr, userObj) => {
+
+      if (retrieveErr) next(retrieveErr);
+      else {
+
+        const { user_id, display_name, email, is_admin, created_at } = userObj;
+
+        const user = {
+          user_id,
+          display_name,
+          email,
+          is_admin,
+          created_at,
+        };
+
+        res.status(200).json(user);
+      }
+
+    });
+
+  } catch (err) {
+    console.error(err);
+    next(new Error('server error'));
+  }
+
+};
+
 const registerUser = (req, res, next) => {
 
   const validString = validate.registerUserData(req.body, req.query.type);
@@ -31,12 +64,12 @@ const registerUser = (req, res, next) => {
       console.log(err);
       next(new Error('server error'));
     }
-    
 
   }
 
 };
 
 module.exports = {
+  getUserById,
   registerUser,
 };
