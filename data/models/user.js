@@ -6,7 +6,6 @@ const salt      = 10;
 
 const retrieveUsers = done => {
 
-  // db('users').select()
   done(null, []);
 
 };
@@ -18,62 +17,49 @@ const retrieveUserBy = (typeObj, done) => {
 
   const type = Object.keys(typeObj)[0];
 
+  const retrieveuser = (obj, cb) => {
+
+    db('users').where(obj)
+    .select()
+    .then(userArr => {
+
+      const userObj = userArr[0];
+
+      const user = {
+        ...userObj,
+        is_admin:     userObj.is_admin     === 0 ? false : true,
+        is_superuser: userObj.is_superuser === 0 ? false : true,
+      };
+
+      cb(null, user);
+
+    }).catch(retrieveErr => cb(retrieveErr));
+
+  };
+
   switch(type) {
     case 'user_id':
 
-        db('users').where(typeObj)
-        .select()
-        .then(userArr => {
-
-          userObj = userArr[0];
-
-          const user = {
-            ...userObj,
-            is_admin:     userObj.is_admin     === 0 ? false : true,
-            is_superuser: userObj.is_superuser === 0 ? false : true,
-          };
-
-          done(null, user);
-
-        }).catch(retrieveErr => done(retrieveErr));
-        break;
+      retrieveuser(typeObj, (retrieveUserErr, userObj) => {
+        if (retrieveUserErr) done(retrieveUserErr);
+        else done(null, userObj);
+      });
+      break;
 
     case 'display_name':
 
-        db('users').where(typeObj)
-        .select()
-        .then(userArr => {
-
-          userObj = userArr[0];
-
-          const user = {
-            ...userObj,
-            is_admin:     userObj.is_admin     === 0 ? false : true,
-            is_superuser: userObj.is_superuser === 0 ? false : true,
-          };
-
-          done(null, user);
-
-        }).catch(retrieveErr => done(retrieveErr));
+        retrieveuser(typeObj, (retrieveUserErr, userObj) => {
+          if (retrieveUserErr) done(retrieveUserErr);
+          else done(null, userObj);
+        });
         break;
 
     case 'email':
 
-      db('users').where(typeObj)
-        .select()
-        .then(userArr => {
-
-          userObj = userArr[0];
-
-          const user = {
-            ...userObj,
-            is_admin:     userObj.is_admin     === 0 ? false : true,
-            is_superuser: userObj.is_superuser === 0 ? false : true,
-          };
-
-          done(null, user);
-
-        }).catch(retrieveErr => done(retrieveErr));
+        retrieveuser(typeObj, (retrieveUserErr, userObj) => {
+          if (retrieveUserErr) done(retrieveUserErr);
+          else done(null, userObj);
+        });
         break;
 
       default:
