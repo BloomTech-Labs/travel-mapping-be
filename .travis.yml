@@ -10,6 +10,4 @@ notifications:
   on_success: never
   on_failure: always
 env:
- - NODE_ENV=testing
- - JWT_SECRET='test'
-  
+ - NODE_ENV=testing JWT_SECRET='test'  
