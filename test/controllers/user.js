@@ -1,3 +1,4 @@
+const db          = require('../../data/dbConfig');
 const environment = process.env.NODE_ENV || 'development';
 const chaiHttp    = require('chai-http');
 const chai        = require('chai');
@@ -23,6 +24,14 @@ const registerEmailUrl = '/users/register/?type=email';
 describe('User endpoint tests', () => {
 
   describe('/users/register', () => {
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
 
     it('should respond with json data', done => {
 
@@ -104,19 +113,51 @@ describe('User endpoint tests', () => {
 
     });
 
-    // it('should respond with a 201 status code', done => {
+    it('should respond with a 201 status code', done => {
 
-    //   const user = TEST_USER_DATA[0];
+      const user = VALID_USERS[0];
 
-    //   chai.request(server)
-    //     .post(registerEmailUrl)
-    //     .send(user)
-    //     .then(res => {
-    //       expect(res).to.have.status(201);
-    //       done();
-    //     }).catch(err => done(err));
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+          expect(res).to.have.status(201);
+          done();
+        }).catch(err => done(err));
 
-    // });
+    });
+
+    it('should respond with a user_id property', done => {
+
+      const user = VALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(res.body).to.haveOwnProperty('user_id');
+          done();
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a token property', done => {
+
+      const user = VALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(res.body).to.haveOwnProperty('token');
+          done();
+
+        }).catch(err => done(err));
+
+    });
 
   });
 

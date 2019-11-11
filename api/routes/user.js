@@ -36,11 +36,13 @@ const api         = { ...controllers, ...middleware };
  *      }
  * 
  *  @apiSuccess {Integer} user_id The registered users ID
+ *  @apiSuccess {String} token JWT for auth. Used with email registration.
  * 
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
  *     {
- *        "user_id": 0
+ *        "user_id": 0,
+ *        "token": "xxxxx.yyyyy.zzzzz"
  *     }
  * 
  *   @apiError {Object} EmailAlreadyExists Email already exists in the database
