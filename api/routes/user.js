@@ -114,8 +114,6 @@ router.use((err, req, res, next) => {
   else {
     res.status(400).json({ error: err.message });
   }
-  console.log(err);
-  res.status(500).json({ error: err.message });
 
 });
 
