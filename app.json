@@ -8,7 +8,8 @@
     }
   ],
   "env": {
-    "NODE_ENV": "review"
+    "NODE_ENV": "review",
+    "JWT_SECRET": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCZSqMwjFdt1xcFWuiYbvzCXSDgvfDwDuhKZ0oWu6zcDTnx4inU5XQ8c4hDwV5WBRFtUDSum1GcwbY+lSqamy87mhvPCxYEnSWVLwnqOXb5Vowb0++S60/hB8T8u+Dbjw4MlsMqcxk4RCYQAxid+2kubZXjg0JO2nb0nePuk1mRbQIDAQAB"
   },
   "formation": {
     "web": {
