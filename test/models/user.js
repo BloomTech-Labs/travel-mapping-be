@@ -2,7 +2,7 @@ const db      = require('../../data/dbConfig');
 const models  = require('../../data/models/models');
 const bcrypt  = require('bcrypt');
 const expect  = require('chai').expect;
-const salt    = process.env.PASS_SALT || 10;
+const salt    = parseInt(process.env.PASS_SALT) || 10;
 
 const TEST_DATA = {
   user_id: 0,
