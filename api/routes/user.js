@@ -155,6 +155,7 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
 router.put('/users/:user_id/edit', api.user.editUser, sentryError);
 
 // DELETE HTTP/1.1 200 OK
+// #region
 /**
  *  @api {delete} /users/{user_id}/remove Remove a user
  *  @apiName Remove-user
@@ -200,6 +201,7 @@ router.put('/users/:user_id/edit', api.user.editUser, sentryError);
  *          "serverError": "server error"
  *      }
  */
+// #endregion
 router.delete('/users/:user_id/remove', api.user.removeUser, sentryError);
 
 // POST HTTP/1.1 201 CREATED
@@ -340,8 +342,6 @@ router.post('/users/register/:type', api.user.registerUser, sentryError);
  */
 // #endregion
 router.post('/users/login/:type', api.user.loginUser, sentryError);
-
-
 
 // Error handler
 router.use((err, req, res, next) => {
