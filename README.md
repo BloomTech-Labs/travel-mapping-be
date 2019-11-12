@@ -74,6 +74,7 @@ View the [Entity Relationship Diagram (ERD)](https://dbdiagram.io/d/5dc051d6edf0
   user_id: BIGINT
   display_name: VARCHAR
   email: VARCHAR
+  password: VARCHAR
   is_admin: BOOLEAN
   is_superuser: BOOLEAN
   created_at: DATETIME
