@@ -43,7 +43,6 @@ describe('User endpoint tests', () => {
 
   describe('/users', () => {
 
-    
     beforeEach('clear data in users table', done => {
       db.select()
         .from('users')
@@ -89,67 +88,6 @@ describe('User endpoint tests', () => {
           }
 
       }).catch(err => done(err));
-
-    });
-
-    it('should respond with an array with three elements', done => {
-
-      chai.request(server)
-        .get('/users')
-        .then(res => {
-
-          try {
-            expect(res.body).to.be.an('array');
-            expect(res.body.length).to.equal(3);
-            done();
-          } catch (err) {
-            done(err);
-          }
-
-      }).catch(err => done(err));
-
-    });
-
-    it('should respond with an array containing objects', done => {
-
-      chai.request(server)
-        .get('/users')
-        .then(res => {
-
-          try {
-
-            expect(res.body).to.be.an('array');
-            res.body.forEach(obj => {
-              expect(obj).to.be.an('object');
-            });
-            done();
-
-          } catch (err) {
-            done(err);
-          }
-
-      }).catch(err => done(err));
-
-    });
-
-    it('should not contain is_superuser property', done => {
-
-      chai.request(server)
-        .get('/users')
-        .then(res => {
-
-          try {
-
-            res.body.forEach(userObj => {
-              expect(userObj).to.not.have.any.keys('is_superuser');
-            });
-            done();
-
-          } catch (err) {
-
-          }
-
-        }).catch(err => done(err));
 
     });
 
