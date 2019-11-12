@@ -1,4 +1,7 @@
 const db          = require('../../data/dbConfig');
+const errors      = require('../../modules/modules').errors;
+const bcrypt      = require('bcrypt');
+const salt        = parseInt(process.env.PASS_SALT) || 10;
 const environment = process.env.NODE_ENV || 'development';
 const chaiHttp    = require('chai-http');
 const chai        = require('chai');
@@ -34,7 +37,7 @@ const INVALID_USERS = [{
   invalidProps: '',
 }];
 
-const registerEmailUrl = '/users/register/?type=email';
+const registerEmailUrl = '/users/register/email';
 
 describe('User endpoint tests', () => {
 
@@ -151,144 +154,6 @@ describe('User endpoint tests', () => {
 
   });
 
-  describe('/users/register', () => {
-
-    beforeEach('clear data in users table', done => {
-      db.select()
-        .from('users')
-        .del()
-        .then(()   => done())
-        .catch(err => done(err));
-    });
-
-    it('should respond with json data', done => {
-
-      const user = VALID_USERS[0];
-
-      chai.request(server)
-        .post(registerEmailUrl)
-        .send(user)
-        .then(res => {
-
-          expect(res).to.be.json;
-          done();
-
-        }).catch(err => done(err));
-
-    });
-
-    it('should respond with a 400 status code', done => {
-
-      const user = INVALID_USERS[0];
-
-      chai.request(server)
-        .post(registerEmailUrl)
-        .send(user)
-        .then(res => {
-
-          expect(res).to.have.status(400);
-          done();
-
-        }).catch(err => done(err));
-
-    });
-
-    it('should respond with a single property', done => {
-
-      const user = INVALID_USERS[0];
-
-      chai.request(server)
-        .post(registerEmailUrl)
-        .send(user)
-        .then(res => {
-
-          expect(Object.keys(res.body).length).to.equal(1);
-          done();
-
-        }).catch(err => done(err));
-      
-    });
-
-    it('should respond with an error property', done => {
-
-      const user = INVALID_USERS[0];
-
-      chai.request(server)
-        .post(registerEmailUrl)
-        .send(user)
-        .then(res => {
-
-          expect(res.body).to.haveOwnProperty('error');
-          done();
-
-        }).catch(err => done(err));
-
-    });
-
-    it('should respond with a string', done => {
-      
-      const user = INVALID_USERS[0];
-
-      chai.request(server)
-        .post(registerEmailUrl)
-        .send(user)
-        .then(res => {
-
-          expect(typeof res.body[Object.keys(res.body)[0]]).to.equal('string');
-          done();
-
-        }).catch(err => done(err));
-
-    });
-
-    it('should respond with a 201 status code', done => {
-
-      const user = VALID_USERS[0];
-
-      chai.request(server)
-        .post(registerEmailUrl)
-        .send(user)
-        .then(res => {
-          expect(res).to.have.status(201);
-          done();
-        }).catch(err => done(err));
-
-    });
-
-    it('should respond with a user_id property', done => {
-
-      const user = VALID_USERS[0];
-
-      chai.request(server)
-        .post(registerEmailUrl)
-        .send(user)
-        .then(res => {
-
-          expect(res.body).to.haveOwnProperty('user_id');
-          done();
-
-        }).catch(err => done(err));
-
-    });
-
-    it('should respond with a token property', done => {
-
-      const user = VALID_USERS[0];
-
-      chai.request(server)
-        .post(registerEmailUrl)
-        .send(user)
-        .then(res => {
-
-          expect(res.body).to.haveOwnProperty('token');
-          done();
-
-        }).catch(err => done(err));
-
-    });
-
-  });
-
   describe('/users/:user_id', () => {
 
     beforeEach('clear data in users table', done => {
@@ -335,7 +200,7 @@ describe('User endpoint tests', () => {
 
     });
 
-    it('should respond with an error message when user does not exist', done => {
+    it(`should respond with ${ errors.userIdDoesNotExist }`, done => {
 
       db.select()
         .from('users')
@@ -347,8 +212,8 @@ describe('User endpoint tests', () => {
           chai.request(server)
             .get(getUserId0)
             .then(res => {
-
-              expect(res.body).to.haveOwnProperty('error');
+              expect(res.body).to.haveOwnProperty('userIdDoesNotExist');
+              expect(res.body.userIdDoesNotExist).to.equal(errors.userIdDoesNotExist);
               done();
 
           }).catch(err => done(err));
@@ -419,6 +284,246 @@ describe('User endpoint tests', () => {
 
           } catch (err) {
 
+          }
+
+        }).catch(err => done(err));
+
+    });
+
+  });
+
+  describe('/users/register/email', () => {
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
+
+    it('should respond with json data', done => {
+
+      const user = VALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(res).to.be.json;
+          done();
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a 400 status code', done => {
+
+      const user = INVALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(res).to.have.status(400);
+          done();
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a single property', done => {
+
+      const user = INVALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(Object.keys(res.body).length).to.equal(1);
+          done();
+
+        }).catch(err => done(err));
+      
+    });
+
+    it('should respond with a string', done => {
+      
+      const user = INVALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(typeof res.body[Object.keys(res.body)[0]]).to.equal('string');
+          done();
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a 201 status code', done => {
+
+      const user = VALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+          expect(res).to.have.status(201);
+          done();
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a user_id property', done => {
+
+      const user = VALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(res.body).to.haveOwnProperty('user_id');
+          done();
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a token property', done => {
+
+      const user = VALID_USERS[0];
+
+      chai.request(server)
+        .post(registerEmailUrl)
+        .send(user)
+        .then(res => {
+
+          expect(res.body).to.haveOwnProperty('token');
+          done();
+
+        }).catch(err => done(err));
+
+    });
+
+  });
+
+  describe('/users/login/email', () => {
+
+    const PASS = 'hkTQ%*03';
+
+    const validUsers = [{
+      display_name: 'tuser00',
+      email:        'test.user00@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      display_name: 'tuser01',
+      email:        'test.user01@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      display_name: 'tuser02',
+      email:        'test.user02@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }];
+
+    const invalidUsers = [{
+
+    }];
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
+
+    beforeEach('add data to users table', done => {
+      db('users').insert(validUsers)
+        .then(data => done())
+        .catch(err => done(err));
+    });
+
+    it('should return json data', done => {
+
+      const { email } = validUsers[0];
+
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, PASS, })
+        .then(res => {
+
+          try {
+            expect(res).to.be.json;
+            done();
+          } catch (err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+    });
+
+    it(`should respond with a 200 status code`, done => {
+
+      const { email, } = validUsers[1];
+
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password: PASS, })
+        .then(res => {
+
+          try {
+            expect(res).to.have.status(200);
+            done();
+          } catch (err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+
+    });
+
+    it('should contain a user_id property', done => {
+
+      const { email, } = validUsers[1];
+
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password: PASS, })
+        .then(res => {
+
+          try {
+            expect(res.body).to.haveOwnProperty('user_id');
+            done();
+          } catch (err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should contain a token property', done => {
+
+      const { email, } = validUsers[1];
+
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password: PASS, })
+        .then(res => {
+
+          try {
+            expect(res.body).to.haveOwnProperty('token');
+            done();
+          } catch (err) {
+            done(err);
           }
 
         }).catch(err => done(err));

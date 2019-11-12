@@ -1,6 +1,8 @@
 const db      = require('../../data/dbConfig');
 const models  = require('../../data/models/models');
+const bcrypt  = require('bcrypt');
 const expect  = require('chai').expect;
+const salt    = process.env.PASS_SALT || 10;
 
 const TEST_DATA = {
   user_id: 0,
@@ -398,6 +400,95 @@ describe('User models tests', () => {
             }
             
           });
+
+      });
+
+    });
+
+  });
+
+  describe('verifyUserPassword model', () => {
+
+    const PASS = 'hkTQ%*03';
+
+    const USERS = [{
+      user_id:      0,
+      display_name: 'tuser00',
+      email:        'test.user00@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id:      1,
+      display_name: 'tuser01',
+      email:        'test.user01@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id:      2,
+      display_name: 'tuser02',
+      email:        'test.user02@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }];
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
+
+    beforeEach('add data to users table', done => {
+
+      db('users').insert(USERS)
+        .then(data => done())
+        .catch(err => done(err));
+    });
+
+    it('should pass null to a callback function', done => {
+
+      const { user_id } = USERS[0];
+
+      models.user.verifyUserPassword(user_id, PASS, (verifyErr, isMatch) => {
+
+        try {
+          expect(verifyErr).to.equal(null);
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass true to a callback function when passwords match', done => {
+
+      const { user_id } = USERS[0];
+
+      models.user.verifyUserPassword(user_id, PASS, (verifyErr, isMatch) => {
+
+        try {
+          expect(isMatch).to.equal(true);
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass false to a callback function when password don\'t match', done => {
+
+      const { user_id } = USERS[0];
+
+      models.user.verifyUserPassword(user_id, 'incorrect password', (verifyErr, isMatch) => {
+
+        try {
+          expect(isMatch).to.equal(false);
+          done();
+        } catch (err) {
+          done(err);
+        }
 
       });
 

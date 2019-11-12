@@ -1,4 +1,5 @@
 const validate = require('../../modules/modules').validate;
+const errors   = require('../../modules/modules').errors;
 const user     = require('../../data/models/models').user;
 const jwt      = require('jsonwebtoken');
 
@@ -25,7 +26,7 @@ const getUserList = (req, res, next) => {
 
   } catch (err) {
     console.error(err);
-    next(new Error('server error'));
+    next(new Error(errors.serverError));
   }
 
 };
@@ -48,14 +49,14 @@ const getUserById = (req, res, next) => {
 
   } catch (err) {
     console.error(err);
-    next(new Error('server error'));
+    next(new Error(errors.serverError));
   }
 
 };
 
 const registerUser = (req, res, next) => {
 
-  const validString = validate.registerUserData(req.body, req.query.type);
+  const validString = validate.registerUserData(req.body, req.params.type);
 
   if(validString !== 'valid') next(new Error(validString));
   else {
@@ -67,20 +68,72 @@ const registerUser = (req, res, next) => {
         if(createErr) next(createErr);
         else if (userIdArr.length === 1) {
   
-          const secret       = process.env.JWT_SECRET;
-          const user_id      = userIdArr[0];
-          const display_name = req.body.display_name;
-          const email        = req.body.email;
-          const token        = jwt.sign({ display_name, email }, secret);
-  
-          res.status(201).json({ user_id, token });
+          const user_id = userIdArr[0];
+
+          user.retrieveUserBy({ user_id }, (retrieveErr, userObj) => {
+
+            if(retrieveErr) next(retrieveErr);
+            else {
+              const { user_id, email, is_admin, } = userObj;
+              const secret = process.env.JWT_SECRET;
+              const token  = jwt.sign({ email, is_admin }, secret);
+              res.status(201).json({ user_id, token });
+            }
+
+          });
+          
         }
   
       });
 
     } catch (err) {
       console.error(err);
-      next(new Error('server error'));
+      next(new Error(errors.serverError));
+    }
+
+  }
+
+};
+
+const loginUser = (req, res, next) => {
+  
+  const validString = validate.loginUserData(req.body, req.params.type);
+
+  if(validString !== 'valid') next(new Error(validString));
+  else {
+
+    try {
+
+      const { email, password, } = req.body;
+
+      user.retrieveUserBy({ email }, (retrieveErr, userObj) => {
+        
+        if(retrieveErr) next(retrieveErr);
+        else {
+
+          const { user_id, is_admin, } = userObj;
+
+          user.verifyUserPassword(user_id, password, (verifyErr, isMatch) => {
+
+            if(verifyErr) next(verifyErr);
+            else {
+              if(!isMatch) next(new Error(errors.incorrectPassword));
+              else {
+                const secret = process.env.JWT_SECRET;
+                const token  = jwt.sign({ email, is_admin }, secret);
+                res.status(200).json({ user_id, token, });
+              }
+            }
+
+          });
+
+        }
+
+      });
+
+    } catch (err) {
+      console.error(err);
+      next(new Error(errors.serverError));
     }
 
   }
@@ -91,4 +144,5 @@ module.exports = {
   getUserList,
   getUserById,
   registerUser,
+  loginUser,
 };

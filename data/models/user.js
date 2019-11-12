@@ -1,8 +1,9 @@
 const validate  = require('../../modules/modules').validate;
+const errors    = require('../../modules/modules').errors;
 const db        = require('../dbConfig');
 const validator = require('validator');
 const bcrypt    = require('bcrypt');
-const salt      = 10;
+const salt      = parseInt(process.env.PASS_SALT) || 10;
 
 const retrieveUsers = done => {
   // Takes a callback function as an argument. Gets all
@@ -44,7 +45,22 @@ const retrieveUserBy = (typeObj, done) => {
     .select()
     .then(userArr => {
 
-      if (userArr.length === 0) cb(new Error('user does not exist'))
+      if (userArr.length === 0) {
+        switch (type) {
+          case 'user_id':
+            cb(new Error(errors.userIdDoesNotExist));
+            break;
+          case 'display_name':  
+            cb(new Error(errors.displayNameDoesNotExist));
+            break;
+          case 'email':         
+            cb(new Error(errors.emailDoesNotExist));
+            break;
+          default:
+            cb(new Error(errors.invalidProperty));
+            break;
+        }
+      } 
       else {
 
         const userObj = userArr[0];
@@ -89,7 +105,7 @@ const retrieveUserBy = (typeObj, done) => {
         break;
 
       default:
-        done(new Error('invalid property'));
+        done(new Error(errors.invalidProperty));
         break;
   };
 
@@ -119,11 +135,11 @@ const createUser = (user, done) => {
           const emailIsValid       = validator.isEmail(email);
           const passwordIsValid    = password ? (validate.password(password, [])) : true;
 
-          if(displayNameExists)         done(new Error('display name already exists'));
-          else if(emailExists)          done(new Error('email already exists'));
-          else if(!displayNameIsValid)  done(new Error('display name is not valid'));
-          else if(!emailIsValid)        done(new Error('email is not valid'));
-          else if(!passwordIsValid)     done(new Error('password is not valid'));
+          if(displayNameExists)         done(new Error(errors.displayNameExists));
+          else if(emailExists)          done(new Error(errors.emailExists));
+          else if(!displayNameIsValid)  done(new Error(errors.invalidDisplayName));
+          else if(!emailIsValid)        done(new Error(errors.invalidEmail));
+          else if(!passwordIsValid)     done(new Error(errors.invalidPassword));
           else {
             db('users').insert({
               display_name,
@@ -140,8 +156,29 @@ const createUser = (user, done) => {
 
 };
 
+const verifyUserPassword = (user_id, password, done) => {
+  // Takes a user_id, password, and callback function as arguments.
+  // Tests the users password against the stored password in the database.
+  // Passes true if password matches and false if it doesn't match.
+
+  // Get users password.
+  db('users').where({ user_id })
+    .select()
+    .then(userArr => {
+      
+      if (userArr.length === 0)      done(new Error(errors.userIdDoesNotExist));
+      else if (!userArr[0].password) done(new Error(error.passwordNotAssociated));
+      else {
+        done(null, validate.password(password, [], userArr[0].password));
+      }
+
+    }).catch(err => done(err));
+
+};
+
 module.exports = {
   retrieveUsers,
   retrieveUserBy,
   createUser,
+  verifyUserPassword,
 };

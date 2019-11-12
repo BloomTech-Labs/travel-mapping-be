@@ -1,5 +1,6 @@
 const express     = require('express');
 const router      = express.Router();
+const errors      = require('../../modules/modules').errors;
 const controllers = require('../controllers/controllers');
 const middleware  = require('../middleware/middleware');
 const Sentry      = require('@sentry/node');
@@ -16,7 +17,7 @@ const api         = { ...controllers, ...middleware };
  * 
  *  @apiSuccess {Object[]} users A List of user objects
  * 
- *  @apiSuccessExample {json} Example Response:
+ *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 200 OK
  *     [{
  *       "user_id": "0",
@@ -64,12 +65,12 @@ router.get('/users', api.user.getUserList, sentryError);
  *          "created_at": "2019-11-06 18:42:57"
  *      }
  * 
- *   @apiError {Object} DoesNotExist The user does not exist
+ *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
  * 
  *   @apiErrorExample Already Exists
  *      HTTP/1.1 400
  *      {
- *          "error": "user does not exist"
+ *          "userIdDoesNotExist": "user id does not exist"
  *      }
  *  
  */
@@ -79,19 +80,19 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
 // POST HTTP/1.1 201 CREATED
 // #region
 /**
- *  @api {post} /users/register/?type={type} Register a new user
+ *  @api {post} /users/register/{type} Register a new user
  *  @apiName Register-new-user
  *  @apiGroup Users
  *  @apiVersion 0.1.0
  * 
- *  @apiParam (Query Parameters) {String} type Required. The type of user registration. Options: email, google
+ *  @apiParam (URL Parameters) {String} type Required. The type of user registration. Options: email, google, facebook, twitter
  * 
  *  @apiParam (Request Body) {String} display_name The users display name (Required)
  *  @apiParam (Request Body) {String} email The users email address (Required)
  *  @apiParam (Request Body) {String} password The users password (Required when registering with email)
  * 
  *  @apiParamExample {json} Example Request (email)
- *      /users/register/?type=email
+ *      /users/register/email
  *      {
  *          "display_name": "jdoe25",
  *          "email": "john.doe@mail.com",
@@ -99,14 +100,14 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *      }
  * 
  *  @apiParamExample {json} Example Request (google)
- *      /users/register/?type=google
+ *      /users/register/google
  *      {
  *          "display_name": "jdoe25",
  *          "email": "john.doe@mail.com"
  *      }
  * 
  *  @apiSuccess {Integer} user_id The registered users ID
- *  @apiSuccess {String} token JWT for auth. Used with email registration.
+ *  @apiSuccess {String} token JWT for user auth
  * 
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
@@ -115,44 +116,148 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *        "token": "eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
  *     }
  * 
- *   @apiError {Object} DisplayNameAlreadyExists Display name already exists in the database
- *   @apiError {Object} EmailAlreadyExists Email already exists in the database
- *   @apiError {Object} InvalidDisplayName Display name is invalid
- *   @apiError {Object} InvalidEmail Email is invalid
- *   @apiError {Object} InvalidPassword Password is invalid
- *   @apiError {Object} TooManyProps Request body has too many properties
- *   @apiError {Object} MissingDisplayName Request body is missing the required display_name property
- *   @apiError {Object} MissingEmail Request body is missing the required email property
- *   @apiError {Object} MissingPassword Request body is missing the required password property
+ *   @apiError {Object} displayNameExists Display name already exists in the database
+ *   @apiError {Object} emailExists Email already exists in the database
+ *   @apiError {Object} invalidDisplayName Display name is invalid
+ *   @apiError {Object} invalidEmail Email is invalid
+ *   @apiError {Object} invalidPassword Password is invalid
+ *   @apiError {Object} tooManyProps Request body has too many properties
+ *   @apiError {Object} missingDisplayName Request body is missing the required display_name property
+ *   @apiError {Object} missingEmail Request body is missing the required email property
+ *   @apiError {Object} missingPassword Request body is missing the required password property
  * 
  *   @apiErrorExample Already Exists
- *      HTTP/1.1 400
+ *      HTTP/1.1 400 Bad Request
  *      {
- *          "error": "email already exists"
+ *          "emailExists": "email already exists"
  *      }
  * 
  *   @apiErrorExample Invalid Data
- *      HTTP/1.1 400
+ *      HTTP/1.1 400 Bad Request
  *      {
- *          "error": "display name is not valid"
+ *          "invalidDisplayName": "display name is not valid"
  *      }
  * 
  *   @apiErrorExample Missing Data
- *      HTTP/1.1 400
+ *      HTTP/1.1 400 Bad Request
  *      {
- *          "error": "user object is missing required property: email"
+ *          "missingEmail": "user object is missing required email property"
  *      }
  */
 // #endregion
-router.post('/users/register', api.user.registerUser, sentryError);
+router.post('/users/register/:type', api.user.registerUser, sentryError);
+
+// POST HTTP/1.1 200 OK
+// #region
+/**
+ *  @api {post} /users/login/{type} Login as a user
+ *  @apiName Login-user
+ *  @apiGroup Users
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiParam (URL Parameters) {String} type The type of user login. Options: email, google, facebook, twitter
+ * 
+ *  @apiParam (Request Body) {String} email The users email address (Required)
+ *  @apiParam (Request Body) {String} password The users password (Required when logging in with email)
+ * 
+ *  @apiParamExample {json} Example Request (email)
+ *      /users/login/email
+ *      {
+ *          "email": "john.doe@mail.com",
+ *          "password": "gh43##5A!SG$u77*ke"
+ *      }
+ * 
+ *  @apiParamExample {json} Example Request (google)
+ *      /users/login/google
+ *      {
+ *          "email": "john.doe@mail.com"
+ *      }
+ * 
+ *   @apiError {Object} incorrectPassword Password is not correct
+ *   @apiError {Object} emailDoesNotExist Email does not exist in the database
+ *   @apiError {Object} tooManyProps Request body has too many properties
+ *   @apiError {Object} missingEmail Request body is missing the required email property
+ *   @apiError {Object} missingPassword Request body is missing the required password property
+ *   @apiError {Object} passwordNotAssociated A password is not associated with that account
+ * 
+ *   @apiErrorExample Incorrect Password
+ *      HTTP/1.1 400 Bad Request
+ *      {
+ *          "incorrectPassword": "password is not correct"
+ *      }
+ * 
+ *   @apiErrorExample Invalid Email
+ *      HTTP/1.1 400 Bad Request
+ *      {
+ *          "emailDoesNotExist": "email does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Missing Data
+ *      HTTP/1.1 400 Bad Request
+ *      {
+ *          "missingEmail": "user object is missing required email property"
+ *      }
+ * 
+ */
+// #endregion
+router.post('/users/login/:type', api.user.loginUser, sentryError);
+
+//  *  @apiHeader (Headers) {String} Authorization JWT for user auth (Required)
+//  * 
+//  *  @apiHeaderExample {json} Header Example
+//  *     {
+//  *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+//  *     }
 
 // Error handler
 router.use((err, req, res, next) => {
 
-  if (err.message === 'server error') res.status(500).json({ error: err.message });
-  else {
-    res.status(400).json({ error: err.message });
-  }
+  switch (err.message) {
+    case errors.userIdDoesNotExist:
+        res.status(400).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
+        break;
+    case errors.displayNameExists:
+      res.status(400).json({ displayNameExists: errors.displayNameExists });
+      break;
+    case errors.emailExists:
+      res.status(400).json({ emailExists: errors.emailExists });
+      break;
+    case errors.invalidDisplayName:
+      res.status(400).json({ invalidDisplayName: errors.invalidDisplayName });
+      break;
+    case errors.invalidEmail:
+      res.status(400).json({ invalidEmail: errors.invalidEmail });
+        break;
+    case errors.invalidPassword:
+      res.status(400).json({ invalidPassword: errors.invalidPassword });
+        break;
+    case errors.tooManyProps:
+      res.status(400).json({ tooManyProps: errors.tooManyProps });
+        break;
+    case errors.missingDisplayName:
+      res.status(400).json({ missingDisplayName: errors.missingDisplayName });
+        break;
+    case errors.missingEmail:
+      res.status(400).json({ missingEmail: errors.missingEmail });
+        break;
+    case errors.missingPassword:
+      res.status(400).json({ missingPassword: errors.missingPassword });
+        break;
+    case errors.incorrectPassword:
+      res.status(400).json({ incorrectPassword: errors.incorrectPassword });
+        break;
+    case errors.emailDoesNotExist:
+      res.status(400).json({ emailDoesNotExist: errors.emailDoesNotExist });
+        break;
+    case errors.serverError:
+      res.status(500).json({ serverError: errors.serverError });
+        break;
+    default:
+      console.error(err);
+      res.status(500).json({ serverError: errors.serverError });
+        break;
+      
+  };
 
 });
 
