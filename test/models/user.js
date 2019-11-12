@@ -41,6 +41,139 @@ const INVALID_USERS =  [{
 
 describe('User models tests', () => {
 
+  describe('createUser model', () => {
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
+
+    it('should pass an array with one number element to a callback function', done => {
+
+      models.user.createUser(TEST_DATA, (createErr, userIdArr) => {
+        expect(userIdArr).to.be.an('array');
+        expect(userIdArr.length).to.equal(1);
+        expect(typeof userIdArr[0]).to.equal('number');
+        done();
+      });
+
+    });
+
+    it('should pass null to a callback function after creating a user', done => {
+      
+      const user = VALID_USERS[0];
+
+      models.user.createUser(user, (createErr, userIdArr) => {
+
+        try {
+          expect(createErr).to.equal(null);
+          done();
+        } catch (err) {
+          done(err);
+        }
+        
+      });
+
+    });
+
+    it('should pass an error to a callback function when display_name is not valid', done => {
+
+      const user = INVALID_USERS[0];
+
+      models.user.createUser(user, (createErr, userIdArr) => {
+
+        try {
+          expect(createErr).to.be.an('error');
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+    });
+
+    it('should pass an error to a callback function when email is not valid', done => {
+
+      const user = INVALID_USERS[1];
+
+      models.user.createUser(user, (createErr, userIdArr) => {
+
+        try {
+          expect(createErr).to.be.an('error');
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when password is not valid', done => {
+
+      const user = INVALID_USERS[2];
+
+      models.user.createUser(user, (createErr, userIdArr) => {
+
+        try {
+          expect(createErr).to.be.an('error');
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when a user with a specific display name already exists', done => {
+      
+      const userOne = VALID_USERS[0];
+      const userTwo = VALID_USERS[1];
+      
+      models.user.createUser(userOne, (createErrOne, userIdArrOne) => {
+
+          models.user.createUser(userTwo, (createErr, userIdArr) => {
+
+            try {
+              expect(createErr).to.be.an('error');
+              done();
+            } catch (err) {
+              done(err);
+            }
+            
+          });
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when a user with a specific email already exists', done => {
+
+      const user = VALID_USERS[0];
+
+      models.user.createUser(user, (createErrOne, userIdArrOne) => {
+
+          models.user.createUser(user, (createErr, userIdArr) => {
+
+            try {
+              expect(createErr).to.be.an('error');
+              done();
+            } catch (err) {
+              done(err);
+            }
+            
+          });
+
+      });
+
+    });
+
+  });
+
   describe('retrieveUsers model', () => {
 
     beforeEach('clear data in users table', done => {
@@ -274,7 +407,34 @@ describe('User models tests', () => {
 
   });
 
-  describe('createUser model', () => {
+  describe('updateUser model', () => {
+
+    const PASS = 'hkTQ%*03';
+
+    const validUsers = [{
+      user_id: 0,
+      display_name: 'tuser00',
+      email:        'test.user00@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id: 1,
+      display_name: 'tuser01',
+      email:        'test.user01@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id: 2,
+      display_name: 'tuser02',
+      email:        'test.user02@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id: 3,
+      display_name: 'tuser03',
+      email:        'test.user03@mail.com',
+    }];
+
+    const invalidUsers = [{
+
+    }];
 
     beforeEach('clear data in users table', done => {
       db.select()
@@ -284,60 +444,29 @@ describe('User models tests', () => {
         .catch(err => done(err));
     });
 
-    it('should pass an array with one number element to a callback function', done => {
-
-      models.user.createUser(TEST_DATA, (createErr, userIdArr) => {
-        expect(userIdArr).to.be.an('array');
-        expect(userIdArr.length).to.equal(1);
-        expect(typeof userIdArr[0]).to.equal('number');
-        done();
-      });
-
+    beforeEach('add data to users table', done => {
+      db('users').insert(validUsers)
+        .then(data => done())
+        .catch(err => done(err));
     });
 
-    it('should pass null to a callback function after creating a user', done => {
-      
-      const user = VALID_USERS[0];
+    it('should pass null to a callback function after updating a user', done => {
 
-      models.user.createUser(user, (createErr, userIdArr) => {
+      const updateUserObj = {
+        user_id:      0,
+        display_name: '00tuser',
+        email:        '00test.user@mail.com',
+        password:     'TQhk03%*',
+      };
 
-        try {
-          expect(createErr).to.equal(null);
-          done();
-        } catch (err) {
-          done(err);
-        }
-        
-      });
-
-    });
-
-    it('should pass an error to a callback function when display_name is not valid', done => {
-
-      const user = INVALID_USERS[0];
-
-      models.user.createUser(user, (createErr, userIdArr) => {
+      models.user.updateUser(updateUserObj, (updateErr, userIdObj) => {
 
         try {
-          expect(createErr).to.be.an('error');
+
+          expect(updateErr).to.equal(null);
           done();
-        } catch (err) {
-          done(err);
-        }
 
-      });
-    });
-
-    it('should pass an error to a callback function when email is not valid', done => {
-
-      const user = INVALID_USERS[1];
-
-      models.user.createUser(user, (createErr, userIdArr) => {
-
-        try {
-          expect(createErr).to.be.an('error');
-          done();
-        } catch (err) {
+        } catch(err) {
           done(err);
         }
 
@@ -345,61 +474,30 @@ describe('User models tests', () => {
 
     });
 
-    it('should pass an error to a callback function when password is not valid', done => {
+    it('should pass an array to a callback function after updating a user', done => {
 
-      const user = INVALID_USERS[2];
+      const updateUserObj = {
+        user_id:      0,
+        display_name: '00tuser',
+        email:        '00test.user@mail.com',
+        password:     'TQhk03%*',
+      };
 
-      models.user.createUser(user, (createErr, userIdArr) => {
+      models.user.updateUser(updateUserObj, (updateErr, userIdArr) => {
 
-        try {
-          expect(createErr).to.be.an('error');
-          done();
-        } catch (err) {
-          done(err);
+        if(updateErr) done(updateErr);
+        else {
+
+          try {
+
+            expect(userIdArr).to.be.an('array');
+            done();
+  
+          } catch(err) {
+            done(err);
+          }
+
         }
-
-      });
-
-    });
-
-    it('should pass an error to a callback function when a user with a specific display name already exists', done => {
-      
-      const userOne = VALID_USERS[0];
-      const userTwo = VALID_USERS[1];
-      
-      models.user.createUser(userOne, (createErrOne, userIdArrOne) => {
-
-          models.user.createUser(userTwo, (createErr, userIdArr) => {
-
-            try {
-              expect(createErr).to.be.an('error');
-              done();
-            } catch (err) {
-              done(err);
-            }
-            
-          });
-
-      });
-
-    });
-
-    it('should pass an error to a callback function when a user with a specific email already exists', done => {
-
-      const user = VALID_USERS[0];
-
-      models.user.createUser(user, (createErrOne, userIdArrOne) => {
-
-          models.user.createUser(user, (createErr, userIdArr) => {
-
-            try {
-              expect(createErr).to.be.an('error');
-              done();
-            } catch (err) {
-              done(err);
-            }
-            
-          });
 
       });
 

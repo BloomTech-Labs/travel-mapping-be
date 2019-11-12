@@ -5,6 +5,51 @@ const validator = require('validator');
 const bcrypt    = require('bcrypt');
 const salt      = parseInt(process.env.PASS_SALT) || 10;
 
+const createUser = (user, done) => {
+  // Takes a user object and a callback function as arguments.
+  // Validates the user data, creates a user in the database, and
+  // passes the id to the callback function. 
+
+  const { display_name, email, password } = user;
+
+  // Check if display_name already exists
+  db('users').where({ display_name })
+    .select('display_name')
+    .then(displayNameArr => {
+
+      // Check if email already exists
+      db('users').where({ email })
+        .select('email')
+        .then(emailArr => {
+
+          // Validate user data
+          const displayNameExists  = (displayNameArr.length > 0);
+          const emailExists        = (emailArr.length > 0);
+          const displayNameIsValid = (!validator.contains(display_name, ' ') && validator.isAlphanumeric(display_name));
+          const emailIsValid       = validator.isEmail(email);
+          const passwordIsValid    = password ? (validate.password(password, [])) : true;
+
+          if(displayNameExists)         done(new Error(errors.displayNameExists));
+          else if(emailExists)          done(new Error(errors.emailExists));
+          else if(!displayNameIsValid)  done(new Error(errors.invalidDisplayName));
+          else if(!emailIsValid)        done(new Error(errors.invalidEmail));
+          else if(!passwordIsValid)     done(new Error(errors.invalidPassword));
+          else {
+            db('users').insert({
+              display_name,
+              email,
+              password: password ? bcrypt.hashSync(password, salt) : null
+            })
+            .then(userIdArr  => done(null, userIdArr))
+            .catch(insertErr => done(insertErr));
+          }
+
+        }).catch(retrieveEmailErr => done(retrieveEmailErr));
+
+    }).catch(retrieveDisplayNameErr => done(retrieveDisplayNameErr));
+
+};
+
 const retrieveUsers = done => {
   // Takes a callback function as an argument. Gets all
   // users from the database and passes them as an array
@@ -111,48 +156,58 @@ const retrieveUserBy = (typeObj, done) => {
 
 };
 
-const createUser = (user, done) => {
-  // Takes a user object and a callback function as arguments.
-  // Validates the user data, creates a user in the database, and
-  // passes the id to the callback function. 
+const updateUser = (userObj, done) => {
+  // Takes an object of user data and a callback function as arguments.
+  // Updates the user data in the database and passes null and the user
+  // id to the callback funcion.
 
-  const { display_name, email, password } = user;
+  const { user_id, display_name = null, email = null, password = null } = userObj;
 
-  // Check if display_name already exists
-  db('users').where({ display_name })
-    .select('display_name')
-    .then(displayNameArr => {
+  // Check if user_id exists
+  db('users').where({ user_id })
+    .select('user_id')
+    .then(userIdArr => {
 
-      // Check if email already exists
-      db('users').where({ email })
-        .select('email')
-        .then(emailArr => {
+      // Check if display_name already exists
+      db('users').where({ display_name })
+        .select('display_name')
+        .then(displayNameArr => {
 
-          // Validate user data
-          const displayNameExists  = (displayNameArr.length > 0);
-          const emailExists        = (emailArr.length > 0);
-          const displayNameIsValid = (!validator.contains(display_name, ' ') && validator.isAlphanumeric(display_name));
-          const emailIsValid       = validator.isEmail(email);
-          const passwordIsValid    = password ? (validate.password(password, [])) : true;
+          // Check if email already exists
+          db('users').where({ email })
+            .select('email')
+            .then(emailArr => {
 
-          if(displayNameExists)         done(new Error(errors.displayNameExists));
-          else if(emailExists)          done(new Error(errors.emailExists));
-          else if(!displayNameIsValid)  done(new Error(errors.invalidDisplayName));
-          else if(!emailIsValid)        done(new Error(errors.invalidEmail));
-          else if(!passwordIsValid)     done(new Error(errors.invalidPassword));
-          else {
-            db('users').insert({
-              display_name,
-              email,
-              password: password ? bcrypt.hashSync(password, salt) : null
-            })
-            .then(userIdArr  => done(null, userIdArr))
-            .catch(insertErr => done(insertErr));
-          }
+              // Validate user data
+              const userIdExists       = (userIdArr[0].user_id === user_id)
+              const displayNameExists  = (displayNameArr.length > 0);
+              const emailExists        = (emailArr.length > 0);
+              const displayNameIsValid = (display_name ? (!validator.contains(display_name, ' ') && validator.isAlphanumeric(display_name)) : true);
+              const emailIsValid       = (email ? validator.isEmail(email) : true);
+              const passwordIsValid    = password ? (validate.password(password, [])) : true;
 
-        }).catch(retrieveEmailErr => done(retrieveEmailErr));
+              if(!userIdExists)             done(new Error(errors.userIdDoesNotExist));
+              else if(displayNameExists)    done(new Error(errors.displayNameExists));
+              else if(emailExists)          done(new Error(errors.emailExists));
+              else if(!displayNameIsValid)  done(new Error(errors.invalidDisplayName));
+              else if(!emailIsValid)        done(new Error(errors.invalidEmail));
+              else if(!passwordIsValid)     done(new Error(errors.invalidPassword));
+              else {
 
-    }).catch(retrieveDisplayNameErr => done(retrieveDisplayNameErr));
+                delete userObj.user_id;
+                const updateUserObj = Object.assign({}, userObj, password ? { password: bcrypt.hashSync(password, salt) } : {});
+
+                db('users').update(updateUserObj)
+                .where({ user_id })
+                .then(updatedNum => done(null, [{ user_id }]))
+                .catch(insertErr => done(insertErr));
+              }
+
+            }).catch(retrieveEmailErr => done(retrieveEmailErr));
+
+        }).catch(retrieveDisplayNameErr => done(retrieveDisplayNameErr));
+
+      }).catch(userIdErr => done(userIdErr));
 
 };
 
@@ -177,8 +232,9 @@ const verifyUserPassword = (user_id, password, done) => {
 };
 
 module.exports = {
+  createUser,
   retrieveUsers,
   retrieveUserBy,
-  createUser,
+  updateUser,
   verifyUserPassword,
 };

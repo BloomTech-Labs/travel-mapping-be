@@ -1130,4 +1130,8 @@ describe('User endpoint tests', () => {
 
   });
 
+  describe('/users/:user_id/edit', () => {
+
+  });
+
 });
