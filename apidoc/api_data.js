@@ -258,6 +258,41 @@ define({ "api": [
             "group": "Error 4xx",
             "type": "Object",
             "optional": false,
+            "field": "displayNameExists",
+            "description": "<p>Display name already exists in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "emailExists",
+            "description": "<p>Email already exists in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidDisplayName",
+            "description": "<p>Display name is invalid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidEmail",
+            "description": "<p>Email is invalid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidPassword",
+            "description": "<p>Password is invalid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
             "field": "unauthorized",
             "description": "<p>You are not authorized to make the request</p>"
           },
@@ -274,6 +309,11 @@ define({ "api": [
         {
           "title": "Does Not Exists",
           "content": "HTTP/1.1 400\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Already Exists",
+          "content": "HTTP/1.1 400 Bad Request\n{\n    \"emailExists\": \"email already exists\"\n}",
           "type": "json"
         },
         {

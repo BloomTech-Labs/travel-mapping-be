@@ -4,7 +4,7 @@ const errors      = require('../../modules/modules').errors;
 const controllers = require('../controllers/controllers');
 const middleware  = require('../middleware/middleware');
 const Sentry      = require('@sentry/node');
-const sentryError = Sentry.Handlers.errorHandler(); // Sentry error handler.
+const sentryError = Sentry.Handlers.errorHandler();
 const api         = { ...controllers, ...middleware };
 
 // GET HTTP/1.1 200 OK
@@ -135,6 +135,11 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *      }
  * 
  *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
+ *   @apiError {Object} displayNameExists Display name already exists in the database
+ *   @apiError {Object} emailExists Email already exists in the database
+ *   @apiError {Object} invalidDisplayName Display name is invalid
+ *   @apiError {Object} invalidEmail Email is invalid
+ *   @apiError {Object} invalidPassword Password is invalid
  *   @apiError {Object} unauthorized You are not authorized to make the request
  *   @apiError {Object} serverError Internal server error
  * 
@@ -142,6 +147,12 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *      HTTP/1.1 400
  *      {
  *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Already Exists
+ *      HTTP/1.1 400 Bad Request
+ *      {
+ *          "emailExists": "email already exists"
  *      }
  * 
  *   @apiErrorExample Server Error
@@ -348,7 +359,7 @@ router.use((err, req, res, next) => {
 
   switch (err.message) {
     case errors.userIdDoesNotExist:
-        res.status(400).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
+        res.status(404).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
         break;
     case errors.displayNameExists:
       res.status(400).json({ displayNameExists: errors.displayNameExists });
@@ -381,8 +392,11 @@ router.use((err, req, res, next) => {
       res.status(400).json({ incorrectPassword: errors.incorrectPassword });
         break;
     case errors.emailDoesNotExist:
-      res.status(400).json({ emailDoesNotExist: errors.emailDoesNotExist });
+      res.status(404).json({ emailDoesNotExist: errors.emailDoesNotExist });
         break;
+    case errors.passwordNotAssociated:
+        res.status(400).json({ passwordNotAssociated: errors.passwordNotAssociated });
+          break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });
         break;

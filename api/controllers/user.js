@@ -141,7 +141,7 @@ const loginUser = (req, res, next) => {
 };
 
 const editUser = (req, res, next) => {
-
+  
 };
 
 const removeUser = (req, res, next) => {

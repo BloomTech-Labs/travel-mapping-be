@@ -167,7 +167,7 @@ const verifyUserPassword = (user_id, password, done) => {
     .then(userArr => {
       
       if (userArr.length === 0)      done(new Error(errors.userIdDoesNotExist));
-      else if (!userArr[0].password) done(new Error(error.passwordNotAssociated));
+      else if (!userArr[0].password) done(new Error(errors.passwordNotAssociated));
       else {
         done(null, validate.password(password, [], userArr[0].password));
       }
