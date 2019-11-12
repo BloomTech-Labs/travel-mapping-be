@@ -3,6 +3,7 @@ module.exports = {
 
   // Controller errors
   serverError: 'server error',
+  unauthorized: 'not authorized to make the request',
 
   // Module errors
   tooManyProps:        'user object contains too many properties',

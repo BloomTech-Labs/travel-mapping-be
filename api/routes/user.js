@@ -46,9 +46,6 @@ router.get('/users', api.user.getUserList, sentryError);
  * 
  *  @apiParam (URL Parameters) {Integer} user_id The users ID
  * 
- *  @apiParamExample {json} Example Request
- *      https://piktorlog.herokuapp.com/users/0
- * 
  *  @apiSuccess {Integer} user_id The registered users ID
  *  @apiSuccess {String} display_name The users display name
  *  @apiSuccess {String} email The users email address
@@ -58,24 +55,152 @@ router.get('/users', api.user.getUserList, sentryError);
  *  @apiSuccessExample {json} Example Response
  *      HTTP/1.1 201 CREATED
  *      {
- *          "user_id": 0,
+ *          "user_id": 6534,
  *          "display_name": "jdoe25",
  *          "email": "john.doe@mail.com",
  *          "is_admin": "false",
- *          "created_at": "2019-11-06 18:42:57"
+ *          "created_at": "2019-11-06 18:42:57",
+ *          "updated_at": "2019-11-06 18:42:57"
  *      }
  * 
  *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
+ *   @apiError {Object} serverError Internal server error
  * 
- *   @apiErrorExample Already Exists
+ *   @apiErrorExample Does Not Exists
  *      HTTP/1.1 400
  *      {
  *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Server Error
+ *      HTTP/1.1 400
+ *      {
+ *          "serverError": "server error"
  *      }
  *  
  */
 // #endregion
 router.get('/users/:user_id', api.user.getUserById, sentryError);
+
+// PUT HTTP/1.1 200 OK
+// #region
+/**
+ *  @api {put} /users/{user_id}/edit Edit a user
+ *  @apiName Edit-user
+ *  @apiGroup Users
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission admin
+ *  @apiPermission user
+ * 
+ *  @apiParam (URL Parameters) {Integer} user_id The users ID
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth (Required)
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (Request Body) {String} display_name The users display name (Optional)
+ *  @apiParam (Request Body) {String} email The users email address (Optional)
+ *  @apiParam (Request Body) {String} password The users password (Optional)
+ * 
+ *  @apiParamExample {json} Example Request (all)
+ *      /users/6534/edit
+ *      {
+ *          "display_name": "jdoe25",
+ *          "email": "john.doe@mail.com",
+ *          "password": "gh43##5A!SG$u77*ke"
+ *      }
+ * 
+ *  @apiParamExample {json} Example Request (display name)
+ *      /users/6534/edit
+ *      {
+ *          "display_name": "jdoe25"
+ *      }
+ * 
+ *  @apiParamExample {json} Example Request (password)
+ *      /users/6534/edit
+ *      {
+ *          "password": "jgt5^kY3%%@^&*"
+ *      }
+ * 
+ *  @apiSuccess {Integer} user_id The registered users ID
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *      HTTP/1.1 200 OK
+ *      {
+ *          "user_id": 6534,
+ *      }
+ * 
+ *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample Does Not Exists
+ *      HTTP/1.1 400
+ *      {
+ *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Server Error
+ *      HTTP/1.1 400
+ *      {
+ *          "serverError": "server error"
+ *      }
+ * 
+ */
+// #endregion
+router.put('/users/:user_id/edit', api.user.editUser, sentryError);
+
+// DELETE HTTP/1.1 200 OK
+/**
+ *  @api {delete} /users/{user_id}/remove Remove a user
+ *  @apiName Remove-user
+ *  @apiGroup Users
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission admin
+ *  @apiPermission user
+ * 
+ *  @apiParam (URL Parameters) {Integer} user_id The users ID
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth (Required)
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParamExample {json} Example Request
+ *      /users/6534/remove
+ *      
+ *  @apiSuccess {Integer} user_id The registered users ID
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *      HTTP/1.1 200 OK
+ *      {
+ *          "user_id": 6534,
+ *      }
+ * 
+ *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample Does Not Exists
+ *      HTTP/1.1 400
+ *      {
+ *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Server Error
+ *      HTTP/1.1 400
+ *      {
+ *          "serverError": "server error"
+ *      }
+ */
+router.delete('/users/:user_id/remove', api.user.removeUser, sentryError);
 
 // POST HTTP/1.1 201 CREATED
 // #region
@@ -125,6 +250,7 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *   @apiError {Object} missingDisplayName Request body is missing the required display_name property
  *   @apiError {Object} missingEmail Request body is missing the required email property
  *   @apiError {Object} missingPassword Request body is missing the required password property
+ *   @apiError {Object} serverError Internal server error
  * 
  *   @apiErrorExample Already Exists
  *      HTTP/1.1 400 Bad Request
@@ -142,6 +268,12 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *      HTTP/1.1 400 Bad Request
  *      {
  *          "missingEmail": "user object is missing required email property"
+ *      }
+ * 
+ *   @apiErrorExample Server Error
+ *      HTTP/1.1 400
+ *      {
+ *          "serverError": "server error"
  *      }
  */
 // #endregion
@@ -179,6 +311,7 @@ router.post('/users/register/:type', api.user.registerUser, sentryError);
  *   @apiError {Object} missingEmail Request body is missing the required email property
  *   @apiError {Object} missingPassword Request body is missing the required password property
  *   @apiError {Object} passwordNotAssociated A password is not associated with that account
+ *   @apiError {Object} serverError Internal server error
  * 
  *   @apiErrorExample Incorrect Password
  *      HTTP/1.1 400 Bad Request
@@ -198,16 +331,17 @@ router.post('/users/register/:type', api.user.registerUser, sentryError);
  *          "missingEmail": "user object is missing required email property"
  *      }
  * 
+ *   @apiErrorExample Server Error
+ *      HTTP/1.1 400
+ *      {
+ *          "serverError": "server error"
+ *      }
+ * 
  */
 // #endregion
 router.post('/users/login/:type', api.user.loginUser, sentryError);
 
-//  *  @apiHeader (Headers) {String} Authorization JWT for user auth (Required)
-//  * 
-//  *  @apiHeaderExample {json} Header Example
-//  *     {
-//  *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
-//  *     }
+
 
 // Error handler
 router.use((err, req, res, next) => {

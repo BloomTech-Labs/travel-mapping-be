@@ -137,6 +137,156 @@ define({ "api": [
     "groupTitle": "Tests"
   },
   {
+    "type": "put",
+    "url": "/users/{user_id}/edit",
+    "title": "Edit a user",
+    "name": "Edit_user",
+    "group": "Users",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin"
+      },
+      {
+        "name": "user"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The users ID</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "display_name",
+            "description": "<p>The users display name (Optional)</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>The users email address (Optional)</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>The users password (Optional)</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request (all)",
+          "content": "/users/6534/edit\n{\n    \"display_name\": \"jdoe25\",\n    \"email\": \"john.doe@mail.com\",\n    \"password\": \"gh43##5A!SG$u77*ke\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request (display name)",
+          "content": "/users/6534/edit\n{\n    \"display_name\": \"jdoe25\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request (password)",
+          "content": "/users/6534/edit\n{\n    \"password\": \"jgt5^kY3%%@^&*\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth (Required)</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The registered users ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n    \"user_id\": 6534,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Does Not Exists",
+          "content": "HTTP/1.1 400\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 400\n{\n    \"serverError\": \"server error\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/user.js",
+    "groupTitle": "Users"
+  },
+  {
     "type": "post",
     "url": "/users/{user_id}",
     "title": "Get a specific user",
@@ -154,14 +304,7 @@ define({ "api": [
             "description": "<p>The users ID</p>"
           }
         ]
-      },
-      "examples": [
-        {
-          "title": "Example Request",
-          "content": "https://piktorlog.herokuapp.com/users/0",
-          "type": "json"
-        }
-      ]
+      }
     },
     "success": {
       "fields": {
@@ -206,7 +349,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n    \"user_id\": 0,\n    \"display_name\": \"jdoe25\",\n    \"email\": \"john.doe@mail.com\",\n    \"is_admin\": \"false\",\n    \"created_at\": \"2019-11-06 18:42:57\"\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n    \"user_id\": 6534,\n    \"display_name\": \"jdoe25\",\n    \"email\": \"john.doe@mail.com\",\n    \"is_admin\": \"false\",\n    \"created_at\": \"2019-11-06 18:42:57\",\n    \"updated_at\": \"2019-11-06 18:42:57\"\n}",
           "type": "json"
         }
       ]
@@ -220,13 +363,25 @@ define({ "api": [
             "optional": false,
             "field": "userIdDoesNotExist",
             "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Already Exists",
+          "title": "Does Not Exists",
           "content": "HTTP/1.1 400\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 400\n{\n    \"serverError\": \"server error\"\n}",
           "type": "json"
         }
       ]
@@ -356,6 +511,13 @@ define({ "api": [
             "optional": false,
             "field": "passwordNotAssociated",
             "description": "<p>A password is not associated with that account</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
           }
         ]
       },
@@ -373,6 +535,11 @@ define({ "api": [
         {
           "title": "Missing Data",
           "content": "HTTP/1.1 400 Bad Request\n{\n    \"missingEmail\": \"user object is missing required email property\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 400\n{\n    \"serverError\": \"server error\"\n}",
           "type": "json"
         }
       ]
@@ -527,6 +694,13 @@ define({ "api": [
             "optional": false,
             "field": "missingPassword",
             "description": "<p>Request body is missing the required password property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
           }
         ]
       },
@@ -544,6 +718,128 @@ define({ "api": [
         {
           "title": "Missing Data",
           "content": "HTTP/1.1 400 Bad Request\n{\n    \"missingEmail\": \"user object is missing required email property\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 400\n{\n    \"serverError\": \"server error\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/user.js",
+    "groupTitle": "Users"
+  },
+  {
+    "type": "delete",
+    "url": "/users/{user_id}/remove",
+    "title": "Remove a user",
+    "name": "Remove_user",
+    "group": "Users",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin"
+      },
+      {
+        "name": "user"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The users ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/users/6534/remove",
+          "type": "json"
+        }
+      ]
+    },
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth (Required)</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The registered users ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n    \"user_id\": 6534,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Does Not Exists",
+          "content": "HTTP/1.1 400\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 400\n{\n    \"serverError\": \"server error\"\n}",
           "type": "json"
         }
       ]
