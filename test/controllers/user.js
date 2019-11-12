@@ -43,6 +43,7 @@ describe('User endpoint tests', () => {
 
   describe('/users', () => {
 
+    
     beforeEach('clear data in users table', done => {
       db.select()
         .from('users')
