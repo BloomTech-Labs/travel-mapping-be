@@ -50,8 +50,8 @@ describe('Testing the validation module functions', () => {
       expect(validate.registerUserData(INVALID_USERS[3], 'email')).to.equal(errors.missingPassword);
     });
 
-    it('should return valid', () => {
-      expect(validate.registerUserData(VALID_USERS[0], 'email')).to.equal('valid');
+    it('should return true', () => {
+      expect(validate.registerUserData(VALID_USERS[0], 'email')).to.equal(true);
     });
 
   });
@@ -94,8 +94,35 @@ describe('Testing the validation module functions', () => {
       expect(validate.loginUserData(INVALID_USERS[3], 'email')).to.equal(errors.missingPassword);
     });
 
-    it('should return valid', () => {
-      expect(validate.loginUserData(VALID_USERS[0], 'email')).to.equal('valid');
+    it('should return true', () => {
+      expect(validate.loginUserData(VALID_USERS[0], 'email')).to.equal(true);
+    });
+
+  });
+
+  describe('editUserData function', () => {
+
+    const validData = [{
+      display_name: 'tuser00',
+      email: 'test.user@mail.com',
+      password: 'gh43##5A!SG$u77*ke'
+    }];
+
+    it('should return true when valid data is passed', () => {
+      expect(validate.editUserData(validData[0])).to.equal(true);
+    });
+
+    it(`should return ${ errors.tooManyProps } when too many props are passed`, () => {
+      const userObj = validData[0];
+      expect(validate.editUserData({ ...userObj, invalidProp: 'not valid' })).to.equal(errors.tooManyProps);
+    });
+
+    it(`should return ${ errors.noPropsFound } when no props are passed`, () => {
+      expect(validate.editUserData({})).to.equal(errors.noPropsFound);
+    });
+
+    it(`should return ${ errors.invalidProps } when invalid props are sent`, () => {
+      expect(validate.editUserData({ invalidProp: 'not valid' })).to.equal(errors.invalidProps);
     });
 
   });

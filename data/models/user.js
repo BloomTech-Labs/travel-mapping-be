@@ -156,12 +156,12 @@ const retrieveUserBy = (typeObj, done) => {
 
 };
 
-const updateUser = (userObj, done) => {
-  // Takes an object of user data and a callback function as arguments.
+const updateUserById = (user_id, userObj, done) => {
+  // Takes a user_id, an object of user data, and a callback function as arguments.
   // Updates the user data in the database and passes null and the user
   // id to the callback funcion.
 
-  const { user_id, display_name = null, email = null, password = null } = userObj;
+  const { display_name = null, email = null, password = null } = userObj;
 
   // Check if user_id exists
   db('users').where({ user_id })
@@ -194,8 +194,7 @@ const updateUser = (userObj, done) => {
               else if(!passwordIsValid)     done(new Error(errors.invalidPassword));
               else {
 
-                delete userObj.user_id;
-                const updateUserObj = Object.assign({}, userObj, password ? { password: bcrypt.hashSync(password, salt) } : {});
+                const updateUserObj = Object.assign({ updated_at: db.fn.now() }, userObj, password ? { password: bcrypt.hashSync(password, salt) } : {});
 
                 db('users').update(updateUserObj)
                 .where({ user_id })
@@ -235,6 +234,6 @@ module.exports = {
   createUser,
   retrieveUsers,
   retrieveUserBy,
-  updateUser,
+  updateUserById,
   verifyUserPassword,
 };

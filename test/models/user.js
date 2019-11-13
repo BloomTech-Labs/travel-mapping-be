@@ -407,7 +407,7 @@ describe('User models tests', () => {
 
   });
 
-  describe('updateUser model', () => {
+  describe('updateUserById model', () => {
 
     const PASS = 'hkTQ%*03';
 
@@ -452,14 +452,15 @@ describe('User models tests', () => {
 
     it('should pass null to a callback function after updating a user', done => {
 
+      const { user_id } = validUsers[0];
+
       const updateUserObj = {
-        user_id:      0,
         display_name: '00tuser',
         email:        '00test.user@mail.com',
         password:     'TQhk03%*',
       };
 
-      models.user.updateUser(updateUserObj, (updateErr, userIdObj) => {
+      models.user.updateUserById(user_id, updateUserObj, (updateErr, userIdObj) => {
 
         try {
 
@@ -476,14 +477,15 @@ describe('User models tests', () => {
 
     it('should pass an array to a callback function after updating a user', done => {
 
+      const { user_id } = validUsers[0];
+
       const updateUserObj = {
-        user_id:      0,
         display_name: '00tuser',
         email:        '00test.user@mail.com',
         password:     'TQhk03%*',
       };
 
-      models.user.updateUser(updateUserObj, (updateErr, userIdArr) => {
+      models.user.updateUserById(user_id, updateUserObj, (updateErr, userIdArr) => {
 
         if(updateErr) done(updateErr);
         else {

@@ -25,12 +25,14 @@ const api         = { ...controllers, ...middleware };
  *       "email": "john.doe@mail.com",
  *       "is_admin": "false",
  *       "created_at": "2019-11-06 18:42:57",
+ *       "updated_at": "2019-11-12 23:24:24"
  *     }, {
  *       "test_id": "1",
  *       "display_name": "jsmith25",
  *       "email": "jane.smith@mail.com",
  *       "is_admin": "true",
  *       "created_at": "2019-11-06 18:42:57",
+ *       "updated_at": "2019-11-12 23:24:24"
  *     }]
  */
 // #endregion
@@ -134,6 +136,8 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *          "user_id": 6534,
  *      }
  * 
+ *   @apiError {Object} noPropsFound No properties were sent with the request
+ *   @apiError {Object} invalidProps The properties on the request body are not valid
  *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
  *   @apiError {Object} displayNameExists Display name already exists in the database
  *   @apiError {Object} emailExists Email already exists in the database

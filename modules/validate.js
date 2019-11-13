@@ -4,8 +4,8 @@ const errors            = require('./errors');
 
 const registerUserData = (userObj, regType) => {
   // Verifies that the user object contains the required properties for each registration type.
-  // Takes a user data object and a registration type string as parameters.
-  // Returns 'valid' or an error message describing the invalid data.
+  // Takes a user data object and a registration type string as parameters. Returns true if the
+  // data is valid or an error message describing the invalid data.
 
   const type = regType.toLowerCase();
 
@@ -16,7 +16,7 @@ const registerUserData = (userObj, regType) => {
       else if(!userObj.hasOwnProperty('display_name'))  return errors.missingDisplayName;
       else if(!userObj.hasOwnProperty('email'))         return errors.missingEmail;
       else if(!userObj.hasOwnProperty('password'))      return errors.missingPassword;
-      else return 'valid';
+      else return true;
   
     case 'google':
     default:
@@ -27,8 +27,8 @@ const registerUserData = (userObj, regType) => {
 
 const loginUserData = (userObj, regType) => {
   // Verifies that the user object contains the required properties for each registration type.
-  // Takes a user data object and a registration type string as parameters.
-  // Returns 'valid' or an error message describing the invalid data.
+  // Takes a user data object and a registration type string as parameters. Returns true if the 
+  // data is valid or an error message describing the invalid data.
 
   const type = regType.toLowerCase();
 
@@ -38,12 +38,30 @@ const loginUserData = (userObj, regType) => {
       if(Object.keys(userObj).length > 2)          return errors.tooManyProps;
       else if(!userObj.hasOwnProperty('email'))    return errors.missingEmail;
       else if(!userObj.hasOwnProperty('password')) return errors.missingPassword;
-      else return 'valid';
+      else return true;
   
     case 'google':
     default:
       return errors.invalidRegisterType;
   }
+
+};
+
+const editUserData = (userObj) => {
+  // Verifies the data in the user object is valid. Takes a user id
+  // and an object as arguments. Returns true if the data is valid
+  // or an error message describing the invalid data.
+
+  const validProps = ['display_name', 'email', 'password'];
+  const props = Object.keys(userObj);
+
+  // Check if the userObj contains invalid props.
+  const propsAreValid = (props.length === props.filter(prop => validProps.includes(prop)).length);
+
+  if(props.length > validProps.length) return errors.tooManyProps;
+  else if(props.length === 0)          return errors.noPropsFound;
+  else if(!propsAreValid)              return errors.invalidProps;
+  else return true;
 
 };
 
@@ -79,5 +97,6 @@ const password = (password, blacklist = [], hash = null) => {
 module.exports = {
   registerUserData,
   loginUserData,
+  editUserData,
   password,
 };

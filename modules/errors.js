@@ -7,11 +7,13 @@ module.exports = {
 
   // Module errors
   tooManyProps:        'user object contains too many properties',
+  noPropsFound:        'no properties were sent with the request',
   missingDisplayName:  'user object is missing required display_name property',
   missingEmail:        'user object is missing required email property',
   missingPassword:     'user object is missing required password property',
   invalidRegisterType: 'invalid registration type',
   incorrectPassword:   'password is not correct',
+  invalidProps:        'request body props not valid',
 
   // Model errors
   userDoesNotExist:        'user does not exist',

@@ -56,9 +56,9 @@ const getUserById = (req, res, next) => {
 
 const registerUser = (req, res, next) => {
 
-  const validString = validate.registerUserData(req.body, req.params.type);
+  const errorMsgOrTrue = validate.registerUserData(req.body, req.params.type);
 
-  if(validString !== 'valid') next(new Error(validString));
+  if(errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
   else {
 
     try {
@@ -97,9 +97,9 @@ const registerUser = (req, res, next) => {
 
 const loginUser = (req, res, next) => {
   
-  const validString = validate.loginUserData(req.body, req.params.type);
+  const errorMsgOrTrue = validate.loginUserData(req.body, req.params.type);
 
-  if(validString !== 'valid') next(new Error(validString));
+  if(errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
   else {
 
     try {
@@ -141,7 +141,33 @@ const loginUser = (req, res, next) => {
 };
 
 const editUser = (req, res, next) => {
-  
+
+  const errorMsgOrTrue = validate.editUserData(req.body);
+
+  if(errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
+  else {
+
+    try {
+
+      const user_id = parseInt(req.params.user_id);
+      const userObj = req.body;
+
+      user.updateUserById(user_id, userObj, (editErr, userIdArr) => {
+
+        if(editErr) next(editErr);
+        else {
+          const userId = userIdArr[0].user_id;
+          res.status(200).json({ user_id: userId });
+        }
+
+      });
+
+    } catch(err) {
+      console.log(err);
+      next(new Error(errors.serverError));
+    }
+  }
+
 };
 
 const removeUser = (req, res, next) => {

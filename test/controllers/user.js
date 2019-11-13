@@ -1132,6 +1132,99 @@ describe('User endpoint tests', () => {
 
   describe('/users/:user_id/edit', () => {
 
+    const PASS = 'hkTQ%*03';
+
+    const validUsers = [{
+      user_id:      0,
+      display_name: 'tuser00',
+      email:        'test.user00@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id:      1,
+      display_name: 'tuser01',
+      email:        'test.user01@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id:      2,
+      display_name: 'tuser02',
+      email:        'test.user02@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id:      3,
+      display_name: 'tuser03',
+      email:        'test.user03@mail.com',
+    }];
+
+    const invalidUsers = [{
+
+    }];
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
+
+    beforeEach('add data to users table', done => {
+      db('users').insert(validUsers)
+        .then(data => done())
+        .catch(err => done(err));
+    });
+
+    it('should respond with json data', done => {
+
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+      chai.request(server)
+        .put('/users/0/edit')
+        .send(editUser)
+        .then(res => {
+
+          try {
+
+            expect(res).to.be.json;
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+    });
+
+    it('should respond with a 200 status code', done => {
+      
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+      chai.request(server)
+        .put('/users/0/edit')
+        .send(editUser)
+        .then(res => {
+
+          try {
+
+            expect(res).to.have.status(200);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+    });
+
   });
 
 });
