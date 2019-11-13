@@ -586,6 +586,23 @@ describe('User models tests', () => {
       
     });
 
+    it('should pass an error to a callback function when a user id does not exist', done => {
+
+      const user_id = 404;
+
+      models.user.deleteUserById(user_id, (deleteErr, userIdArr) => {
+
+        try {
+          expect(deleteErr).to.be.an('error');
+          done();
+        } catch(err) {
+          done(err);
+        }
+
+      });
+
+    });
+
   });
 
   describe('verifyUserPassword model', () => {

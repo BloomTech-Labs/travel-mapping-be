@@ -223,9 +223,6 @@ const deleteUserById = (user_id, done) => {
       // Validate user data
       const userIdExists = (userIdArr[0].user_id === user_id)
 
-      const x = { x: 1, y: 2 }
-      delete x.x; // { y: 2 }
-
       if(!userIdExists) done(new Error(errors.userIdDoesNotExist));
       else {
 
