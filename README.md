@@ -150,7 +150,9 @@ View the [Entity Relationship Diagram (ERD)](https://dbdiagram.io/d/5dc051d6edf0
   title: VARCHAR
   caption: TEXT
   type: ENUM
+  media_url: VARCHAR
   created_at: DATETIME
+  updated_at: DATETIME
 }
 ```
 
