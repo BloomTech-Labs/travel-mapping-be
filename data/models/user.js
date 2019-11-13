@@ -210,6 +210,39 @@ const updateUserById = (user_id, userObj, done) => {
 
 };
 
+const deleteUserById = (user_id, done) => {
+  // Takes a user id and a callback function as arguments.
+  // Deletes a user from the database and passes null and 
+  // the user id to the callback funcion.
+
+  // Check if user_id exists
+  db('users').where({ user_id })
+    .select('user_id')
+    .then(userIdArr => {
+
+      // Validate user data
+      const userIdExists = (userIdArr[0].user_id === user_id)
+
+      const x = { x: 1, y: 2 }
+      delete x.x; // { y: 2 }
+
+      if(!userIdExists) done(new Error(errors.userIdDoesNotExist));
+      else {
+
+        db('users').where({ user_id })
+          .delete()
+          .then(numDeleted => {
+            console.log(numDeleted);
+            done(null, [{ user_id }]);
+          })
+          .catch(deleteErr => done(deleteErr));
+
+      }
+
+    })
+    .catch(userIdErr => done(userIdErr));
+};
+
 const verifyUserPassword = (user_id, password, done) => {
   // Takes a user_id, password, and callback function as arguments.
   // Tests the users password against the stored password in the database.
@@ -235,5 +268,6 @@ module.exports = {
   retrieveUsers,
   retrieveUserBy,
   updateUserById,
+  deleteUserById,
   verifyUserPassword,
 };

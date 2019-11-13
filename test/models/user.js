@@ -507,6 +507,87 @@ describe('User models tests', () => {
 
   });
 
+  describe('deleteUserById model', () => {
+
+    const PASS = 'hkTQ%*03';
+
+    const validUsers = [{
+      user_id: 0,
+      display_name: 'tuser00',
+      email:        'test.user00@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id: 1,
+      display_name: 'tuser01',
+      email:        'test.user01@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id: 2,
+      display_name: 'tuser02',
+      email:        'test.user02@mail.com',
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id: 3,
+      display_name: 'tuser03',
+      email:        'test.user03@mail.com',
+    }];
+
+    const invalidUsers = [{
+
+    }];
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
+
+    beforeEach('add data to users table', done => {
+      db('users').insert(validUsers)
+        .then(data => done())
+        .catch(err => done(err));
+    });
+
+    it('should pass null to a callback function after deleting a user', done => {
+
+      const user_id = validUsers[0].user_id;
+
+      models.user.deleteUserById(user_id, (deleteErr, userIdArr) => {
+
+        try {
+          expect(deleteErr).to.equal(null);
+          done();
+        } catch(err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an array to a callback function after deleting a user', done => {
+
+      const user_id = validUsers[0].user_id;
+
+      models.user.deleteUserById(user_id, (deleteErr, userIdArr) => {
+
+        try {
+
+          expect(userIdArr).to.be.an('array');
+          done();
+
+        } catch(err) {
+          done(err);
+        }
+
+      });
+      
+    });
+
+  });
+
   describe('verifyUserPassword model', () => {
 
     const PASS = 'hkTQ%*03';

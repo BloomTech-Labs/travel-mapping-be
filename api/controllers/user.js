@@ -172,6 +172,24 @@ const editUser = (req, res, next) => {
 
 const removeUser = (req, res, next) => {
 
+  try {
+
+    const user_id = parseInt(req.params.user_id);
+
+    user.deleteUserById(user_id, (deleteErr, userIdArr) => {
+
+      if(deleteErr) next(deleteErr);
+      else {
+        res.status(200).json({ user_id });
+      }
+
+    });
+
+  } catch(err) {
+    console.error(err);
+    next(new Error(errors.serverError));
+  }
+
 };
 
 module.exports = {
