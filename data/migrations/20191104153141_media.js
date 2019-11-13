@@ -27,8 +27,16 @@ exports.up = function(knex) {
       .notNullable()
       .defaultTo('photo');
 
+    // media_url
+    table.string('media_url', 255)
+      .notNullable();
+
     // created_at
     table.timestamp('created_at')
+      .defaultTo(knex.fn.now());
+
+    // updated_at
+    table.timestamp('updated_at')
       .defaultTo(knex.fn.now());
 
   });

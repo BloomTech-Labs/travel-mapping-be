@@ -20,7 +20,7 @@ module.exports = {
         },
       }
     },
-    
+
     testing: {
       client: "sqlite3",
       useNullAsDefault: true,
@@ -40,7 +40,7 @@ module.exports = {
         },
       }
     },
-    
+
     review: {
       client: 'pg',
       connection: process.env.DATABASE_URL,
