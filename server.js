@@ -1,5 +1,5 @@
 require('dotenv').config();
-const routes  = require('./controllers/routes/routes');
+const routes  = require('./api/routes/routes');
 const express = require('express');
 const path    = require('path');
 const server  = express();
@@ -8,11 +8,10 @@ const helmet  = require("helmet");
 const fileUpload = require('express-fileupload')({
   useTempFiles: true
 });
+const PORT    = process.env.PORT || 4000;
+const Sentry  = require('@sentry/node');
 
-const apiDocs = express.static(path.join(__dirname, 'apidoc'))
-const PORT = process.env.PORT || 4000;
-
-
+// #region
 // server.use((req , res , next) => {
 
 //   res.header("Access-Control-Allow-Origin","*");
@@ -23,27 +22,33 @@ const PORT = process.env.PORT || 4000;
 //   }
 //   next();
 //   });
+// #endregion
 
+// Declare variables.
+const apiDocs = express.static(path.join(__dirname, 'apidoc')); // Get the apidoc web page static assets.
+const environment   = process.env.NODE_ENV || 'development';    // Node environment.
+const sentryRequest = Sentry.Handlers.requestHandler();         // Sentry request handler.
+const sentryError   = Sentry.Handlers.errorHandler();           // Sentry error handler.
+const expressJson   = express.json();                           // Express json parser.
+const helmetJs      = helmet();                                 // Helmet.js.
+const corsJs        = cors();                                   // Cors.js.
+const middleware    = [ fileUpload, sentryRequest, helmetJs, corsJs,        // Middleware to be used by the server.
+                        expressJson, apiDocs, routes, ];
 
-
-// server.use(cors());
-// server.use(express.json());
-// server.use(helmet());
-
-
-
-const middleware = [fileUpload, routes, apiDocs, ];
+// Initialize Sentry.
+Sentry.init({ dsn: 'https://e085e65ac5a249988c866c5e21e2adaa@sentry.io/1811837' });
 
 server.use(middleware);
 
-server.get('/', (req, res) => {
-  res.send(path.join(__dirname, 'apidoc/index.html'));
-});
+// Serve the apidoc template web page.
+server.get('/', (req, res) => { res.send(path.join(__dirname, 'apidoc/index.html')) });
 
+// Verify the Sentry integration. (development only)
+if (environment === 'development')
+  server.get('/debug-sentry', (req, res) => { throw new Error('My first Sentry error!') }, sentryError);
 
-server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}...`);
-  
-});
+// Run the server.
+server.listen(PORT, () => { console.log(`Listening on port ${PORT}...`) });
 
+// Export the server for testing.
 module.exports = server;

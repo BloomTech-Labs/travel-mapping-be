@@ -5,13 +5,33 @@ module.exports = {
       client: "sqlite3",
       useNullAsDefault: true,
       connection: {
-        filename: "./models/piktorlog.db3"
+        filename: "./data/piktorlog.db3"
       },
       migrations: {
-        directory: "./models/migrations"
+        directory: "./data/migrations"
       },
       seeds: {
-        directory: "./models/seeds"
+        directory: "./data/seeds"
+      },
+      pool: {
+        afterCreate: (conn, done) => {
+          // runs after a connection is made to the sqlite engine
+          conn.run("PRAGMA foreign_keys = ON", done); // turn on FK enforcement
+        },
+      }
+    },
+
+    testing: {
+      client: "sqlite3",
+      useNullAsDefault: true,
+      connection: {
+        filename: "./data/piktorlog.db3"
+      },
+      migrations: {
+        directory: "./data/migrations"
+      },
+      seeds: {
+        directory: "./data/seeds"
       },
       pool: {
         afterCreate: (conn, done) => {
@@ -25,10 +45,10 @@ module.exports = {
       client: 'pg',
       connection: process.env.DATABASE_URL,
       migrations: {
-        directory: "./models/migrations"
+        directory: "./data/migrations"
       },
       seeds: {
-        directory: "./models/seeds"
+        directory: "./data/seeds"
       },
     },
 
@@ -36,10 +56,10 @@ module.exports = {
       client: 'pg',
       connection: process.env.DATABASE_URL,
       migrations: {
-        directory: "./models/migrations"
+        directory: "./data/migrations"
       },
       seeds: {
-        directory: "./models/seeds"
+        directory: "./data/seeds"
       },
     },
 
@@ -47,10 +67,10 @@ module.exports = {
       client: 'pg',
       connection: process.env.DATABASE_URL,
       migrations: {
-        directory: "./models/migrations"
+        directory: "./data/migrations"
       },
       seeds: {
-        directory: "./models/seeds"
+        directory: "./data/seeds"
       },
     },
   }

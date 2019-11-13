@@ -8,7 +8,9 @@
     }
   ],
   "env": {
-    "NODE_ENV": "review"
+    "NODE_ENV": "review",
+    "JWT_SECRET": "test",
+    "PASS_SALT": "10"
   },
   "formation": {
     "web": {

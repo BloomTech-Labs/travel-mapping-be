@@ -16,14 +16,23 @@ exports.up = function(knex) {
       .notNullable()
       .unique();
 
+    // password
+    table.string('password', 255);
+
     // is_admin
-    table.boolean('is_admin', false);
+    table.boolean('is_admin')
+      .defaultTo(false);
 
      // is_superuser
-     table.boolean('is_superuser', false);
+     table.boolean('is_superuser')
+      .defaultTo(false);
     
     // created_at
     table.timestamp('created_at')
+      .defaultTo(knex.fn.now());
+
+    // updated_at
+    table.timestamp('updated_at')
       .defaultTo(knex.fn.now());
 
   });

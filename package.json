@@ -10,10 +10,16 @@
     "migrate": "knex migrate:latest",
     "seed": "knex seed:run",
     "test": "mocha --recursive --exit",
-    "docs": "apidoc -i controllers/ -o apidoc/",
+    "test:watch": "mocha --recursive --watch",
+    "test:controllers": "mocha test/controllers --exit",
+    "test:models": "mocha test/models --exit",
+    "test:modules": "mocha test/modules --exit",
+    "docs": "apidoc -i api/ -o apidoc/",
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "@sentry/node": "^5.7.1",
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.17.0",
     "cors": "^2.8.5",
@@ -21,9 +27,12 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6-alpha.6",
     "helmet": "^3.21.1",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.19.5",
     "multer": "^1.4.2",
-    "pg": "^7.12.1"
+    "password-validator": "^5.0.3",
+    "pg": "^7.12.1",
+    "validator": "^12.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
