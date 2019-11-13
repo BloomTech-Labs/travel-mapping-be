@@ -5,6 +5,9 @@ const path    = require('path');
 const server  = express();
 const cors    = require("cors");
 const helmet  = require("helmet");
+const fileUpload = require('express-fileupload')({
+  useTempFiles: true
+});
 
 const apiDocs = express.static(path.join(__dirname, 'apidoc'))
 const PORT = process.env.PORT || 4000;
@@ -29,7 +32,7 @@ const PORT = process.env.PORT || 4000;
 
 
 
-const middleware = [routes, apiDocs, ];
+const middleware = [fileUpload, routes, apiDocs, ];
 
 server.use(middleware);
 
