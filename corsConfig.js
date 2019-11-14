@@ -3,24 +3,32 @@ module.exports = {
 
   development: {
     origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
   },
 
   testing: {
     origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
   },
 
   review: {
-    origin: ['https://piktorlogstaging.netlify.com/', 'https://piktorlog.com/'],
-    // methods: ['PUT'],
-    // allowedHeaders: ['Content-Type', 'Authorization', 'Application/JSON'],
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
   },
 
   staging: {
-    origin: ['https://piktorlogstaging.netlify.com/', 'https://piktorlog.com/'],
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
   },
 
   production: {
-
+    origin: 'https://piktorlog.com/',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
   },
 
 };
