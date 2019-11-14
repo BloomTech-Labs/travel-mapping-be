@@ -75,7 +75,7 @@ const api         = { ...controllers, ...middleware };
  *      }
  */
 // #endregion
-router.post('/albums/create', api.auth.verifyUserAuth, sentryError);
+router.post('/albums/create', /* api.auth.verifyUserAuth, */ api.album.createAlbum, sentryError);
 
 // Error handler
 router.use((err, req, res, next) => {
