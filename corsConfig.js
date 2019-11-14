@@ -10,7 +10,7 @@ module.exports = {
   },
 
   review: {
-    origin: 'http://piktorlog.com/',
+    origin: 'http://piktorlog2345.com/',
     methods: ['PUT'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Application/JSON'],
   },
