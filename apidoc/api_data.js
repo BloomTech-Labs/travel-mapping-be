@@ -1,6 +1,196 @@
 define({ "api": [
   {
     "type": "post",
+    "url": "/albums/create",
+    "title": "Create a new album",
+    "name": "Create_new_album",
+    "group": "Albums",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The ID of the user that owns the album (Required)</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>The title of the album (Required)</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Text",
+            "optional": false,
+            "field": "description",
+            "description": "<p>A description of the album</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Enum",
+            "optional": false,
+            "field": "access",
+            "description": "<p>Access type of the album (public | private)</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/users/albums/create\n{\n    \"user_id\": 6534,\n    \"title\": \"Vacation Photos\",\n    \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n    \"access\": \"public\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request",
+          "content": "/users/albums/create\n{\n    \"user_id\": 6534,\n    \"title\": \"Wedding Photos\",\n    \"description\": \"The everyone was fun at the wedding over there awesome\",\n    \"access\": \"private\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The created album ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 6534,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "noPropsFound",
+            "description": "<p>No properties were sent with the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidProps",
+            "description": "<p>The properties on the request body are not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "titleExists",
+            "description": "<p>There is already an album with that title</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidTitle",
+            "description": "<p>The album title is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidDescription",
+            "description": "<p>The album description is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidAccessType",
+            "description": "<p>The album access type is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingUserId",
+            "description": "<p>Request body is missing the required user_id property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingTitle",
+            "description": "<p>Request body is missing the required title property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingDescription",
+            "description": "<p>Request body is missing the required description property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingAccess",
+            "description": "<p>Request body is missing the required access property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Title Exists",
+          "content": "HTTP/1.1 400\n{\n    \"titleExists\": \"there is already an album with that title\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Missing Description",
+          "content": "HTTP/1.1 404\n{\n    \"missingDescription\": \"request body is missing the required description property\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/album.js",
+    "groupTitle": "Albums"
+  },
+  {
+    "type": "post",
     "url": "/test",
     "title": "Create a new test",
     "name": "Create_Test",

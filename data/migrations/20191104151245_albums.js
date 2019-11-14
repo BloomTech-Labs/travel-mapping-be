@@ -30,6 +30,10 @@ exports.up = function(knex) {
     // created_at
     table.timestamp('created_at')
       .defaultTo(knex.fn.now());
+
+    // created_at
+    table.timestamp('updated_at')
+      .defaultTo(knex.fn.now());
   
   });
 };
