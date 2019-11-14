@@ -179,7 +179,7 @@ const updateUserById = (user_id, userObj, done) => {
             .then(emailArr => {
 
               // Validate user data
-              const userIdExists       = (userIdArr[0].user_id === user_id)
+              const userIdExists       = (userIdArr.length > 0)
               const displayNameExists  = (displayNameArr.length > 0);
               const emailExists        = (emailArr.length > 0);
               const displayNameIsValid = (display_name ? (!validator.contains(display_name, ' ') && validator.isAlphanumeric(display_name)) : true);
@@ -221,7 +221,7 @@ const deleteUserById = (user_id, done) => {
     .then(userIdArr => {
 
       // Validate user data
-      const userIdExists = (userIdArr[0].user_id === user_id)
+      const userIdExists = (userIdArr.length === 1);
 
       if(!userIdExists) done(new Error(errors.userIdDoesNotExist));
       else {
@@ -229,7 +229,6 @@ const deleteUserById = (user_id, done) => {
         db('users').where({ user_id })
           .delete()
           .then(numDeleted => {
-            console.log(numDeleted);
             done(null, [{ user_id }]);
           })
           .catch(deleteErr => done(deleteErr));

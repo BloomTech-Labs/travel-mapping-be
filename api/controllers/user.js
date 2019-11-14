@@ -74,9 +74,9 @@ const registerUser = (req, res, next) => {
 
             if(retrieveErr) next(retrieveErr);
             else {
-              const { user_id, email, is_admin, } = userObj;
+              const { user_id, email, } = userObj;
               const secret = process.env.JWT_SECRET;
-              const token  = jwt.sign({ email, is_admin }, secret);
+              const token  = jwt.sign({ email }, secret);
               res.status(201).json({ user_id, token });
             }
 
@@ -111,7 +111,7 @@ const loginUser = (req, res, next) => {
         if(retrieveErr) next(retrieveErr);
         else {
 
-          const { user_id, is_admin, } = userObj;
+          const { user_id, } = userObj;
 
           user.verifyUserPassword(user_id, password, (verifyErr, isMatch) => {
 
@@ -120,7 +120,7 @@ const loginUser = (req, res, next) => {
               if(!isMatch) next(new Error(errors.incorrectPassword));
               else {
                 const secret = process.env.JWT_SECRET;
-                const token  = jwt.sign({ email, is_admin }, secret);
+                const token  = jwt.sign({ email }, secret);
                 res.status(200).json({ user_id, token, });
               }
             }
@@ -189,6 +189,7 @@ const removeUser = (req, res, next) => {
     console.error(err);
     next(new Error(errors.serverError));
   }
+  
 
 };
 

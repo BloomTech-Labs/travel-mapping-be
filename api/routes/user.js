@@ -15,6 +15,8 @@ const api         = { ...controllers, ...middleware };
  *  @apiGroup Users
  *  @apiVersion 0.1.0
  * 
+ *  @apiPermission user
+ * 
  *  @apiSuccess {Object[]} users A List of user objects
  * 
  *  @apiSuccessExample {json} Example Response
@@ -45,6 +47,8 @@ router.get('/users', api.user.getUserList, sentryError);
  *  @apiName Get-specific-user
  *  @apiGroup Users
  *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission user
  * 
  *  @apiParam (URL Parameters) {Integer} user_id The users ID
  * 
@@ -93,7 +97,7 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *  @apiVersion 0.1.0
  * 
  *  @apiPermission admin
- *  @apiPermission user
+ *  @apiPermission owner
  * 
  *  @apiParam (URL Parameters) {Integer} user_id The users ID
  * 
@@ -167,7 +171,7 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  * 
  */
 // #endregion
-router.put('/users/:user_id/edit', api.user.editUser, sentryError);
+router.put('/users/:user_id/edit', api.auth.verifyUserAuth, api.user.editUser, sentryError);
 
 // DELETE HTTP/1.1 200 OK
 // #region
@@ -178,7 +182,7 @@ router.put('/users/:user_id/edit', api.user.editUser, sentryError);
  *  @apiVersion 0.1.0
  * 
  *  @apiPermission admin
- *  @apiPermission user
+ *  @apiPermission owner
  * 
  *  @apiParam (URL Parameters) {Integer} user_id The users ID
  * 
@@ -217,7 +221,7 @@ router.put('/users/:user_id/edit', api.user.editUser, sentryError);
  *      }
  */
 // #endregion
-router.delete('/users/:user_id/remove', api.user.removeUser, sentryError);
+router.delete('/users/:user_id/remove', api.auth.verifyUserAuth, api.user.removeUser, sentryError);
 
 // POST HTTP/1.1 201 CREATED
 // #region
@@ -226,6 +230,8 @@ router.delete('/users/:user_id/remove', api.user.removeUser, sentryError);
  *  @apiName Register-new-user
  *  @apiGroup Users
  *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission user
  * 
  *  @apiParam (URL Parameters) {String} type Required. The type of user registration. Options: email, google, facebook, twitter
  * 
@@ -304,6 +310,8 @@ router.post('/users/register/:type', api.user.registerUser, sentryError);
  *  @apiGroup Users
  *  @apiVersion 0.1.0
  * 
+ *  @apiPermission user
+ * 
  *  @apiParam (URL Parameters) {String} type The type of user login. Options: email, google, facebook, twitter
  * 
  *  @apiParam (Request Body) {String} email The users email address (Required)
@@ -362,6 +370,9 @@ router.post('/users/login/:type', api.user.loginUser, sentryError);
 router.use((err, req, res, next) => {
 
   switch (err.message) {
+    case errors.unauthorized:
+        res.status(401).json({ unauthorized: errors.unauthorized });
+        break;
     case errors.userIdDoesNotExist:
         res.status(404).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
         break;
@@ -399,8 +410,14 @@ router.use((err, req, res, next) => {
       res.status(404).json({ emailDoesNotExist: errors.emailDoesNotExist });
         break;
     case errors.passwordNotAssociated:
-        res.status(400).json({ passwordNotAssociated: errors.passwordNotAssociated });
-          break;
+      res.status(400).json({ passwordNotAssociated: errors.passwordNotAssociated });
+        break;
+    case errors.noPropsFound:
+      res.status(400).json({ noPropsFound: errors.noPropsFound });
+        break;
+    case errors.invalidProps:
+      res.status(400).json({ invalidProps: errors.invalidProps });
+        break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });
         break;

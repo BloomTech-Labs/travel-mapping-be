@@ -1138,20 +1138,24 @@ describe('User endpoint tests', () => {
       user_id:      0,
       display_name: 'tuser00',
       email:        'test.user00@mail.com',
+      is_admin:     false,
       password:     bcrypt.hashSync(PASS, salt),
     }, {
       user_id:      1,
       display_name: 'tuser01',
       email:        'test.user01@mail.com',
+      is_admin:     false,
       password:     bcrypt.hashSync(PASS, salt),
     }, {
       user_id:      2,
       display_name: 'tuser02',
       email:        'test.user02@mail.com',
+      is_admin:     true,
       password:     bcrypt.hashSync(PASS, salt),
     }, {
       user_id:      3,
       display_name: 'tuser03',
+      is_admin:     false,
       email:        'test.user03@mail.com',
     }];
 
@@ -1175,20 +1179,32 @@ describe('User endpoint tests', () => {
 
     it('should respond with json data', done => {
 
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
       const editUser = {
         display_name: '00tuser',
         email: '00test.user@mail.com',
         password: 'TQhk03%*'
       };
 
-      chai.request(server)
-        .put('/users/0/edit')
-        .send(editUser)
-        .then(res => {
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
 
           try {
 
-            expect(res).to.be.json;
+            expect(res).to.have.json;
             done();
 
           } catch(err) {
@@ -1197,20 +1213,34 @@ describe('User endpoint tests', () => {
 
         }).catch(err => done(err));
 
+       }).catch(loginErr => done(loginErr));
+
     });
 
     it('should respond with a 200 status code', done => {
       
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
       const editUser = {
         display_name: '00tuser',
         email: '00test.user@mail.com',
         password: 'TQhk03%*'
       };
 
-      chai.request(server)
-        .put('/users/0/edit')
-        .send(editUser)
-        .then(res => {
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
 
           try {
 
@@ -1222,6 +1252,1112 @@ describe('User endpoint tests', () => {
           }
 
         }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when request body contains no props', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send({})
+          .then(res => {
+
+          try {
+
+            expect(res).to.have.status(400);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should contain a noPropsFound property when request body contains no props', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send({})
+          .then(res => {
+
+          try {
+
+            expect(res.body).to.haveOwnProperty('noPropsFound');
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when request body contains invalid props', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send({ invalidProp: 'not valid' })
+          .then(res => {
+
+          try {
+
+            expect(res).to.have.status(400);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should contain an invalidProps property when request body contains invalid props', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send({ invalidProp: 'not valid' })
+          .then(res => {
+
+          try {
+
+            expect(res.body).to.haveOwnProperty('invalidProps');
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 404 status code when the user id does not exist', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[2], { password: PASS });
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/404/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res).to.have.status(404);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should contain an userIdDoesNotExist property when request body contains invalid props', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[2], { password: PASS });
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/404/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res.body).to.haveOwnProperty('userIdDoesNotExist');
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: 'tuser00',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res).to.have.status(400);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should contain a displayNameExists property when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: 'tuser00',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res.body).to.haveOwnProperty('displayNameExists');
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: '00tuser',
+        email: 'test.user00@mail.com',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res).to.have.status(400);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should contain an emailExists property when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: '00tuser',
+        email: 'test.user00@mail.com',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res.body).to.haveOwnProperty('emailExists');
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: 'not valid',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res).to.have.status(400);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should contain an invalidDisplayName property when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: 'not valid',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res.body).to.haveOwnProperty('invalidDisplayName');
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+    
+    it('should respond with a 400 status code when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: '00tuser',
+        email: 'not valid',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res).to.have.status(400);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should contain an invalidEmail property when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: '00tuser',
+        email: 'not valid',
+        password: 'TQhk03%*'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res.body).to.haveOwnProperty('invalidEmail');
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'not valid'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res).to.have.status(400);
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should contain an invalidPassword property when the display name already exists', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'not valid'
+      };
+
+       // Login
+       chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+         // Get JWT.
+         const jwt = loginRes.body.token;
+
+        // Edit user
+        chai.request(server)
+          .put(`/users/${ user_id }/edit`)
+          .set('Authorization', `Bearer ${ jwt }`)
+          .send(editUser)
+          .then(res => {
+
+          try {
+
+            expect(res.body).to.haveOwnProperty('invalidPassword');
+            done();
+
+          } catch(err) {
+            done(err);
+          }
+
+        }).catch(err => done(err));
+
+       }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 401 status code when the user is not authorized', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const { user_id, } = validUsers[1];
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .put(`/users/${ user_id }/edit`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .send(editUser)
+            .then(editRes => {
+
+              try {
+                expect(editRes).to.have.status(401);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(editErr => done(editErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an unauthorized property when the user is not authorized', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const { user_id, } = validUsers[1];
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .put(`/users/${ user_id }/edit`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .send(editUser)
+            .then(editRes => {
+
+              try {
+                expect(editRes).to.haveOwnProperty('unauthorized');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(editErr => done(editErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code when user is admin but not the owner', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[2], { password: PASS });
+      const { user_id, } = validUsers[0];
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .put(`/users/${ user_id }/edit`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .send(editUser)
+            .then(editRes => {
+
+              try {
+                expect(editRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(editErr => done(editErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code when user is admin and the owner', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[2], { password: PASS });
+      const { user_id, } = validUsers[2];
+      const editUser = {
+        display_name: '00tuser',
+        email: '00test.user@mail.com',
+        password: 'TQhk03%*'
+      };
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .put(`/users/${ user_id }/edit`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .send(editUser)
+            .then(editRes => {
+
+              try {
+                expect(editRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(editErr => done(editErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+  });
+
+  describe('/users/:user_id/remove', () => {
+
+    const PASS = 'hkTQ%*03';
+
+    const validUsers = [{
+      user_id:      0,
+      display_name: 'tuser00',
+      email:        'test.user00@mail.com',
+      is_admin:     false,
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id:      1,
+      display_name: 'tuser01',
+      email:        'test.user01@mail.com',
+      is_admin:     false,
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id:      2,
+      display_name: 'tuser02',
+      email:        'test.user02@mail.com',
+      is_admin:     true,
+      password:     bcrypt.hashSync(PASS, salt),
+    }, {
+      user_id:      3,
+      display_name: 'tuser03',
+      is_admin:     false,
+      email:        'test.user03@mail.com',
+    }];
+
+    const invalidUsers = [{
+
+    }];
+
+    beforeEach('clear data in users table', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(()   => done())
+        .catch(err => done(err));
+    });
+
+    beforeEach('add data to users table', done => {
+      db('users').insert(validUsers)
+        .then(data => done())
+        .catch(err => done(err));
+    });
+
+    it('should respond with json data', done => {
+      
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .delete(`/users/${ user_id }/remove`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .then(deleteRes => {
+
+              try {
+
+                expect(deleteRes).to.be.json;
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(deleteErr => done(deleteErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code after removing a user', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .delete(`/users/${ user_id }/remove`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .then(deleteRes => {
+
+              try {
+
+                expect(deleteRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(deleteErr => done(deleteErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code when user is admin but not the owner', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[2], { password: PASS });
+      const { user_id, } = validUsers[0];
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .delete(`/users/${ user_id }/remove`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .then(deleteRes => {
+
+              try {
+
+                expect(deleteRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(deleteErr => done(deleteErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code when user is admin and the owner', done => {
+
+      const { user_id, email, password, } = Object.assign({}, validUsers[2], { password: PASS });
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .delete(`/users/${ user_id }/remove`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .then(deleteRes => {
+
+              try {
+
+                expect(deleteRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(deleteErr => done(deleteErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 401 status code when user is not authorized', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const { user_id, } = validUsers[1];
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .delete(`/users/${ user_id }/remove`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .then(deleteRes => {
+
+              try {
+
+                expect(deleteRes).to.have.status(401);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(deleteErr => done(deleteErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an unauthorized property when user is not authorized', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[0], { password: PASS });
+      const { user_id, } = validUsers[1];
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .delete(`/users/${ user_id }/remove`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .then(deleteRes => {
+
+              try {
+
+                expect(deleteRes.body).to.haveOwnProperty('unauthorized');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(deleteErr => done(deleteErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 404 status code when a user does not exist', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[2], { password: PASS });
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .delete(`/users/404/remove`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .then(deleteRes => {
+
+              try {
+
+                expect(deleteRes).to.have.status(404);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(deleteErr => done(deleteErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a userIdDoesNotExist property when a user does not exist', done => {
+
+      const { email, password, } = Object.assign({}, validUsers[2], { password: PASS });
+
+      // Login
+      chai.request(server)
+        .post('/users/login/email')
+        .send({ email, password })
+        .then(loginRes => {
+
+          // Get JWT.
+          const jwt = loginRes.body.token;
+
+          // Remove user
+          chai.request(server)
+            .delete(`/users/404/remove`)
+            .set('Authorization', `Bearer ${ jwt }`)
+            .then(deleteRes => {
+
+              try {
+
+                expect(deleteRes.body).to.haveOwnProperty('userIdDoesNotExist');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(deleteErr => done(deleteErr));
+
+        }).catch(loginErr => done(loginErr));
 
     });
 
