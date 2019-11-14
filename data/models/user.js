@@ -39,7 +39,7 @@ const createUser = (user, done) => {
               display_name,
               email,
               password: password ? bcrypt.hashSync(password, salt) : null
-            })
+            }, ['user_id'])
             .then(userIdArr  => done(null, userIdArr))
             .catch(insertErr => done(insertErr));
           }
