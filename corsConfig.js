@@ -2,13 +2,13 @@
 module.exports = {
 
   development: {
-    origin: 'https://google.com/',
+    origin: ['*'],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Application/JSON'],
   },
 
   review: {
-    origin: 'https://google.com/',
+    origin: ['*'],
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Application/JSON'],
   },
