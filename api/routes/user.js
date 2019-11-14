@@ -1,6 +1,7 @@
 const express     = require('express');
 const router      = express.Router();
 const errors      = require('../../modules/modules').errors;
+const routes      = require('../../modules/modules').routes;
 const controllers = require('../controllers/controllers');
 const middleware  = require('../middleware/middleware');
 const Sentry      = require('@sentry/node');
@@ -38,7 +39,7 @@ const api         = { ...controllers, ...middleware };
  *     }]
  */
 // #endregion
-router.get('/users', api.user.getUserList, sentryError);
+router.get(routes.getUsers(), api.user.getUserList, sentryError);
 
 // GET HTTP/1.1 200 OK
 // #region
@@ -86,7 +87,7 @@ router.get('/users', api.user.getUserList, sentryError);
  *  
  */
 // #endregion
-router.get('/users/:user_id', api.user.getUserById, sentryError);
+router.get(routes.getUserById(), api.user.getUserById, sentryError);
 
 // PUT HTTP/1.1 200 OK
 // #region
@@ -108,9 +109,9 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
  *     }
  * 
- *  @apiParam (Request Body) {String} display_name The users display name (Optional)
- *  @apiParam (Request Body) {String} email The users email address (Optional)
- *  @apiParam (Request Body) {String} password The users password (Optional)
+ *  @apiParam (Request Body) {String} [display_name] The users display name
+ *  @apiParam (Request Body) {String} [email] The users email address
+ *  @apiParam (Request Body) {String} [password] The users password
  * 
  *  @apiParamExample {json} Example Request (all)
  *      /users/6534/edit
@@ -133,12 +134,21 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  *      }
  * 
  *  @apiSuccess {Integer} user_id The registered users ID
+ *  @apiSuccess {String} display_name The users display name
+ *  @apiSuccess {String} email The users email address
+ *  @apiSuccess {String} created_at The date and time the user was created
+ *  @apiSuccess {String} updated_at The date and time the user was updated
  * 
  *  @apiSuccessExample {json} Example Response
  *      HTTP/1.1 200 OK
  *      {
- *          "user_id": 6534,
- *      }
+ *        "user_id": 6534,
+ *        "display_name": "jdoe25",
+ *        "email": "john.doe@mail.com",
+ *        "is_admin": "false",
+ *        "created_at": "2019-11-17 03:41:51",
+ *        "updated_at": "2019-11-17 03:41:51"
+ *     }
  * 
  *   @apiError {Object} noPropsFound No properties were sent with the request
  *   @apiError {Object} invalidProps The properties on the request body are not valid
@@ -171,7 +181,7 @@ router.get('/users/:user_id', api.user.getUserById, sentryError);
  * 
  */
 // #endregion
-router.put('/users/:user_id/edit', api.auth.verifyUserAuth, api.user.editUser, sentryError);
+router.put(routes.editUser(), api.auth.verifyToken, api.auth.verifyPermission, api.user.editUser, sentryError);
 
 // DELETE HTTP/1.1 200 OK
 // #region
@@ -221,7 +231,7 @@ router.put('/users/:user_id/edit', api.auth.verifyUserAuth, api.user.editUser, s
  *      }
  */
 // #endregion
-router.delete('/users/:user_id/remove', api.auth.verifyUserAuth, api.user.removeUser, sentryError);
+router.delete(routes.removeUser(), api.auth.verifyToken, api.auth.verifyPermission, api.user.removeUser, sentryError);
 
 // POST HTTP/1.1 201 CREATED
 // #region
@@ -260,7 +270,12 @@ router.delete('/users/:user_id/remove', api.auth.verifyUserAuth, api.user.remove
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
  *     {
- *        "user_id": 0,
+ *        "user_id": 6534,
+ *        "display_name": "jdoe25",
+ *        "email": "john.doe@mail.com",
+ *        "is_admin": false,
+ *        "created_at": "2019-11-17 03:41:51",
+ *        "updated_at": "2019-11-17 03:41:51",
  *        "token": "eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
  *     }
  * 
@@ -300,7 +315,7 @@ router.delete('/users/:user_id/remove', api.auth.verifyUserAuth, api.user.remove
  *      }
  */
 // #endregion
-router.post('/users/register/:type', api.user.registerUser, sentryError);
+router.post(routes.registerUser(), api.user.registerUser, sentryError);
 
 // POST HTTP/1.1 200 OK
 // #region
@@ -336,7 +351,12 @@ router.post('/users/register/:type', api.user.registerUser, sentryError);
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
  *     {
- *        "user_id": 0,
+ *        "user_id": 6534,
+ *        "display_name": "jdoe25",
+ *        "email": "john.doe@mail.com",
+ *        "is_admin": false,
+ *        "created_at": "2019-11-17 03:41:51",
+ *        "updated_at": "2019-11-17 03:41:51",
  *        "token": "eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
  *     }
  * 
@@ -374,7 +394,7 @@ router.post('/users/register/:type', api.user.registerUser, sentryError);
  * 
  */
 // #endregion
-router.post('/users/login/:type', api.user.loginUser, sentryError);
+router.post(routes.loginUser(), api.user.loginUser, sentryError);
 
 // Error handler
 router.use((err, req, res, next) => {

@@ -1,64 +1,144 @@
 const express     = require('express');
 const router      = express.Router();
 const errors      = require('../../modules/modules').errors;
+const routes      = require('../../modules/modules').routes;
 const controllers = require('../controllers/controllers');
 const middleware  = require('../middleware/middleware');
 const Sentry      = require('@sentry/node');
 const sentryError = Sentry.Handlers.errorHandler();
 const api         = { ...controllers, ...middleware };
 
+
+//GET HTTP/1.1 200 OK
+// #region
+/**
+ * 
+ *  @api {get} /users/:user_id/albums Get a users albums
+ *  @apiName Get-users-albums
+ *  @apiGroup Albums
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission any
+ * 
+  *  @apiHeader (Headers) {String} [Authorization] JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} user_id The users ID
+ * 
+ *  @apiSuccess {Object[]} albums A list of the users albums
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     [{
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "title": "Vacation Photos",
+ *        "description": "Awesome fun vacation time in the Mexico with all the friends",
+ *        "access": "public",
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:42:57",
+ *        "meta": {
+ *            "location": "Mexico",
+ *            "people": "Friends"
+ *        }
+ *     }, {
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "title": "Wedding Photos",
+ *        "description": "The everyone was fun at the wedding over there awesome",
+ *        "access": "private",
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:42:57",
+ *        "meta": {
+ *            "location": "Over There",
+ *            "people": "Family"
+ *        }
+ *     }]
+ * 
+ *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample User Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ */
+// #endregion
+router.get(routes.getUsersAlbums(), api.auth.verifyToken, api.auth.verifyPermission, api.album.getUsersAlbums, sentryError);
+
 // POST HTTP/1.1 201 CREATED
 // #region
 /**
- *  @api {post} /albums/create Create a new album
+ *  @api {post} /users/{user_id}/albums/create Create a new album
  *  @apiName Create-new-album
  *  @apiGroup Albums
  *  @apiVersion 0.1.0
  * 
  *  @apiPermission user
  * 
- *  @apiParam (Request Body) {Integer} user_id The ID of the user that owns the album (Required)
- *  @apiParam (Request Body) {String} title The title of the album (Required)
- *  @apiparam (Request Body) {Text} description A description of the album
- *  @apiParam (Request Body) {Enum} access Access type of the album (public | private)
+ *  @apiParam (URL Parameters) {Integer} user_id The users ID
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (Request Body) {String{0-120}} title The title of the album
+ *  @apiparam (Request Body) {Text{0-300}} [description] A description of the album
+ *  @apiParam (Request Body) {String="public", "private"} [access="public"] Access type of the album
  *  
  *  @apiParamExample {json} Example Request
- *      /users/albums/create
+ *      /users/6534/albums/create
  *      {
- *          "user_id": 6534,
  *          "title": "Vacation Photos",
  *          "description": "Awesome fun vacation time in the Mexico with all the friends",
  *          "access": "public"
  *      }
  * 
  *  @apiParamExample {json} Example Request
- *      /users/albums/create
+ *      /users/6534/albums/create
  *      {
- *          "user_id": 6534,
  *          "title": "Wedding Photos",
  *          "description": "The everyone was fun at the wedding over there awesome",
  *          "access": "private"
  *      }
  * 
  *  @apiSuccess {Integer} album_id The created album ID
+ *  @apiSuccess {Integer} user_id The ID of the user who owns the album
+ *  @apiSuccess {String} title The title of the album
+ *  @apiSuccess {String} description The description of the album
+ *  @apiSuccess {String} access The album access type
+ *  @apiSuccess {String} created_at The date and time the album was created
+ *  @apiSuccess {String} updated_at The date and time the album was updated
  * 
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
  *     {
- *        "album_id": 6534,
+ *        "album_id": 0,
+ *        "user_id": 6534,
+ *        "title": "Vacation Photos",
+ *        "description": "Awesome fun vacation time in the Mexico with all the friends",
+ *        "access": "public",
+ *        "created_at": "2019-11-17 03:02:35",
+ *        "updated_at": "2019-11-17 03:02:35"
  *     }
  * 
  *   @apiError {Object} noPropsFound No properties were sent with the request
  *   @apiError {Object} invalidProps The properties on the request body are not valid
  *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
- *   @apiError {Object} titleExists There is already an album with that title
- *   @apiError {Object} invalidTitle The album title is not valid
- *   @apiError {Object} invalidDescription The album description is not valid
- *   @apiError {Object} invalidAccessType The album access type is not valid
- *   @apiError {Object} missingUserId Request body is missing the required user_id property
- *   @apiError {Object} missingTitle Request body is missing the required title property
- *   @apiError {Object} missingDescription Request body is missing the required description property
- *   @apiError {Object} missingAccess Request body is missing the required access property
+ *   @apiError {Object} albumTitleExists There is already an album with that title
+ *   @apiError {Object} invalidAlbumTitle The album title is not valid
+ *   @apiError {Object} invalidAlbumDescription The album description is not valid
+ *   @apiError {Object} invalidAlbumAccess The album access type is not valid
+ *   @apiError {Object} missingAlbumTitle Request body is missing the required title property
  *   @apiError {Object} unauthorized You are not authorized to make the request
  *   @apiError {Object} serverError Internal server error
  * 
@@ -75,30 +155,127 @@ const api         = { ...controllers, ...middleware };
  *      }
  */
 // #endregion
-router.post('/albums/create', /* api.auth.verifyUserAuth, */ api.album.createAlbum, sentryError);
+router.post(routes.createAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.album.createAlbum, sentryError);
+
+// POST HTTP/1.1 201 CREATED
+// #region
+/**
+ *  @api {post} /albums/{album_id}/meta/add Add album meta data
+ *  @apiName Add-meta-data
+ *  @apiGroup Albums
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission admin owner
+ * 
+ *  @apiParam (URL Parameters) {Integer} album_id The albums ID
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (Request Body) {Object[]} metaData A list of meta data objects
+ *  @apiParam (Request Body) {String{1-120}} metaData[name] The name of the meta field
+ *  @apiParam (Request Body) {String{1-300}} metaData[value] The value of the meta field
+ *  
+ *  @apiParamExample {json} Example Request
+ *      /albums/642/meta/add
+ *      [{
+ *          "name": "Location",
+ *          "value": "Mexico"
+ *      }]
+ * 
+ *  @apiParamExample {json} Example Request
+ *      /albums/642/meta/add
+ *      [{
+ *           "name": "Location",
+ *           "value": "Over there"
+ *      }, {
+ *           "name": "People",
+ *           "value": "Family"
+ *      }]
+ * 
+ *  @apiSuccess {Object[]} meta The created meta data
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 201 CREATED
+ *     {
+ *           "location": "Mexico"
+ *     }
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 201 CREATED
+ *     {
+ *           "location": "over there",
+ *           "people": "Family"
+ *     }
+ * 
+ *   @apiError {Object} noPropsFound No properties were sent with the request
+ *   @apiError {Object} invalidProps The properties on the request body are not valid
+ *   @apiError {Object} albumIdDoesNotExist The album_id does not exist in the database
+ *   @apiError {Object} metaFieldExists A meta field with that name already exists
+ *   @apiError {Object} invalidMetaName The meta field name is not valid
+ *   @apiError {Object} invalidMetaValue The meta description is not valid
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample Already Exists
+ *      HTTP/1.1 400
+ *      {
+ *          "metaFieldExists": "a meta field with that name already exists"
+ *      }
+ * 
+ *   @apiErrorExample Invalid Description
+ *      HTTP/1.1 400
+ *      {
+ *          "invalidMetaDescription": "meta description is not valid"
+ *      }
+ */
+// #endregion
+router.post(routes.addMetaData(), api.auth.verifyToken, api.auth.verifyPermission, sentryError);
 
 // Error handler
 router.use((err, req, res, next) => {
 
   switch (err.message) {
     case errors.unauthorized:
-        res.status(401).json({ unauthorized: errors.unauthorized });
-        break;
+      res.status(401).json({ unauthorized: errors.unauthorized });
+      break;
     case errors.userIdDoesNotExist:
-        res.status(404).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
-        break;
+      res.status(404).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
+      break;
     case errors.tooManyProps:
       res.status(400).json({ tooManyProps: errors.tooManyProps });
-        break;
+      break;
     case errors.noPropsFound:
       res.status(400).json({ noPropsFound: errors.noPropsFound });
-        break;
+      break;
     case errors.invalidProps:
       res.status(400).json({ invalidProps: errors.invalidProps });
-        break;
+      break;
+    case errors.albumTitleExists:
+      res.status(400).json({ albumTitleExists: errors.albumTitleExists });
+      break;
+    case errors.invalidAlbumDescription:
+      res.status(400).json({ invalidAlbumDescription: errors.invalidAlbumDescription });
+      break;
+    case errors.invalidAlbumTitle:
+      res.status(400).json({ invalidAlbumTitle: errors.invalidAlbumTitle });
+      break;
+    case errors.invalidAlbumAccess:
+      res.status(400).json({ invalidAlbumAccess: errors.invalidAlbumAccess });
+      break;
+    case errors.missingAlbumTitle:
+      res.status(400).json({ missingAlbumTitle: errors.missingAlbumTitle });
+      break;
+    case errors.albumIdDoesNotExist:
+      res.status(404).json({ albumIdDoesNotExist: errors.albumIdDoesNotExist });
+      break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });
-        break;
+      break;
     default:
       console.error(err);
       res.status(500).json({ serverError: errors.serverError });

@@ -74,10 +74,11 @@ const registerUser = (req, res, next) => {
 
             if(retrieveErr) next(retrieveErr);
             else {
-              const { user_id, email, } = userObj;
+              const { email, } = userObj;
               const secret = process.env.JWT_SECRET;
               const token  = jwt.sign({ email }, secret);
-              res.status(201).json({ user_id, token });
+              delete userObj.is_superuser;
+              res.status(201).json({ ...userObj, token });
             }
 
           });
@@ -121,7 +122,8 @@ const loginUser = (req, res, next) => {
               else {
                 const secret = process.env.JWT_SECRET;
                 const token  = jwt.sign({ email }, secret);
-                res.status(200).json({ user_id, token, });
+                delete userObj.is_superuser;
+                res.status(200).json({ ...userObj, token, });
               }
             }
 
@@ -141,7 +143,7 @@ const loginUser = (req, res, next) => {
 };
 
 const editUser = (req, res, next) => {
-
+  
   const errorMsgOrTrue = validate.editUserData(req.body);
 
   if(errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
@@ -156,8 +158,17 @@ const editUser = (req, res, next) => {
 
         if(editErr) next(editErr);
         else {
-          const userId = userIdArr[0].user_id;
-          res.status(200).json({ user_id: userId });
+
+          user.retrieveUserBy({ user_id }, (retrieveErr, userObj) => {
+
+            if(retrieveErr) next(retrieveErr);
+            else {
+              delete userObj.is_superuser;
+              res.status(200).json({ ...userObj });
+            }
+
+          });
+
         }
 
       });

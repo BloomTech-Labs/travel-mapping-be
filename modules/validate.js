@@ -65,6 +65,14 @@ const editUserData = (userObj) => {
 
 };
 
+const displayName = (name) => {
+
+};
+
+const email = (email) => {
+
+};
+
 const password = (password, blacklist = [], hash = null) => {
   // Takes a password, an array of blacklisted passwords, and a hash as arguments.
   // Checks if the password is valid and does not match blacklisted passwords.
@@ -92,11 +100,88 @@ const password = (password, blacklist = [], hash = null) => {
     return passwordSchema.validate(password);
   }
   
+};
+
+const createAlbumData = (albumObj) => {
+  // Verifies that the album object contains the required properties.
+  // Takes an album data object as an argument. Returns true if the
+  // data is valid or an error message describing the invalid data.
+
+  const props      = Object.keys(albumObj);
+  const validProps = ['title', 'description', 'access', ];
+
+  // Check if the userObj contains invalid props.
+  const propsAreValid = (props.length === props.filter(prop => validProps.includes(prop)).length);
+
+  if (props.length === 0)                       return errors.noPropsFound;
+  else if (props.length > 3)                    return errors.tooManyProps;
+  else if (!propsAreValid)                      return errors.invalidProps;
+  else if (!albumObj.hasOwnProperty('title'))   return errors.missingAlbumTitle;
+  else                                          return true;
+
+};
+
+const albumTitle = (title) => {
+  // Validates an album title. Takes a title string
+  // as an argument. Returns true or false.
+
+  if(typeof title !== 'string') return false;
+  else if(title.length > 120)   return false;
+  else                          return true;
+
+};
+
+const albumDescription = (description) => {
+  // Validates an album description. Takes a description string
+  // as an argument. Returns true or false.
+
+  if(typeof description !== 'string') return false;
+  else if(description.length > 300)   return false;
+  else                                return true;
+
+};
+
+const albumAccess = (access) => {
+  // Validates an album access type. Takes an access string
+  // as an argument. Returns true or false.
+
+  const accessTypes = ['public', 'private'];
+
+  if(typeof access !== 'string')         return false;
+  else if(!accessTypes.includes(access)) return false;
+  else                                   return true;
+
 }
+
+const metaName = (name) => {
+  // Validates a meta field name. Takes a meta name string
+  // as an argument. Returns true or false.
+
+  if(typeof name !== 'string') return false;
+  else if (name.length < 2)    return false;
+  else if (name.length > 120)  return false;
+  else                         return true;
+
+};
+
+const metaDescription = (description) => {
+  // Validates a meta field description. Takes a 
+  // meta description string as arguments. Returns
+  // true or false.
+
+  
+
+};
 
 module.exports = {
   registerUserData,
   loginUserData,
   editUserData,
   password,
+  createAlbumData,
+  albumTitle,
+  albumDescription,
+  albumAccess,
+  metaName,
+  metaDescription,
 };

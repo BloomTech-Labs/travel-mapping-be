@@ -8,9 +8,11 @@ module.exports = {
   // Module errors
   tooManyProps:        'user object contains too many properties',
   noPropsFound:        'no properties were sent with the request',
-  missingDisplayName:  'user object is missing required display_name property',
-  missingEmail:        'user object is missing required email property',
-  missingPassword:     'user object is missing required password property',
+  missingUserId:       'request body is missing required user_id property',
+  missingDisplayName:  'request body is missing required display_name property',
+  missingEmail:        'request body is missing required email property',
+  missingPassword:     'request body is missing required password property',
+  missingAlbumTitle:   'request body is missing required title property',
   invalidRegisterType: 'invalid registration type',
   incorrectPassword:   'password is not correct',
   invalidProps:        'request body props not valid',
@@ -26,6 +28,12 @@ module.exports = {
   invalidDisplayName:      'display name is not valid',
   invalidEmail:            'email is not valid',
   invalidPassword:         'password is not valid',
-  passwordNotAssociated:   'a password is not associated with that account'
+  passwordNotAssociated:   'a password is not associated with that account',
+  albumTitleExists:        'album title already exists',
+  invalidAlbumTitle:       'album title is not valid',
+  invalidAlbumDescription: 'album description is not valid',
+  invalidAlbumAccess:      'album access type is not valid',
+  albumIdDoesNotExist:     'album id does not exist',
+  metaFieldExists:         'a meta field with that name already exists',
 
 };

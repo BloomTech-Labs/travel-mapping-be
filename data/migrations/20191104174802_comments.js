@@ -17,7 +17,7 @@ exports.up = function(knex) {
 
     // media_id
     table.bigInteger('media_id')
-      .notNullable()
+      .defaultTo(null)
       .references('media_id')
       .inTable('media')
       .onUpdate('CASCADE')
@@ -25,7 +25,7 @@ exports.up = function(knex) {
 
     // album_id
     table.bigInteger('album_id')
-      .notNullable()
+      .defaultTo(null)
       .references('album_id')
       .inTable('albums')
       .onUpdate('CASCADE')
@@ -45,6 +45,11 @@ exports.up = function(knex) {
 
     // created_at
     table.timestamp('created_at')
+      .notNullable()
+      .defaultTo(knex.fn.now());
+
+    // created_at
+    table.timestamp('updated_at')
       .notNullable()
       .defaultTo(knex.fn.now());
   });
