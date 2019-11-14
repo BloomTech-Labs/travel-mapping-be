@@ -63,9 +63,9 @@ const registerUser = (req, res, next) => {
 
     try {
 
-      res.json({test: 'test'});
-
       user.createUser(req.body, (createErr, userIdArr) => {
+
+        res.json({test: 'test'});
 
         if(createErr) next(createErr);
         else if (userIdArr.length === 1) {
