@@ -5,6 +5,9 @@ const path    = require('path');
 const server  = express();
 const cors    = require("cors");
 const helmet  = require("helmet");
+const fileUpload = require('express-fileupload')({
+  useTempFiles: true
+});
 const PORT    = process.env.PORT || 4000;
 const Sentry  = require('@sentry/node');
 
@@ -29,7 +32,7 @@ const sentryError   = Sentry.Handlers.errorHandler();           // Sentry error 
 const expressJson   = express.json();                           // Express json parser.
 const helmetJs      = helmet();                                 // Helmet.js.
 const corsJs        = cors();                                   // Cors.js.
-const middleware    = [ sentryRequest, helmetJs, corsJs,        // Middleware to be used by the server.
+const middleware    = [ fileUpload, sentryRequest, helmetJs, corsJs,        // Middleware to be used by the server.
                         expressJson, apiDocs, routes, ];
 
 // Initialize Sentry.
