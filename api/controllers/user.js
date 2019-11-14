@@ -56,6 +56,8 @@ const getUserById = (req, res, next) => {
 
 const registerUser = (req, res, next) => {
 
+  res.json({test: 'test'});
+
   const errorMsgOrTrue = validate.registerUserData(req.body, req.params.type);
 
   if(errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
