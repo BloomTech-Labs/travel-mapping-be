@@ -330,6 +330,16 @@ router.post('/users/register/:type', api.user.registerUser, sentryError);
  *          "email": "john.doe@mail.com"
  *      }
  * 
+ *  @apiSuccess {Integer} user_id The registered users ID
+ *  @apiSuccess {String} token JWT for user auth
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 201 CREATED
+ *     {
+ *        "user_id": 0,
+ *        "token": "eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
  *   @apiError {Object} incorrectPassword Password is not correct
  *   @apiError {Object} emailDoesNotExist Email does not exist in the database
  *   @apiError {Object} tooManyProps Request body has too many properties
