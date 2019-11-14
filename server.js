@@ -20,7 +20,7 @@ const sentryRequest = Sentry.Handlers.requestHandler();         // Sentry reques
 const sentryError   = Sentry.Handlers.errorHandler();           // Sentry error handler.
 const expressJson   = express.json();                           // Express json parser.
 const helmetJs      = helmet();                                 // Helmet.js.
-const corsJs        = cors();            // Cors.js.
+const corsJs        = cors({ origin: 'http://piktorlog.com' });            // Cors.js.
 const middleware    = [ sentryRequest, helmetJs, corsJs,        // Middleware to be used by the server.
                         fileUpload, expressJson, apiDocs,
                         routes ];
