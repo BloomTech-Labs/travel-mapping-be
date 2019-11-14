@@ -21,7 +21,7 @@ const sentryError   = Sentry.Handlers.errorHandler();           // Sentry error 
 const expressJson   = express.json();                           // Express json parser.
 const helmetJs      = helmet();                                 // Helmet.js.
 const corsJs        = cors(corsConfig[environment]);            // Cors.js.
-const middleware    = [ sentryRequest, /* helmetJs, */ cors(),        // Middleware to be used by the server.
+const middleware    = [ sentryRequest, /* helmetJs, */ cors(corsConfig[environment]),        // Middleware to be used by the server.
                         fileUpload, expressJson, apiDocs,
                         routes ];
 
