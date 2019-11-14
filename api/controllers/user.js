@@ -66,18 +66,14 @@ const registerUser = (req, res, next) => {
       user.createUser(req.body, (createErr, userIdArr) => {
 
         
+        res.json({ test: 'test' });
 
-        if(createErr) {
-          res.json({createErr});
-          next(createErr);
-
-
-        }
+        if(createErr) next(createErr);
         else if (userIdArr.length === 1) {
   
           const user_id = userIdArr[0];
 
-          res.json({test: 'test'});
+          // res.json({test: 'test'});
 
           user.retrieveUserBy({ user_id }, (retrieveErr, userObj) => {
 
