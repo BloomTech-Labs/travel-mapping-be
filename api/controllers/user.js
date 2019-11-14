@@ -67,7 +67,12 @@ const registerUser = (req, res, next) => {
 
         
 
-        if(createErr) next(createErr);
+        if(createErr) {
+          res.json({createErr});
+          next(createErr);
+
+
+        }
         else if (userIdArr.length === 1) {
   
           const user_id = userIdArr[0];
