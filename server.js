@@ -20,12 +20,11 @@ const sentryRequest = Sentry.Handlers.requestHandler();         // Sentry reques
 const sentryError   = Sentry.Handlers.errorHandler();           // Sentry error handler.
 const expressJson   = express.json();                           // Express json parser.
 const helmetJs      = helmet();                                 // Helmet.js.
-const corsJs        = cors({ origin: corsConfig.review.origin });            // Cors.js.
+const corsJs        = cors(corsConfig['review']);            // Cors.js.
 const middleware    = [ sentryRequest, helmetJs, corsJs,        // Middleware to be used by the server.
                         fileUpload, expressJson, apiDocs,
                         routes ];
-                        // corsConfig[environment]
-
+                        
 // Initialize Sentry.
 Sentry.init({ dsn: 'https://e085e65ac5a249988c866c5e21e2adaa@sentry.io/1811837' });
 
