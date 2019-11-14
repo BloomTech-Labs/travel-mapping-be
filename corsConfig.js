@@ -2,7 +2,7 @@
 module.exports = {
 
   development: {
-    origin: false,
+    origin: '*',
   },
 
   testing: {
