@@ -10,9 +10,9 @@ module.exports = {
   },
 
   review: {
-    origin: 'http://piktorlog2345.com/',
-    methods: ['PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Application/JSON'],
+    origin: 'http://test.com/',
+    // methods: ['PUT'],
+    // allowedHeaders: ['Content-Type', 'Authorization', 'Application/JSON'],
   },
 
   staging: {
