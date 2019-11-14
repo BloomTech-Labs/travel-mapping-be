@@ -56,14 +56,14 @@ const getUserById = (req, res, next) => {
 
 const registerUser = (req, res, next) => {
 
-  res.json({test: 'test'});
-
   const errorMsgOrTrue = validate.registerUserData(req.body, req.params.type);
 
   if(errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
   else {
 
     try {
+
+      res.json({test: 'test'});
 
       user.createUser(req.body, (createErr, userIdArr) => {
 
