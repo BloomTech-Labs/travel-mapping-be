@@ -6,17 +6,17 @@ module.exports = {
   },
 
   testing: {
-
+    origin: '*',
   },
 
   review: {
-    origin: 'http://test.com/',
+    origin: ['https://piktorlogstaging.netlify.com/', 'https://piktorlog.com/'],
     // methods: ['PUT'],
     // allowedHeaders: ['Content-Type', 'Authorization', 'Application/JSON'],
   },
 
   staging: {
-
+    origin: ['https://piktorlogstaging.netlify.com/', 'https://piktorlog.com/'],
   },
 
   production: {
