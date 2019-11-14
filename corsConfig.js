@@ -12,8 +12,8 @@ module.exports = {
   },
 
   review: {
-    origin: ['https://google.com/'],
-    methods: ['GET', 'PUT', 'POST', 'DELETE'],
+    origin: false,
+    methods: ['PUT'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Application/JSON'],
   },
 

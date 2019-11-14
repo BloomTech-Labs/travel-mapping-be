@@ -25,10 +25,6 @@ const middleware    = [ sentryRequest, helmetJs, corsJs,        // Middleware to
                         fileUpload, expressJson, apiDocs,
                         routes ];
 
-server.get('/', (req, res) => {
-  res.json({ environment })
-});
-
 // Initialize Sentry.
 Sentry.init({ dsn: 'https://e085e65ac5a249988c866c5e21e2adaa@sentry.io/1811837' });
 
