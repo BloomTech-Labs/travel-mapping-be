@@ -148,7 +148,7 @@
         "name": "admin"
       },
       {
-        "name": "user"
+        "name": "owner"
       }
     ],
     "parameter": {
@@ -347,6 +347,11 @@
     "name": "Get_specific_user",
     "group": "Users",
     "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
     "parameter": {
       "fields": {
         "URL Parameters": [
@@ -450,6 +455,11 @@
     "name": "Get_user_list",
     "group": "Users",
     "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -480,6 +490,11 @@
     "name": "Login_user",
     "group": "Users",
     "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
     "parameter": {
       "fields": {
         "URL Parameters": [
@@ -608,6 +623,11 @@
     "name": "Register_new_user",
     "group": "Users",
     "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
     "parameter": {
       "fields": {
         "URL Parameters": [
@@ -796,7 +816,7 @@
         "name": "admin"
       },
       {
-        "name": "user"
+        "name": "owner"
       }
     ],
     "parameter": {

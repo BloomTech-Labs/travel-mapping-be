@@ -1,14 +1,18 @@
-const validate  = require('../../modules/modules').validate;
-const errors    = require('../../modules/modules').errors;
-const db        = require('../dbConfig');
-const validator = require('validator');
-const bcrypt    = require('bcrypt');
-const salt      = parseInt(process.env.PASS_SALT) || 10;
+const validate    = require('../../modules/modules').validate;
+const errors      = require('../../modules/modules').errors;
+const db          = require('../dbConfig');
+const validator   = require('validator');
+const bcrypt      = require('bcrypt');
+const salt        = parseInt(process.env.PASS_SALT) || 10;
+const environment = process.env.NODE_ENV || 'development';
+const returning   = (environment === 'review'  ||   
+                     environment === 'staging' ||
+                     environment === 'production');
 
 const createUser = (user, done) => {
   // Takes a user object and a callback function as arguments.
   // Validates the user data, creates a user in the database, and
-  // passes the id to the callback function. 
+  // passes the id to the callback function.
 
   const { display_name, email, password } = user;
 
@@ -39,8 +43,8 @@ const createUser = (user, done) => {
               display_name,
               email,
               password: password ? bcrypt.hashSync(password, salt) : null
-            })
-            .then(userIdArr  => done(null, userIdArr))
+            }, returning ? ['user_id'] : null)
+            .then(userIdArrOrObj  => done(null, userIdArrOrObj))
             .catch(insertErr => done(insertErr));
           }
 
@@ -179,7 +183,7 @@ const updateUserById = (user_id, userObj, done) => {
             .then(emailArr => {
 
               // Validate user data
-              const userIdExists       = (userIdArr[0].user_id === user_id)
+              const userIdExists       = (userIdArr.length > 0)
               const displayNameExists  = (displayNameArr.length > 0);
               const emailExists        = (emailArr.length > 0);
               const displayNameIsValid = (display_name ? (!validator.contains(display_name, ' ') && validator.isAlphanumeric(display_name)) : true);
@@ -221,10 +225,7 @@ const deleteUserById = (user_id, done) => {
     .then(userIdArr => {
 
       // Validate user data
-      const userIdExists = (userIdArr[0].user_id === user_id)
-
-      const x = { x: 1, y: 2 }
-      delete x.x; // { y: 2 }
+      const userIdExists = (userIdArr.length === 1);
 
       if(!userIdExists) done(new Error(errors.userIdDoesNotExist));
       else {
@@ -232,7 +233,6 @@ const deleteUserById = (user_id, done) => {
         db('users').where({ user_id })
           .delete()
           .then(numDeleted => {
-            console.log(numDeleted);
             done(null, [{ user_id }]);
           })
           .catch(deleteErr => done(deleteErr));
