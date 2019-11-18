@@ -303,6 +303,9 @@ router.use((err, req, res, next) => {
     case errors.invalidMetaValue:
       res.status(400).json({ invalidMetaValue: errors.invalidMetaValue });
       break;
+    case errors.metaFieldExists:
+      res.status(400).json({ metaFieldExists: errors.metaFieldExists });
+      break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });
       break;

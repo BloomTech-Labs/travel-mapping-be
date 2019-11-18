@@ -127,6 +127,7 @@ const addAlbumMetaData = (metaArr) => {
   // if the data is valid or an error message describing the invalid data.
 
   let validProps       = ['name', 'value'];
+  let noPropsFound     = (metaArr.length === 0);
   let tooManyProps     = false;
   let propsAreValid    = true;
   let missingMetaName  = false;
@@ -137,17 +138,18 @@ const addAlbumMetaData = (metaArr) => {
 
     const props = Object.keys(metaObj);
     
-    (!props.length === props.filter(prop => validProps.includes(prop)).length) && (propsAreValid = false);
+    props.forEach(prop => (!validProps.includes(prop) && (propsAreValid = false)));
     (props.length > validProps.length)  && (tooManyProps     = true);
     (!metaObj.hasOwnProperty('name'))   && (missingMetaName  = true);
     (!metaObj.hasOwnProperty('value'))  && (missingMetaValue = true);
 
   });
   
-  if (!propsAreValid)        return errors.invalidProps;
+  if (noPropsFound)          return errors.noPropsFound;
+  else if (tooManyProps)     return errors.tooManyProps;
+  else if (!propsAreValid)   return errors.invalidProps;
   else if (missingMetaName)  return errors.missingMetaName;
   else if (missingMetaValue) return errors.missingMetaValue;
-  else if (tooManyProps)     return errors.tooManyProps;
   else                       return true;
 
 };

@@ -1121,4 +1121,715 @@ describe('Album endpoint tests', () => {
 
   });
 
+  describe(`${ routes.addAlbumMetaData() }`, () => {
+
+    beforeEach('clear data in users', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => done())
+          //   .catch(err => done(err));
+          done();
+        
+        })
+        .catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+      db('users').insert(USERS)
+        .then(userData => {
+          
+          db('albums').insert(ALBUMS)
+            .then(albumData => {
+
+              db('albumsMeta').insert(ALBUMS_META)
+                .then(albumsMetaData => {
+                  done()
+                }).catch(albumsMetaErr => done(albumsMetaErr));
+
+            }).catch(err => done(err));
+
+        })
+        .catch(err => done(err));
+
+    });
+
+    it('should respond with json data', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 'Test Name',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name Two',
+        value: 'Test Value Two',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.be.json;
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 201 status code after adding meta data to an album', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 'Test Name',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name Two',
+        value: 'Test Value Two',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(201);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when no props are sent', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(400);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a noPropsFound property when no props are sent', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes.body).to.haveOwnProperty('noPropsFound');
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when request body contains invalid props', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        invalidProp: 'not valid',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(400);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a invalidProps property when request body contains invalid props', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        invalidProp: 'not valid',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes.body).to.haveOwnProperty('invalidProps');
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 404 status code when the album id does not exist', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = 404;
+      const metaArr = [{
+        name: 'Test Name',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(404);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a albumIdDoesNotExist property when the album id does not exist', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = 404;
+      const metaArr = [{
+        name: 'Test Name',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes.body).to.haveOwnProperty('albumIdDoesNotExist');
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when a meta name already exists', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 'Location',
+        value: 'Mexico',
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(400);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a metaFieldExists property when a meta name already exists', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 'Location',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes.body).to.haveOwnProperty('metaFieldExists');
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when a meta name is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 1234,
+        value: 'Mexico',
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(400);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a invalidMetaName property when a meta name is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 1234,
+        value: 'Test Value',
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes.body).to.haveOwnProperty('invalidMetaName');
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when a meta value is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 'Test Name',
+        value: 1234,
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(400);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a invalidMetaValue property when a meta value is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 'Test Name',
+        value: 1234,
+      }, {
+        name: 'Test Name',
+        value: 'Test Value',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes.body).to.haveOwnProperty('invalidMetaValue');
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 401 status code when a user is not an owner or an admin', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[2];
+      const metaArr = [{
+        name: 'Test Name',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name Two',
+        value: 'Test Value Two',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(401);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 201 status code when the user is an admin', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[2], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const metaArr = [{
+        name: 'Test Name',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name Two',
+        value: 'Test Value Two',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(201);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 201 status code when the user is the owner and an admin', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[2], { password: PASS });
+      const { album_id } = ALBUMS[2];
+      const metaArr = [{
+        name: 'Test Name',
+        value: 'Test Value',
+      }, {
+        name: 'Test Name Two',
+        value: 'Test Value Two',
+      }];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Add meta data.
+          chai.request(server)
+            .post(routes.addAlbumMetaData(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(metaArr)
+            .then(addRes => {
+
+              try {
+                expect(addRes).to.have.status(201);
+                done();
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(addErr => done(addErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+  });
+
 });
