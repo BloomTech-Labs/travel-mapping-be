@@ -5,7 +5,7 @@ exports.up = function(knex) {
   return knex.schema.createTable('albumsMeta', table => {
 
     // albumMeta_id
-    table.bigInteger('albumMeta_id').primary();
+    table.bigIncrements('albumMeta_id').primary();
 
     // album_id
     table.bigInteger('album_id')

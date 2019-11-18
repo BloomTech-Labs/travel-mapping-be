@@ -435,4 +435,97 @@ describe('Testing the validation module functions', () => {
 
   });
 
+  describe('metaValue function', () => {
+
+    it('should return false when the description is not a string', () => {
+
+      const invalidValue = 1234;
+
+      expect(validate.metaValue(invalidValue)).to.equal(false);
+
+    });
+
+    it('should return false when the description is less than 2 characters', () => {
+
+      const invalidValue = 'a';
+
+      expect(validate.metaValue(invalidValue)).to.equal(false);
+
+    });
+
+    it('should return false when the description is longer than 300 characters', () => {
+
+      let invalidValue;
+      for (let i = 0; i < 20; i++) invalidValue += 'not a valid description';
+
+      expect(validate.metaValue(invalidValue)).to.equal(false);
+
+    });
+
+    it('shoud return true when the description is valid', () => {
+
+      const validValue = 'This is valid';
+
+      expect(validate.metaValue(validValue)).to.equal(true);
+
+    });
+
+  });
+
+  describe('createAlbumMetaData function', () => {
+
+    it('should return true if the props are valid', () => {
+
+      const validProps = [{
+        name: 'Test name',
+        value: 'Test value',
+      }];
+
+      expect(validate.addAlbumMetaData(validProps)).to.equal(true);
+
+    });
+
+    it(`should return ${ errors.tooManyProps } when too many props are passed`, () => {
+
+      const invalidProps = [{
+          name: 'test name',
+          value: 'test value'
+        }, {
+          name: 'test name two',
+          value: 'test value two',
+          invalidProp: 'not valid',
+      }];
+
+        expect(validate.addAlbumMetaData(invalidProps)).to.equal(errors.tooManyProps);
+
+    });
+
+    it(`should return ${ errors.missingMetaName } when invalid props are passed`, () => {
+
+      const invalidProps = [{
+        value: 'test value'
+      }, {
+        name: 'test name',
+        value: 'test value' 
+      }];
+
+      expect(validate.addAlbumMetaData(invalidProps)).to.equal(errors.missingMetaName);
+
+    });
+
+    it(`should return ${ errors.missingMetaValue } when invalid props are passed`, () => {
+
+      const invalidProps = [{
+        name: 'test value'
+      }, {
+        name: 'test name',
+        value: 'test value' 
+      }];
+
+      expect(validate.addAlbumMetaData(invalidProps)).to.equal(errors.missingMetaValue);
+
+    });
+
+  });
+
 });

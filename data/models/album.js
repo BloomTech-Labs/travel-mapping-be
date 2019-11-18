@@ -45,10 +45,10 @@ const createAlbum = (albumObj, done) => {
 
                 // Retrieve the new album.
                 db('albums').where({ album_id })
-                  .select()
-                  .then(newAlbumArr => {
+                  .select().then(newAlbumArr => {
                     
-                    done(null, newAlbumArr);
+                    const newAlbumObj = Object.assign({}, newAlbumArr[0], { meta: {} });
+                    done(null, newAlbumObj);
 
                   }).catch(newAlbumErr => done(newAlbumErr));
 
@@ -114,11 +114,42 @@ const retrieveUsersAlbums = (user_id, done) => {
     }).catch(userIdErr => done(userIdErr));
 };
 
+const retrieveAlbumById = (album_id, done) => {
+  // Takes an album id and a callback function as arguments.
+  // retrieves the album from the database and passes the album
+  // and its meta data to the callback function.
+
+  // Get the album.
+  db('albums').where({ album_id })
+    .select().then(albumArr => {
+
+      if (albumArr.length === 0) done(new Error(errors.albumIdDoesNotExist));
+      else {
+        const albumObj = Object.assign({}, albumArr[0], { 
+          album_id: parseInt(albumArr[0].album_id),
+          user_id:  parseInt(albumArr[0].user_id),
+        });
+
+        // Get the albums meta data.
+        db('albumsMeta').where({ album_id })
+          .select('name', 'value').then(metaArr => {
+
+            metaArr.length > 0 ? (albumObj.meta = metaArr.map(obj => ({ [obj.name]: obj.value })).reduce((acc, obj) => Object.assign({}, acc, obj))) : (albumObj.meta = {});
+            done(null, albumObj);
+
+          }).catch(metaErr => done(metaErr));
+
+      }
+
+    }).catch(albumErr => done(albumErr));
+
+};
+
 const createAlbumMeta = (album_id, metaDataArr, done) => {
   // Takes an album id, array of meta objects, and a callback 
   // function as arguments. Validates the meta data, creates the
-  // meta data, and passes null and the created meta data to the
-  // callback function.
+  // meta data, and passes null and the album with the updated meta
+  // data to the callback function.
 
   // Check if album id exists.
   db('albums').where({ album_id })
@@ -140,22 +171,54 @@ const createAlbumMeta = (album_id, metaDataArr, done) => {
             if (metaNameExists) done(new Error(errors.metaFieldExists));
             else {
 
-              const newMetaObjArr = metaDataArr.map(metaObj => Object.assign({}, metaObj, { album_id }))
+              // Validate the meta name and description.
+              let nameIsValid  = true;
+              let valueIsValid = true;
+              metaDataArr.forEach(metaObj => {
+                if (!validate.metaName(metaObj.name))   nameIsValid  = false;
+                if (!validate.metaValue(metaObj.value)) valueIsValid = false;
+              });
 
-              // Create the meta fields.
-              db('albumsMeta').insert(newMetaObjArr, returning ? ['album_id'] : null)
-                .then(albumIdArr => {
+              if (!nameIsValid)       done(new Error(errors.invalidMetaName));
+              else if (!valueIsValid) done(new Error(errors.invalidMetaValue));
+              else {
+                
+                const newMetaObjArr = metaDataArr.map(metaObj => Object.assign({}, metaObj, { album_id }));
 
-                  // Get the meta data.
-                  db('albumsMeta').where({ album_id: albumIdArr[0] })
-                    .select()
-                    .then(newMetaArr => {
+                // Create the meta fields.
+                db('albumsMeta').insert(newMetaObjArr, returning ? ['album_id'] : null)
+                  .then(albumIdArr => {
 
-                      done(null, newMetaArr);
+                    // Get the meta data.
+                    db('albumsMeta').where({ album_id })
+                      .select()
+                      .then(newMetaArr => {
+                        
+                        let metaDataObj;
+                        newMetaArr.forEach(metaObj => (metaDataObj = Object.assign({}, metaDataObj, { [metaObj.name]: metaObj.value } )));
 
-                    }).catch(newMetaErr => done(newMetaErr));
+                        // Update the album.
+                        db('albums').update({ updated_at: db.fn.now() })
+                          .where({ album_id })
+                          .then(updateAlbumArr => {
 
-                }).catch(insertErr => done(insertErr));
+                            // Get the new album.
+                            db('albums').where({ album_id })
+                              .select()
+                              .then(newAlbumArr => {
+
+                                const albumObj = Object.assign({}, newAlbumArr[0], { meta: metaDataObj });
+                                done(null, albumObj);
+
+                              }).catch(newAlbumErr => done(newAlbumErr));
+
+                          }).catch(newAlbumErr => done(newAlbumErr));                        
+
+                      }).catch(newMetaErr => done(newMetaErr));
+
+                  }).catch(insertErr => done(insertErr));
+
+              }
 
             }
 
@@ -169,5 +232,6 @@ const createAlbumMeta = (album_id, metaDataArr, done) => {
 module.exports = {
   createAlbum,
   retrieveUsersAlbums,
+  retrieveAlbumById,
   createAlbumMeta,
 };

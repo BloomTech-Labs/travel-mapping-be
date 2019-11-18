@@ -15,12 +15,10 @@ const createAlbum = (req, res, next) => {
       const user_id = parseInt(req.params.user_id);
       const albumObj = req.body;
 
-      album.createAlbum({user_id, ...albumObj, }, (createErr, albumArr) => {
+      album.createAlbum({user_id, ...albumObj, }, (createErr, newAlbumObj) => {
 
-        if(createErr) next(createErr);
-        else {
-          res.status(201).json({ ...albumArr[0] });
-        }
+        if (createErr) next(createErr);
+        else res.status(201).json({ ...newAlbumObj });
 
       });
 
@@ -64,7 +62,40 @@ const getUsersAlbums = (req, res, next) => {
 
 };
 
+const addAlbumMetaData = (req, res, next) => {
+
+  const errorMsgOrTrue = validate.addAlbumMetaData(req.body);
+
+  if (errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
+  else {
+
+    try {
+
+      const album_id = parseInt(req.params.album_id);
+      const metaDataArr = req.body;
+
+      if (req.isOwner || req.isAdmin) {
+
+        album.createAlbumMeta(album_id, metaDataArr, (createErr, metaObj) => {
+
+          if (createErr) next(createErr);
+          else res.status(201).json(metaObj);
+  
+        });
+
+      } else next(new Error(errors.unauthorized));
+    
+    } catch (err) {
+      console.error(err);
+      next(new Error(errors.serverError));
+    }
+
+  }
+
+};
+
 module.exports = {
   createAlbum,
   getUsersAlbums,
+  addAlbumMetaData,
 };

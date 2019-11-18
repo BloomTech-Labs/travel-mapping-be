@@ -8,8 +8,7 @@ const Sentry      = require('@sentry/node');
 const sentryError = Sentry.Handlers.errorHandler();
 const api         = { ...controllers, ...middleware };
 
-
-//GET HTTP/1.1 200 OK
+// GET HTTP/1.1 200 OK
 // #region
 /**
  * 
@@ -197,19 +196,44 @@ router.post(routes.createAlbum(), api.auth.verifyToken, api.auth.verifyPermissio
  *           "value": "Family"
  *      }]
  * 
- *  @apiSuccess {Object[]} meta The created meta data
+ *  @apiSuccess {Integer} album_id The album ID
+ *  @apiSuccess {Integer} user_id The ID of the user who owns the album
+ *  @apiSuccess {String} title The title of the album
+ *  @apiSuccess {String} description The description of the album
+ *  @apiSuccess {String} access The access type of the album
+ *  @apiSuccess {String} created_at The date and time the album was created
+ *  @apiSuccess {String} updated_at The date and time the album was updated
+ *  @apiSuccess {Object} meta The albums custom meta data
  * 
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
  *     {
- *           "location": "Mexico"
+ *        "album_id": 642,
+ *        "user_id": 6534,
+ *        "title": "Vacation Photos",
+ *        "description": "Awesome fun vacation time in the Mexico with all the friends",
+ *        "access": "public",
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:47:02",
+ *        "meta": {
+ *            "Location": "Mexico"
+ *        }
  *     }
  * 
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
  *     {
- *           "location": "over there",
- *           "people": "Family"
+ *        "album_id": 642,
+ *        "user_id": 6534,
+ *        "title": "Wedding Photos",
+ *        "description": "The everyone was fun at the wedding over there awesome",
+ *        "access": "private",
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:47:02",
+ *        "meta": {
+ *            "Location": "Over There",
+ *            "People": "Family"
+ *        }
  *     }
  * 
  *   @apiError {Object} noPropsFound No properties were sent with the request
@@ -234,7 +258,7 @@ router.post(routes.createAlbum(), api.auth.verifyToken, api.auth.verifyPermissio
  *      }
  */
 // #endregion
-router.post(routes.addMetaData(), api.auth.verifyToken, api.auth.verifyPermission, sentryError);
+router.post(routes.addAlbumMetaData(), api.auth.verifyToken, api.auth.verifyPermission, api.album.addAlbumMetaData, sentryError);
 
 // Error handler
 router.use((err, req, res, next) => {
@@ -272,6 +296,12 @@ router.use((err, req, res, next) => {
       break;
     case errors.albumIdDoesNotExist:
       res.status(404).json({ albumIdDoesNotExist: errors.albumIdDoesNotExist });
+      break;
+    case errors.invalidMetaName:
+      res.status(400).json({ invalidMetaName: errors.invalidMetaName });
+      break;
+    case errors.invalidMetaValue:
+      res.status(400).json({ invalidMetaValue: errors.invalidMetaValue });
       break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });

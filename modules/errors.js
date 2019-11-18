@@ -16,6 +16,8 @@ module.exports = {
   invalidRegisterType: 'invalid registration type',
   incorrectPassword:   'password is not correct',
   invalidProps:        'request body props not valid',
+  missingMetaName:     'request body is missing required name property',
+  missingMetaValue:    'request body is missing required value property',
 
   // Model errors
   userDoesNotExist:        'user does not exist',
@@ -35,5 +37,8 @@ module.exports = {
   invalidAlbumAccess:      'album access type is not valid',
   albumIdDoesNotExist:     'album id does not exist',
   metaFieldExists:         'a meta field with that name already exists',
+  invalidMetaName:         'meta data field name is not valid',
+  invalidMetaValue:        'meta data description is not valid',
+
 
 };

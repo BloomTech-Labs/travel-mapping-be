@@ -273,7 +273,7 @@ router.delete(routes.removeUser(), api.auth.verifyToken, api.auth.verifyPermissi
  *        "user_id": 6534,
  *        "display_name": "jdoe25",
  *        "email": "john.doe@mail.com",
- *        "is_admin": false,
+ *        "is_admin": "false",
  *        "created_at": "2019-11-17 03:41:51",
  *        "updated_at": "2019-11-17 03:41:51",
  *        "token": "eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"

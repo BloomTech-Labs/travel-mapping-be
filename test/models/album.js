@@ -382,6 +382,83 @@ describe('Testing album models', () => {
 
   });
 
+  describe('retrieveAlbumById function', () => {
+
+    beforeEach('clear data in users', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => done())
+          //   .catch(err => done(err));
+          done();
+        
+        })
+        .catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+      db('users').insert(USERS)
+        .then(userData => {
+          
+          db('albums').insert(ALBUMS)
+            .then(albumData => {
+
+              db('albumsMeta').insert(ALBUMS_META)
+                .then(albumsMetaData => {
+                  done()
+                }).catch(albumsMetaErr => done(albumsMetaErr));
+
+            }).catch(err => done(err));
+
+        })
+        .catch(err => done(err));
+
+    });
+
+    it('should pass null to a callback function after retrieving an album', done => {
+
+      const { album_id } = ALBUMS[1];
+
+      models.album.retrieveAlbumById(album_id, (retrieveErr, albumObj) => {
+
+        try {
+          expect(retrieveErr).to.equal(null);
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the album id does not exist', done => {
+
+      const album_id = 404;
+
+      models.album.retrieveAlbumById(album_id, (retrieveErr, albumArr) => {
+
+        try {
+          expect(retrieveErr).to.be.an('error');
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+  });
+
   describe('createAlbumMeta model', () => {
 
     beforeEach('clear data in users', done => {
@@ -492,6 +569,106 @@ describe('Testing album models', () => {
           expect(createErr).to.be.an('error');
           done();
 
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function if the meta name is too short', done => {
+
+      const { album_id } = ALBUMS[0];
+      const metaDataArr = [{
+        name: 't',
+        value: 'test value',
+      }, {
+        name: 'test name two',
+        value: 'test value two',
+      }];
+
+      models.album.createAlbumMeta(album_id, metaDataArr, (createErr, metaDataObj) => {
+
+        try {
+          expect(createErr).to.be.an('error');
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function if the meta name is too long', done => {
+
+      const { album_id } = ALBUMS[0];
+      const metaDataArr = [{
+        name: 'invalid name',
+        value: 'test value',
+      }, {
+        name: 'test name two',
+        value: 'test value two',
+      }];
+
+      for (let i = 0; i < 20; i++) metaDataArr[0].name += 'invlid name';
+
+      models.album.createAlbumMeta(album_id, metaDataArr, (createErr, metaDataObj) => {
+
+        try {
+          expect(createErr).to.be.an('error');
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function if the meta description is too short', done => {
+
+      const { album_id } = ALBUMS[0];
+      const metaDataArr = [{
+        name: 'test name',
+        value: 't',
+      }, {
+        name: 'test name two',
+        value: 'test value two',
+      }];
+
+      models.album.createAlbumMeta(album_id, metaDataArr, (createErr, metaDataObj) => {
+
+        try {
+          expect(createErr).to.be.an('error');
+          done();
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function if the meta description is too long', done => {
+
+      const { album_id } = ALBUMS[0];
+      const metaDataArr = [{
+        name: 'test name',
+        value: 'invalid value',
+      }, {
+        name: 'test name two',
+        value: 'test value two',
+      }];
+
+      for (let i = 0; i < 30; i++) metaDataArr[0].value += 'invlid value';
+
+      models.album.createAlbumMeta(album_id, metaDataArr, (createErr, metaDataObj) => {
+
+        try {
+          expect(createErr).to.be.an('error');
+          done();
         } catch (err) {
           done(err);
         }

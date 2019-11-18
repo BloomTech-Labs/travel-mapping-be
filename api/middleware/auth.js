@@ -59,13 +59,45 @@ const verifyPermission = (req, res, next) => {
           });
         } else next(new Error(errors.unauthorized));
         break;
+      case routes.addAlbumMetaData():
+        
+        const album_id = parseInt(req.params.album_id);
+
+        // Get the album.
+        models.album.retrieveAlbumById(album_id, (retrieveErr, albumObj) => {
+
+          if (retrieveErr) next(retrieveErr);
+          else {
+
+            // Get the user.
+            if (email !== null) {
+              models.user.retrieveUserBy({ email }, (retrieveErr, userObj) => {
+    
+                if (retrieveErr) next(retrieveErr);
+                else {
+    
+                  req.isOwner      = (userObj.user_id === albumObj.user_id);
+                  req.isAdmin      = userObj.is_admin;
+                  req.collabAlbums = [];
+                  next();
+    
+                }
+    
+              });
+            } else next(new Error(errors.unauthorized));
+
+          }
+
+        });
+        break;
+
       case routes.getUsersAlbums():
 
         if (email !== null) {
           models.user.retrieveUserBy({ email }, (retrieveErr, userObj) => {
 
             const user_id = req.params.user_id ? parseInt(req.params.user_id) : null;
-            
+
             if (retrieveErr) next(retrieveErr);
             else {
 
