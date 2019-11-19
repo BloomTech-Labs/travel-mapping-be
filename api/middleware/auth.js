@@ -59,6 +59,7 @@ const verifyPermission = (req, res, next) => {
           });
         } else next(new Error(errors.unauthorized));
         break;
+      case routes.editAlbum():
       case routes.addAlbumMetaData():
         
         const album_id = parseInt(req.params.album_id);

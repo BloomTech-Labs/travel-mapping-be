@@ -6,6 +6,53 @@ const salt     = parseInt(process.env.PASS_SALT) || 10;
 
 describe('Testing the validation module functions', () => {
 
+  describe('editAlbumData function', () => {
+
+    it('should return true when all valid props are passed', () => {
+
+      const validProps = {
+        title: 'valid',
+        description: 'valid',
+        access: 'private'
+      };
+
+      expect(validate.editAlbumProps(validProps)).to.equal(true);
+
+    });
+
+    it(`should return ${ errors.invalidProps } when invalid props are passed`, () => {
+      
+      const validProps = {
+        title: 'valid',
+        description: 'valid',
+        invalidProp: 'not valid',
+      };
+
+      expect(validate.editAlbumProps(validProps)).to.equal(errors.invalidProps);
+
+    });
+
+    it(`should return ${ errors.noPropsFound } when no props are passed`, () => {
+
+      expect(validate.editAlbumProps({})).to.equal(errors.noPropsFound);
+
+    });
+
+    it(`should return ${ errors.tooManyProps } when too many props are passed`, () => {
+
+      const invalidProps = {
+        title: 'valid',
+        description: 'valid',
+        access: 'private',
+        invalidProp: 'not valid'
+      };
+
+      expect(validate.editAlbumProps(invalidProps)).to.equal(errors.tooManyProps);
+
+    });
+
+  });
+
   describe('registerUserData function', () => {
 
     const VALID_USERS = [{

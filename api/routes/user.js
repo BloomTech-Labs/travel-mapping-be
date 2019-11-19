@@ -44,7 +44,7 @@ router.get(routes.getUsers(), api.user.getUserList, sentryError);
 // GET HTTP/1.1 200 OK
 // #region
 /**
- *  @api {post} /users/{user_id} Get a specific user
+ *  @api {post} /users/{user_id} Get a single user
  *  @apiName Get-specific-user
  *  @apiGroup Users
  *  @apiVersion 0.1.0

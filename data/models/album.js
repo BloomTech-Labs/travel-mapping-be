@@ -8,8 +8,8 @@ const returning   = (environment === 'review'  ||
 
 const createAlbum = (albumObj, done) => {
   // Takes an album object and a callback function as arguments.
-  // Validates the album data, creates an album in the database, and
-  // passes the id to the callback function.
+  // Validates the album data, creates an album in the database, 
+  // and passes the id to the callback function.
 
   const { user_id, title, description, access, } = albumObj;
 
@@ -63,8 +63,8 @@ const createAlbum = (albumObj, done) => {
 
 const retrieveUsersAlbums = (user_id, done) => {
   // Takes a user id and a callback function as arguments.
-  // Joins the users albums and each albums meta data and passes
-  // an array of objects to a callback function.
+  // Joins the users albums and each albums meta data and 
+  // passes an array of objects to a callback function.
 
   // Check if user id exists.
   db('users').where({ user_id })
@@ -229,9 +229,82 @@ const createAlbumMeta = (album_id, metaDataArr, done) => {
     }).catch(albumIdErr => done(albumIdErr));
 };
 
+const updateAlbumById = (album_id, albumObj, done) => {
+  // Takes an album id, an album object, and a callback function
+  // as arguments. Validates the album data, updates the album,
+  // and passes null and the updated album with its meta data
+  // to the callback function.
+
+  // Get the album.
+  db('albums').where({ album_id })
+    .select().then(albumArr => {
+
+      // Check if album id exists.
+      if (albumArr.length === 0) done(new Error(errors.albumIdDoesNotExist));
+      else {
+
+        const { title, description, access } = albumObj;
+        const descriptionIsValid = (description ? validate.albumDescription(description) : true);
+        const accessIsValid      = (access      ? validate.albumAccess(access)           : true);
+        const titleIsValid       = (title       ? validate.albumTitle(title)             : true);
+
+        // Validate album data.
+        if (!descriptionIsValid) done(new Error(errors.invalidAlbumDescription));
+        else if (!accessIsValid) done(new Error(errors.invalidAlbumAccess));
+        else if (!titleIsValid)  done(new Error(errors.invalidAlbumTitle));
+        else {
+          
+          const { user_id } = albumArr[0];
+
+          // Get users albums titles.
+          db('albums').where({ user_id })
+            .select('title').then(titleArr => {
+
+              // Check if user already has an album with the title.
+              let titleExists = false;
+              titleArr.forEach(titleObj => (titleObj.title.toLowerCase() === title.toLowerCase()) && (titleExists = true));
+
+              if (titleExists) done(new Error(errors.albumTitleExists));
+              else {
+
+                // Update the album.
+                db('albums').update({ ...albumObj, updated_at: db.fn.now() })
+                  .where({ album_id }).then(updateArr => {
+
+                    // Get the updated album.
+                    db('albums').where({ album_id })
+                      .select().then(newAlbumArr => {
+
+                        const newAlbumObj = newAlbumArr[0];
+
+                        // Get the albums meta data.
+                        db('albumsMeta').where({ album_id })
+                          .select('name', 'value').then(metaArr => {
+
+                            metaArr.length > 0 ? (newAlbumObj.meta = metaArr.map(obj => ({ [obj.name]: obj.value })).reduce((acc, obj) => Object.assign({}, acc, obj))) : (newAlbumObj.meta = {});
+                            done(null, newAlbumObj);
+
+                          }).catch(metaErr => done(metaErr));
+
+                      }).catch(newAlbumErr => done(newAlbumErr));
+
+                  }).catch(updateErr => done(updateErr));
+
+              }
+
+            }).catch(titleErr => done(titleErr));
+
+        }
+      }
+
+    }).catch(albumErr => done(albumErr));
+
+};
+
 module.exports = {
   createAlbum,
   retrieveUsersAlbums,
   retrieveAlbumById,
   createAlbumMeta,
+  updateAlbumById,
 };

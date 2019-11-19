@@ -2,6 +2,7 @@ const passwordValidator = require('password-validator');
 const bcrypt            = require('bcrypt');
 const errors            = require('./errors');
 
+// Controllers
 const registerUserData = (userObj, regType) => {
   // Verifies that the user object contains the required properties for each registration type.
   // Takes a user data object and a registration type string as parameters. Returns true if the
@@ -65,43 +66,6 @@ const editUserData = (userObj) => {
 
 };
 
-const displayName = (name) => {
-
-};
-
-const email = (email) => {
-
-};
-
-const password = (password, blacklist = [], hash = null) => {
-  // Takes a password, an array of blacklisted passwords, and a hash as arguments.
-  // Checks if the password is valid and does not match blacklisted passwords.
-  // Returns true if password is valid or false if password is not valid.
-
-  // Check if password matches hashed password.
-  if (hash) return bcrypt.compareSync(password, hash);
-  else {
-
-    // Create password schema.
-    const passwordSchema = new passwordValidator();
-
-    // Set schema rules.
-    passwordSchema
-      .is().min(8)                  // Minimum length 8
-      .is().max(24)                 // Maximum length 24
-      .has().letters()              // Must contain letters
-      .has().lowercase()            // Must contain lower case letters
-      .has().uppercase()            // Must contain upper case letters
-      .has().digits()               // Must contain digits
-      .has().symbols()              // Must contain symbols
-      .has().not().spaces()         // Must not contain spaces
-      .is().not().oneOf(blacklist); // Must not match a blacklisted password
-
-    return passwordSchema.validate(password);
-  }
-  
-};
-
 const createAlbumData = (albumObj) => {
   // Verifies that the album object contains the required properties.
   // Takes an album data object as an argument. Returns true if the
@@ -152,6 +116,63 @@ const addAlbumMetaData = (metaArr) => {
   else if (missingMetaValue) return errors.missingMetaValue;
   else                       return true;
 
+};
+
+const editAlbumProps = (albumObj) => {
+  // Verifies that the album data object contains the required properties.
+  // Takes an album data object as an argument. Returns true if the data
+  // is valid or an error message describing the invalid data.
+
+  const validProps = ['title', 'description', 'access'];
+  const props = Object.keys(albumObj);
+
+  // Check if the userObj contains invalid props.
+  const propsAreValid = (props.length === props.filter(prop => validProps.includes(prop)).length);
+  const noPropsFound  = (props.length === 0);
+  const tooManyProps  = (props.length > validProps.length);
+
+  if (noPropsFound)        return errors.noPropsFound;
+  else if (tooManyProps)   return errors.tooManyProps;
+  else if (!propsAreValid) return errors.invalidProps;
+  else                     return true;
+};
+
+// Models
+const displayName = (name) => {
+
+};
+
+const email = (email) => {
+
+};
+
+const password = (password, blacklist = [], hash = null) => {
+  // Takes a password, an array of blacklisted passwords, and a hash as arguments.
+  // Checks if the password is valid and does not match blacklisted passwords.
+  // Returns true if password is valid or false if password is not valid.
+
+  // Check if password matches hashed password.
+  if (hash) return bcrypt.compareSync(password, hash);
+  else {
+
+    // Create password schema.
+    const passwordSchema = new passwordValidator();
+
+    // Set schema rules.
+    passwordSchema
+      .is().min(8)                  // Minimum length 8
+      .is().max(24)                 // Maximum length 24
+      .has().letters()              // Must contain letters
+      .has().lowercase()            // Must contain lower case letters
+      .has().uppercase()            // Must contain upper case letters
+      .has().digits()               // Must contain digits
+      .has().symbols()              // Must contain symbols
+      .has().not().spaces()         // Must not contain spaces
+      .is().not().oneOf(blacklist); // Must not match a blacklisted password
+
+    return passwordSchema.validate(password);
+  }
+  
 };
 
 const albumTitle = (title) => {
@@ -221,4 +242,5 @@ module.exports = {
   metaName,
   metaValue,
   addAlbumMetaData,
+  editAlbumProps,
 };

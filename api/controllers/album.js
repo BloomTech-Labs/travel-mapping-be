@@ -94,8 +94,40 @@ const addAlbumMetaData = (req, res, next) => {
 
 };
 
+const editAlbum = (req, res, next) => {
+
+  const { album_id } = req.params;
+  
+  const errorMsgOrTrue = validate.editAlbumProps(req.body);
+
+  if (errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
+  else {
+
+    if (req.isOwner || req.isAdmin) {
+
+      try {
+
+        album.updateAlbumById(album_id, req.body, (updateErr, albumObj) => {
+
+          if (updateErr) next(updateErr);
+          else res.status(200).json(albumObj);
+  
+        });
+
+      } catch (err) {
+        console.error(err);
+        next(new Error(errors.serverError));
+      }
+
+    } else next(new Error(errors.unauthorized));
+
+  }
+
+};
+
 module.exports = {
   createAlbum,
   getUsersAlbums,
   addAlbumMetaData,
+  editAlbum,
 };

@@ -117,6 +117,7 @@ router.get(routes.getUsersAlbums(), api.auth.verifyToken, api.auth.verifyPermiss
  *  @apiSuccess {String} access The album access type
  *  @apiSuccess {String} created_at The date and time the album was created
  *  @apiSuccess {String} updated_at The date and time the album was updated
+ *  @apiSuccess {Object} meta An empty placeholder object for album meta data
  * 
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
@@ -127,7 +128,21 @@ router.get(routes.getUsersAlbums(), api.auth.verifyToken, api.auth.verifyPermiss
  *        "description": "Awesome fun vacation time in the Mexico with all the friends",
  *        "access": "public",
  *        "created_at": "2019-11-17 03:02:35",
- *        "updated_at": "2019-11-17 03:02:35"
+ *        "updated_at": "2019-11-17 03:02:35",
+ *        "meta": {}
+ *     }
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 201 CREATED
+ *     {
+ *        "album_id": 0,
+ *        "user_id": 6534,
+ *        "title": "Wedding Photos",
+ *        "description": "The everyone was fun at the wedding over there awesome",
+ *        "access": "private",
+ *        "created_at": "2019-11-17 03:02:35",
+ *        "updated_at": "2019-11-17 03:02:35",
+ *        "meta": {}
  *     }
  * 
  *   @apiError {Object} noPropsFound No properties were sent with the request
@@ -148,7 +163,7 @@ router.get(routes.getUsersAlbums(), api.auth.verifyToken, api.auth.verifyPermiss
  *      }
  * 
  *   @apiErrorExample Missing Description
- *      HTTP/1.1 404
+ *      HTTP/1.1 400
  *      {
  *          "missingDescription": "request body is missing the required description property"
  *      }
@@ -164,7 +179,7 @@ router.post(routes.createAlbum(), api.auth.verifyToken, api.auth.verifyPermissio
  *  @apiGroup Albums
  *  @apiVersion 0.1.0
  * 
- *  @apiPermission admin owner
+ *  @apiPermission admin owner collaborator
  * 
  *  @apiParam (URL Parameters) {Integer} album_id The albums ID
  * 
@@ -259,6 +274,110 @@ router.post(routes.createAlbum(), api.auth.verifyToken, api.auth.verifyPermissio
  */
 // #endregion
 router.post(routes.addAlbumMetaData(), api.auth.verifyToken, api.auth.verifyPermission, api.album.addAlbumMetaData, sentryError);
+
+// PUT HTTP/1.1 200 OK
+// #region
+/**
+ *  @api {put} /albums/{album_id}/edit Edit an album
+ *  @apiName Edit-an-album
+ *  @apiGroup Albums
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission admin owner collaborator
+ * 
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} album_id The albums ID
+ * 
+ *  @apiParam (Request Body) {String{0-120}} [title] The title of the album
+ *  @apiparam (Request Body) {Text{0-300}} [description] A description of the album
+ *  @apiParam (Request Body) {String="public", "private"} [access="public"] Access type of the album
+ * 
+ *  @apiParamExample {json} Example Request
+ *      /albums/642/edit
+ *      {
+ *          "access": "private"
+ *      }
+ * 
+ *  @apiParamExample {json} Example Request
+ *      /albums/642/edit
+ *      {
+ *          "title": "Vacation Photos",
+ *          "description": "Awesome fun vacation time in the Mexico with all the friends"
+ *      }
+ * 
+ *  @apiSuccess {Integer} album_id The album ID
+ *  @apiSuccess {Integer} user_id The ID of the user who owns the album
+ *  @apiSuccess {String} title The title of the album
+ *  @apiSuccess {String} description The description of the album
+ *  @apiSuccess {String} access The access type of the album
+ *  @apiSuccess {String} created_at The date and time the album was created
+ *  @apiSuccess {String} updated_at The date and time the album was updated
+ *  @apiSuccess {Object} meta The albums custom meta data
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     {
+ *        "album_id": 642,
+ *        "user_id": 6534,
+ *        "title": "Vacation Photos",
+ *        "description": "Awesome fun vacation time in the Mexico with all the friends",
+ *        "access": "private",
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:47:02",
+ *        "meta": {
+ *            "Location": "Mexico"
+ *        }
+ *     }
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     {
+ *        "album_id": 642,
+ *        "user_id": 6534,
+ *        "title": "Vacation Photos",
+ *        "description": "Awesome fun vacation time in the Mexico with all the friends",
+ *        "access": "private",
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:47:02",
+ *        "meta": {
+ *            "Location": "Over There",
+ *            "People": "Family"
+ *        }
+ *     }
+ * 
+ *   @apiError {Object} albumIdDoesNotExist The album_id does not exist in the database
+ *   @apiError {Object} noPropsFound No properties were sent with the request
+ *   @apiError {Object} invalidProps The properties on the request body are not valid
+ *   @apiError {Object} tooManyProps The request body contains too many properties
+ *   @apiError {Object} albumTitleExists There is already an album with that title
+ *   @apiError {Object} invalidAlbumTitle The album title is not valid
+ *   @apiError {Object} invalidAlbumDescription The album description is not valid
+ *   @apiError {Object} invalidAlbumAccess The album access type is not valid
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "albumIdDoesNotExist": "album id does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Invalid Description
+ *      HTTP/1.1 400
+ *      {
+ *          "invalidMetaDescription": "meta description is not valid"
+ *      }
+ * 
+ */
+// #endregion
+router.put(routes.editAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.album.editAlbum);
 
 // Error handler
 router.use((err, req, res, next) => {

@@ -86,6 +86,896 @@ const ALBUMS_META = [{
 
 describe('Album endpoint tests', () => {
 
+  describe(`${ routes.editAlbum() }`, () => {
+
+    beforeEach('clear data in users and albums tables', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          db.select()
+            .from('albums')
+            .del()
+            .then(()   => done())
+            .catch(err => done(err));
+        
+        })
+        .catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users and albums tables', done => {
+
+      db('users').insert(USERS)
+      .then(userData => {
+        
+        db('albums').insert(ALBUMS)
+          .then(albumData => {
+
+            db('albumsMeta').insert(ALBUMS_META)
+              .then(albumsMetaData => {
+                done()
+              }).catch(albumsMetaErr => done(albumsMetaErr));
+
+          }).catch(err => done(err));
+
+      })
+      .catch(err => done(err));
+
+    });
+
+    it('should respond with json data', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'A new title',
+        description: 'A new description',
+        access: 'private'
+      };
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.be.json;
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code after editing an album', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'A new title',
+        description: 'A new description',
+        access: 'private'
+      };
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 404 status code when the album id does not exist', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'A new title',
+        description: 'A new description',
+        access: 'private'
+      };
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(404))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(404);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a albumIdDoesNotExist property when the album id does not exist', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'A new title',
+        description: 'A new description',
+        access: 'private'
+      };
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(404))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('albumIdDoesNotExist');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when no props are sent', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send({})
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a noPropsFound property when no props are sent', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send({})
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('noPropsFound');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when invalid props are sent', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'valid',
+        description: 'valid',
+        invalidProp: 'not valid'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an invalidProps property when invalid props are sent', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'valid',
+        description: 'valid',
+        invalidProp: 'not valid'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('invalidProps');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when too many props are sent', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'valid',
+        description: 'valid',
+        invalidProp: 'not valid'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an tooManyProps property when too many props are sent', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'valid',
+        description: 'valid',
+        access: 'private',
+        invalidProp: 'not valid'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('tooManyProps');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when the title already exists', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'A title'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an albumTitleExists property when the title already exists', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'A title'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('albumTitleExists');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when the title is invalid', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 1234
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an invalidAlbumTitle property when the title is invalid', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 1234
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('invalidAlbumTitle');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when the description is invalid', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        description: 1234
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an invalidAlbumDescription property when the description is invalid', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        description: 1234
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('invalidAlbumDescription');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 400 status code when the access type is invalid', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        access: 'not valid'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an invalidAlbumAccess property when the access type is invalid', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        access: 'not valid'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('invalidAlbumAccess');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 401 status code when the user is not the owner or admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[1], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'New Title'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(401);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an unauthorized property when the access type is invalid', done => {
+
+      const { email, password } = Object.assign({}, USERS[1], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'New Title'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes.body).to.haveOwnProperty('unauthorized');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code when the user is an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[2], { password: PASS });
+      const { album_id } = ALBUMS[0];
+      const album = {
+        title: 'New Title'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code when the user is the owner and an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[2], { password: PASS });
+      const { album_id } = ALBUMS[3];
+      const album = {
+        title: 'New Title'
+      }
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Edit album.
+          chai.request(server)
+            .put(routes.editAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(album)
+            .then(updateRes => {
+
+              try {
+
+                expect(updateRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(updateErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+  });
+
+
   describe(`${ routes.createAlbum() }`, () => {
 
     beforeEach('clear data in users and albums tables', done => {

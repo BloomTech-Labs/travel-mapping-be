@@ -92,6 +92,193 @@ const ALBUMS_META = [{
 
 describe('Testing album models', () => {
 
+  describe('updateUserById model', () => {
+
+    beforeEach('clear data in users', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => done())
+          //   .catch(err => done(err));
+          done();
+        
+        })
+        .catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+      db('users').insert(USERS)
+        .then(userData => {
+          
+          db('albums').insert(ALBUMS)
+            .then(albumData => {
+
+              db('albumsMeta').insert(ALBUMS_META)
+                .then(albumsMetaData => {
+                  done()
+                }).catch(albumsMetaErr => done(albumsMetaErr));
+
+            }).catch(err => done(err));
+
+        })
+        .catch(err => done(err));
+
+    });
+
+    it('should pass null to a callback function after updating an album', done => {
+
+      const { album_id } = ALBUMS[0];
+      albumData = {
+        title: 'New Title',
+        description: 'New Description',
+        access: 'private'
+      };
+
+      models.album.updateAlbumById(album_id, albumData, (updateErr, albumObj) => {
+
+        try {
+
+          expect(updateErr).to.equal(null);
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the album does not exist', done => {
+
+      const album_id = 404;
+      albumData = {
+        title: 'New Title',
+        description: 'New Description',
+        access: 'private'
+      };
+
+      models.album.updateAlbumById(album_id, albumData, (updateErr, albumObj) => {
+
+        try {
+
+          expect(updateErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the title is not valid', done => {
+
+      const { album_id } = ALBUMS[0];
+      albumData = {
+        title: 1234,
+        description: 'New Description',
+        access: 'private'
+      };
+
+      models.album.updateAlbumById(album_id, albumData, (updateErr, albumObj) => {
+
+        try {
+
+          expect(updateErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the description is not valid', done => {
+
+      const { album_id } = ALBUMS[0];
+      albumData = {
+        title: 'New Title',
+        description: 1234,
+        access: 'private'
+      };
+
+      models.album.updateAlbumById(album_id, albumData, (updateErr, albumObj) => {
+
+        try {
+
+          expect(updateErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the access type is not valid', done => {
+
+      const { album_id } = ALBUMS[0];
+      albumData = {
+        title: 'New Title',
+        description: 'New Description',
+        access: 'not valid'
+      };
+
+      models.album.updateAlbumById(album_id, albumData, (updateErr, albumObj) => {
+
+        try {
+
+          expect(updateErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the title already exists', done => {
+
+      const { album_id } = ALBUMS[0];
+      albumData = {
+        title: 'A Title',
+        description: 'New Description',
+        access: 'private'
+      };
+
+      models.album.updateAlbumById(album_id, albumData, (updateErr, albumObj) => {
+
+        try {
+
+          expect(updateErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+  });
+
   describe('createAlbum model', () => {
 
     beforeEach('clear data in users and albums tables', done => {
@@ -382,7 +569,7 @@ describe('Testing album models', () => {
 
   });
 
-  describe('retrieveAlbumById function', () => {
+  describe('retrieveAlbumById model', () => {
 
     beforeEach('clear data in users', done => {
       db.select()
