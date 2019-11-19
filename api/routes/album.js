@@ -379,6 +379,52 @@ router.post(routes.addAlbumMetaData(), api.auth.verifyToken, api.auth.verifyPerm
 // #endregion
 router.put(routes.editAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.album.editAlbum);
 
+// DELETE HTTP/1.1 200 OK
+// #region
+/**
+ *  @api {delete} /albums/{album_id}/remove Remove an album
+ *  @apiName Remove-an-album
+ *  @apiGroup Albums
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission admin owner
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} album_id The albums ID
+ * 
+ *  @apiSuccess {Integer} album_id The album ID
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     {
+ *        "album_id": 642
+ *     }
+ * 
+ *   @apiError {Object} albumIdDoesNotExist The album_id does not exist in the database
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+  *   @apiErrorExample Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "albumIdDoesNotExist": "album id does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Unauthorized
+ *      HTTP/1.1 400
+ *      {
+ *          "unauthorized": "you are not authorized to make the request"
+ *      }
+ */
+// #endregion
+router.delete(routes.removeAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.album.removeAlbum);
+
 // Error handler
 router.use((err, req, res, next) => {
 

@@ -15,6 +15,7 @@ module.exports = {
   getCollabAlbums:  (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/albums/c`      : '/users/:user_id/albums/c'),      // Send albums that user is a collaborator on
   getAlbumCollab:   (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/c`           : '/albums/:album_id/c'),           // Send all of an albums collaborators
   editAlbum:        (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/edit`        : '/albums/:album_id/edit'),
+  removeAlbum:      (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/remove`      : '/albums/:album_id/remove'),
   addAlbumMetaData: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/meta/add`    : '/albums/:album_id/meta/add'),
   removeMetaData:   (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/meta/remove` : '/albums/:album_id/meta/remove'),
 

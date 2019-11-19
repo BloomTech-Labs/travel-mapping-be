@@ -61,6 +61,7 @@ const verifyPermission = (req, res, next) => {
         break;
       case routes.editAlbum():
       case routes.addAlbumMetaData():
+      case routes.removeAlbum():
         
         const album_id = parseInt(req.params.album_id);
 
@@ -119,7 +120,7 @@ const verifyPermission = (req, res, next) => {
 
   } catch (err) {
     console.error(err);
-    next(new Error(errors.unauthorized));
+    next(new Error(errors.serverError));
   }
 
 };

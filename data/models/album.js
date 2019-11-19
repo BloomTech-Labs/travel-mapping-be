@@ -2,7 +2,7 @@ const db       = require('../dbConfig');
 const errors   = require('../../modules/modules').errors;
 const validate = require('../../modules/modules').validate;
 const environment = process.env.NODE_ENV || 'development';
-const returning   = (environment === 'review'  ||   
+const returning   = (environment === 'review'  ||
                      environment === 'staging' ||
                      environment === 'production');
 
@@ -30,11 +30,11 @@ const createAlbum = (albumObj, done) => {
           const descriptionIsValid = (description ? validate.albumDescription(description) : true);
           const accessIsValid      = (access ? validate.albumAccess(access) : true);
 
-          if(!userIdExists)               done(new Error(errors.userIdDoesNotExist));
-          else if(albumTitleExists)       done(new Error(errors.albumTitleExists));
-          else if(!titleIsValid)          done(new Error(errors.invalidAlbumTitle));
-          else if(!descriptionIsValid)    done(new Error(errors.invalidAlbumDescription));
-          else if(!accessIsValid)         done(new Error(errors.invalidAlbumAccess));
+          if(!userIdExists)            done(new Error(errors.userIdDoesNotExist));
+          else if(albumTitleExists)    done(new Error(errors.albumTitleExists));
+          else if(!titleIsValid)       done(new Error(errors.invalidAlbumTitle));
+          else if(!descriptionIsValid) done(new Error(errors.invalidAlbumDescription));
+          else if(!accessIsValid)      done(new Error(errors.invalidAlbumAccess));
           else {
 
             // Create the album.
@@ -301,10 +301,36 @@ const updateAlbumById = (album_id, albumObj, done) => {
 
 };
 
+const removeAlbumById = (album_id, done) => {
+  // Takes an album id and a callback function as arguments.
+  // Checks that the album id exists, deletes the album and
+  // passes null and the id to thecallback function.
+
+  // Check if album exists.
+  db('albums').where({ album_id })
+    .select('user_id').then(albumIdArr => {
+
+      if (albumIdArr.length === 0) done(new Error(errors.albumIdDoesNotExist));
+      else {
+
+        // Delete the album.
+        db('albums').where({ album_id })
+          .delete()
+          .then(numDeleted => {
+            done(null, [{ album_id }]);
+          }).catch(deleteErr => done(deleteErr));
+
+      }
+
+    }).catch(albumIdErr => done(albumIdErr));
+
+};
+
 module.exports = {
   createAlbum,
   retrieveUsersAlbums,
   retrieveAlbumById,
   createAlbumMeta,
   updateAlbumById,
+  removeAlbumById,
 };

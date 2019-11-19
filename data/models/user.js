@@ -235,8 +235,7 @@ const deleteUserById = (user_id, done) => {
           .delete()
           .then(numDeleted => {
             done(null, [{ user_id }]);
-          })
-          .catch(deleteErr => done(deleteErr));
+          }).catch(deleteErr => done(deleteErr));
 
       }
 

@@ -86,6 +86,318 @@ const ALBUMS_META = [{
 
 describe('Album endpoint tests', () => {
 
+  describe(`${ routes.removeAlbum() }`, () => {
+
+    beforeEach('clear data in users and albums tables', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          db.select()
+            .from('albums')
+            .del()
+            .then(()   => done())
+            .catch(err => done(err));
+        
+        })
+        .catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users and albums tables', done => {
+
+      db('users').insert(USERS)
+      .then(userData => {
+        
+        db('albums').insert(ALBUMS)
+          .then(albumData => {
+
+            db('albumsMeta').insert(ALBUMS_META)
+              .then(albumsMetaData => {
+                done()
+              }).catch(albumsMetaErr => done(albumsMetaErr));
+
+          }).catch(err => done(err));
+
+      })
+      .catch(err => done(err));
+
+    });
+
+    it('should respond with json data', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Remove album.
+          chai.request(server)
+            .delete(routes.removeAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(removeRes => {
+
+              try {
+
+                expect(removeRes).to.be.json;
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(removeErr => done(updateErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code after removing an album', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Remove album.
+          chai.request(server)
+            .delete(routes.removeAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(removeRes => {
+
+              try {
+
+                expect(removeRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(removeErr => done(removeErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 404 status code when the album id does not exist', done => {
+
+      const { email, password } = Object.assign({}, USERS[2], { password: PASS });
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Remove album.
+          chai.request(server)
+            .delete(routes.removeAlbum(404))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(removeRes => {
+
+              try {
+
+                expect(removeRes).to.have.status(404);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(removeErr => done(removeErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a albumIdDoesNotExist property when the album id does not exist', done => {
+
+      const { email, password } = Object.assign({}, USERS[2], { password: PASS });
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Remove album.
+          chai.request(server)
+            .delete(routes.removeAlbum(404))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(removeRes => {
+
+              try {
+
+                expect(removeRes.body).to.haveOwnProperty('albumIdDoesNotExist');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(removeErr => done(removeErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 401 status code when the user is not the owner or an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[3];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Remove album.
+          chai.request(server)
+            .delete(routes.removeAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(removeRes => {
+
+              try {
+
+                expect(removeRes).to.have.status(401);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(removeErr => done(removeErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a unauthorized property when the user is not the owner or an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[3];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Remove album.
+          chai.request(server)
+            .delete(routes.removeAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(removeRes => {
+
+              try {
+
+                expect(removeRes.body).to.haveOwnProperty('unauthorized');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(removeErr => done(removeErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code when the user is an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[2], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Remove album.
+          chai.request(server)
+            .delete(routes.removeAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(removeRes => {
+
+              try {
+
+                expect(removeRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(removeErr => done(removeErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code when the user is the owner and an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[2], { password: PASS });
+      const { album_id } = ALBUMS[2];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Remove album.
+          chai.request(server)
+            .delete(routes.removeAlbum(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(removeRes => {
+
+              try {
+
+                expect(removeRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(removeErr => done(removeErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+  });
+
   describe(`${ routes.editAlbum() }`, () => {
 
     beforeEach('clear data in users and albums tables', done => {
@@ -974,7 +1286,6 @@ describe('Album endpoint tests', () => {
     });
 
   });
-
 
   describe(`${ routes.createAlbum() }`, () => {
 

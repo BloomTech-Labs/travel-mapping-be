@@ -92,6 +92,85 @@ const ALBUMS_META = [{
 
 describe('Testing album models', () => {
 
+  describe('removeAlbumById model', () => {
+
+    beforeEach('clear data in users', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => done())
+          //   .catch(err => done(err));
+          done();
+        
+        })
+        .catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+      db('users').insert(USERS)
+        .then(userData => {
+          
+          db('albums').insert(ALBUMS)
+            .then(albumData => {
+
+              db('albumsMeta').insert(ALBUMS_META)
+                .then(albumsMetaData => {
+                  done()
+                }).catch(albumsMetaErr => done(albumsMetaErr));
+
+            }).catch(err => done(err));
+
+        })
+        .catch(err => done(err));
+
+    });
+
+    it('should pass null to a callback function after deleting an album', done => {
+
+      const { album_id } = ALBUMS[0];
+
+      models.album.removeAlbumById(album_id, (removeErr, removeArr) => {
+
+        try {
+
+          expect(removeErr).to.equal(null);
+          done();
+   
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the album id does not exist', done => {
+
+      models.album.removeAlbumById(404, (removeErr, removeArr) => {
+
+        try {
+
+          expect(removeErr).to.be.an('error');
+          done();
+   
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+  });
+
   describe('updateUserById model', () => {
 
     beforeEach('clear data in users', done => {

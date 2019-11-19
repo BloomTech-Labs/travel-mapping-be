@@ -832,6 +832,113 @@
     "groupTitle": "Albums"
   },
   {
+    "type": "delete",
+    "url": "/albums/{album_id}/remove",
+    "title": "Remove an album",
+    "name": "Remove_an_album",
+    "group": "Albums",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The albums ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumIdDoesNotExist",
+            "description": "<p>The album_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"albumIdDoesNotExist\": \"album id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Unauthorized",
+          "content": "HTTP/1.1 400\n{\n    \"unauthorized\": \"you are not authorized to make the request\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/album.js",
+    "groupTitle": "Albums"
+  },
+  {
     "type": "post",
     "url": "/test",
     "title": "Create a new test",
