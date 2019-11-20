@@ -6,6 +6,53 @@ const salt     = parseInt(process.env.PASS_SALT) || 10;
 
 describe('Testing the validation module functions', () => {
 
+  describe('editAlbumData function', () => {
+
+    it('should return true when all valid props are passed', () => {
+
+      const validProps = {
+        title: 'valid',
+        description: 'valid',
+        access: 'private'
+      };
+
+      expect(validate.editAlbumProps(validProps)).to.equal(true);
+
+    });
+
+    it(`should return ${ errors.invalidProps } when invalid props are passed`, () => {
+      
+      const validProps = {
+        title: 'valid',
+        description: 'valid',
+        invalidProp: 'not valid',
+      };
+
+      expect(validate.editAlbumProps(validProps)).to.equal(errors.invalidProps);
+
+    });
+
+    it(`should return ${ errors.noPropsFound } when no props are passed`, () => {
+
+      expect(validate.editAlbumProps({})).to.equal(errors.noPropsFound);
+
+    });
+
+    it(`should return ${ errors.tooManyProps } when too many props are passed`, () => {
+
+      const invalidProps = {
+        title: 'valid',
+        description: 'valid',
+        access: 'private',
+        invalidProp: 'not valid'
+      };
+
+      expect(validate.editAlbumProps(invalidProps)).to.equal(errors.tooManyProps);
+
+    });
+
+  });
+
   describe('registerUserData function', () => {
 
     const VALID_USERS = [{
@@ -238,6 +285,291 @@ describe('Testing the validation module functions', () => {
       const hash        = bcrypt.hashSync(passwordOne, salt);
 
       expect(validate.password(passwordTwo, [], hash)).to.equal(false);
+
+    });
+
+  });
+
+  describe('createAlbumData function', () => {
+
+    it('should return true when valid album data is passed', () => {
+
+      const validData = {
+        title: 'A title',
+        description: 'A short album descrpition',
+        access: 'public',
+      };
+
+      expect(validate.createAlbumData(validData)).to.equal(true);
+
+    });
+
+    it(`should return with ${ errors.noPropsFound } when no props are passed`, () => {
+
+      expect(validate.createAlbumData({})).to.equal(errors.noPropsFound);
+
+    });
+
+    it(`should return with ${ errors.tooManyProps } when too many props are passed`, () => {
+
+      const invalidProps = {
+        user_id: 0,
+        title: 'A title',
+        description: 'A short album descrpition',
+        access: 'public',
+        invalidProp: 'not valid',
+      };
+
+      expect(validate.createAlbumData(invalidProps)).to.equal(errors.tooManyProps);
+
+    });
+
+    it(`should return with ${ errors.invalidProps } when an invalid prop is passed`, () => {
+
+      const invalidProps = {
+        title: 'A title',
+        description: 'A short album descrpition',
+        invalidProp: 'not valid',
+      };
+
+      expect(validate.createAlbumData(invalidProps)).to.equal(errors.invalidProps);
+
+    });
+
+    it(`should return with ${ errors.missingAlbumTitle } when the album title is not passed`, () => {
+
+      const invalidProps = {
+        description: 'A short album descrpition',
+        access: 'public',
+      };
+
+      expect(validate.createAlbumData(invalidProps)).to.equal(errors.missingAlbumTitle);
+
+    });
+
+  });
+
+  describe('albumDescription function', () => {
+
+    it('should return true when the description is valid', () => {
+
+      const validDescription = 'valid description';
+
+      expect(validate.albumDescription(validDescription)).to.equal(true);
+
+    });
+
+    it('should return false when the description is more than 300 characters', () => {
+
+      let invalidDescription;
+
+      for(let i = 0; i !== 50; i++) invalidDescription += 'abc123';
+
+      expect(validate.albumDescription(invalidDescription)).to.equal(false);
+
+    });
+
+    it('should return false when the description is not a string', () => {
+
+      const invalidDescription = 12345;
+
+      expect(validate.albumDescription(invalidDescription)).to.equal(false);
+
+    });
+
+  });
+
+  describe('albumTitle function', () => {
+
+    it('should return true when the title is valid', () => {
+
+      const validTitle = 'valid title';
+
+      expect(validate.albumTitle(validTitle)).to.equal(true);
+
+    });
+
+    it('should return false when the title is more than 120 characters', () => {
+
+      let invalidTitle;
+
+      for(let i = 0; i < 20; i++) invalidTitle += 'abc123';
+
+      expect(validate.albumTitle(invalidTitle)).to.equal(false);
+
+    });
+
+    it('should return false when the title is not a string', () => {
+
+      const invalidTitle = 12345;
+
+      expect(validate.albumTitle(invalidTitle)).to.equal(false);
+
+    });
+
+  });
+
+  describe('albumAccess function', () => {
+
+    it('should return true when access is set to public', () => {
+
+      const access = 'public';
+
+      expect(validate.albumAccess(access)).to.equal(true);
+
+    });
+
+    it('should return true when access is set to private', () => {
+
+      const access = 'private';
+
+      expect(validate.albumAccess(access)).to.equal(true);
+
+    });
+
+    it('should return false when access is not public or private', () => {
+
+      const access = 'not valid';
+
+      expect(validate.albumAccess(access)).to.equal(false);
+
+    });
+
+    it('should return false when access is not a string', () => {
+
+      const access = 12345;
+
+      expect(validate.albumAccess(access)).to.equal(false);
+
+    });
+
+  });
+
+  describe('metaName function', () => {
+
+    it('should return true when meta name is valid', () => {
+
+      const validName = 'Valid Name';
+
+      expect(validate.metaName(validName)).to.equal(true);
+
+    });
+
+    it('should return false when the meta name is not a string', () => {
+
+      const invalidName = 12345;
+
+      expect(validate.metaName(invalidName)).to.equal(false);
+
+    });
+
+    it('should return false when the meta name is less than 2 characters', () => {
+
+      const invalidName = 'a';
+
+      expect(validate.metaName(invalidName)).to.equal(false);
+
+    });
+
+    it('should return false when the meta name is more than 120 characters', () => {
+
+      let invalidName;
+      for(let i = 0; i <= 20; i++) invalidName += 'invalid';
+
+      expect(validate.metaName(invalidName)).to.equal(false);
+
+    });
+
+  });
+
+  describe('metaValue function', () => {
+
+    it('should return false when the description is not a string', () => {
+
+      const invalidValue = 1234;
+
+      expect(validate.metaValue(invalidValue)).to.equal(false);
+
+    });
+
+    it('should return false when the description is less than 2 characters', () => {
+
+      const invalidValue = 'a';
+
+      expect(validate.metaValue(invalidValue)).to.equal(false);
+
+    });
+
+    it('should return false when the description is longer than 300 characters', () => {
+
+      let invalidValue;
+      for (let i = 0; i < 20; i++) invalidValue += 'not a valid description';
+
+      expect(validate.metaValue(invalidValue)).to.equal(false);
+
+    });
+
+    it('shoud return true when the description is valid', () => {
+
+      const validValue = 'This is valid';
+
+      expect(validate.metaValue(validValue)).to.equal(true);
+
+    });
+
+  });
+
+  describe('createAlbumMetaData function', () => {
+
+    it('should return true if the props are valid', () => {
+
+      const validProps = [{
+        name: 'Test name',
+        value: 'Test value',
+      }];
+
+      expect(validate.addAlbumMetaData(validProps)).to.equal(true);
+
+    });
+
+    it(`should return ${ errors.tooManyProps } when too many props are passed`, () => {
+
+      const invalidProps = [{
+          name: 'test name',
+          value: 'test value'
+        }, {
+          name: 'test name two',
+          value: 'test value two',
+          invalidProp: 'not valid',
+      }];
+
+        expect(validate.addAlbumMetaData(invalidProps)).to.equal(errors.tooManyProps);
+
+    });
+
+    it(`should return ${ errors.missingMetaName } when invalid props are passed`, () => {
+
+      const invalidProps = [{
+        value: 'test value'
+      }, {
+        name: 'test name',
+        value: 'test value' 
+      }];
+
+      expect(validate.addAlbumMetaData(invalidProps)).to.equal(errors.missingMetaName);
+
+    });
+
+    it(`should return ${ errors.missingMetaValue } when invalid props are passed`, () => {
+
+      const invalidProps = [{
+        name: 'test value'
+      }, {
+        name: 'test name',
+        value: 'test value' 
+      }];
+
+      expect(validate.addAlbumMetaData(invalidProps)).to.equal(errors.missingMetaValue);
 
     });
 

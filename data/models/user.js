@@ -69,11 +69,11 @@ const retrieveUsers = done => {
         userObj.password && (delete userObj.password);
 
         return Object.assign({}, userObj, {
-          is_admin:     userObj.is_admin     === 0 ? false : true,
-          is_superuser: userObj.is_superuser === 0 ? false : true,
+          user_id:      parseInt(userObj.user_id),
+          is_admin:     userObj.is_admin     ? true : false,
+          is_superuser: userObj.is_superuser ? true : false,
          });
       });
-
 
       done(null, userList);
     })
@@ -118,8 +118,9 @@ const retrieveUserBy = (typeObj, done) => {
         userObj.password && (delete userObj.password);
         
         cb(null, Object.assign({}, userObj, {
-          is_admin:     userObj.is_admin     === 0 ? false : true,
-          is_superuser: userObj.is_superuser === 0 ? false : true,
+          user_id:      parseInt(userObj.user_id),
+          is_admin:     userObj.is_admin     ? true : false,
+          is_superuser: userObj.is_superuser ? true : false,
         }));
 
       }
@@ -234,8 +235,7 @@ const deleteUserById = (user_id, done) => {
           .delete()
           .then(numDeleted => {
             done(null, [{ user_id }]);
-          })
-          .catch(deleteErr => done(deleteErr));
+          }).catch(deleteErr => done(deleteErr));
 
       }
 

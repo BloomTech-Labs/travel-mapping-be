@@ -2,6 +2,7 @@ const passwordValidator = require('password-validator');
 const bcrypt            = require('bcrypt');
 const errors            = require('./errors');
 
+// Controllers
 const registerUserData = (userObj, regType) => {
   // Verifies that the user object contains the required properties for each registration type.
   // Takes a user data object and a registration type string as parameters. Returns true if the
@@ -9,14 +10,14 @@ const registerUserData = (userObj, regType) => {
 
   const type = regType.toLowerCase();
 
-  switch(type) {
+  switch (type) {
     case 'email':
 
-      if(Object.keys(userObj).length > 3)               return errors.tooManyProps;
-      else if(!userObj.hasOwnProperty('display_name'))  return errors.missingDisplayName;
-      else if(!userObj.hasOwnProperty('email'))         return errors.missingEmail;
-      else if(!userObj.hasOwnProperty('password'))      return errors.missingPassword;
-      else return true;
+      if (Object.keys(userObj).length > 3)               return errors.tooManyProps;
+      else if (!userObj.hasOwnProperty('display_name'))  return errors.missingDisplayName;
+      else if (!userObj.hasOwnProperty('email'))         return errors.missingEmail;
+      else if (!userObj.hasOwnProperty('password'))      return errors.missingPassword;
+      else                                               return true;
   
     case 'google':
     default:
@@ -32,13 +33,13 @@ const loginUserData = (userObj, regType) => {
 
   const type = regType.toLowerCase();
 
-  switch(type) {
+  switch (type) {
     case 'email':
 
-      if(Object.keys(userObj).length > 2)          return errors.tooManyProps;
-      else if(!userObj.hasOwnProperty('email'))    return errors.missingEmail;
-      else if(!userObj.hasOwnProperty('password')) return errors.missingPassword;
-      else return true;
+      if (Object.keys(userObj).length > 2)          return errors.tooManyProps;
+      else if (!userObj.hasOwnProperty('email'))    return errors.missingEmail;
+      else if (!userObj.hasOwnProperty('password')) return errors.missingPassword;
+      else                                          return true;
   
     case 'google':
     default:
@@ -58,10 +59,90 @@ const editUserData = (userObj) => {
   // Check if the userObj contains invalid props.
   const propsAreValid = (props.length === props.filter(prop => validProps.includes(prop)).length);
 
-  if(props.length > validProps.length) return errors.tooManyProps;
-  else if(props.length === 0)          return errors.noPropsFound;
-  else if(!propsAreValid)              return errors.invalidProps;
-  else return true;
+  if (props.length > validProps.length) return errors.tooManyProps;
+  else if (props.length === 0)          return errors.noPropsFound;
+  else if (!propsAreValid)              return errors.invalidProps;
+  else                                  return true;
+
+};
+
+const createAlbumData = (albumObj) => {
+  // Verifies that the album object contains the required properties.
+  // Takes an album data object as an argument. Returns true if the
+  // data is valid or an error message describing the invalid data.
+
+  const props      = Object.keys(albumObj);
+  const validProps = ['title', 'description', 'access', ];
+
+  // Check if the userObj contains invalid props.
+  const propsAreValid = (props.length === props.filter(prop => validProps.includes(prop)).length);
+
+  if (props.length === 0)                       return errors.noPropsFound;
+  else if (props.length > 3)                    return errors.tooManyProps;
+  else if (!propsAreValid)                      return errors.invalidProps;
+  else if (!albumObj.hasOwnProperty('title'))   return errors.missingAlbumTitle;
+  else                                          return true;
+
+};
+
+const addAlbumMetaData = (metaArr) => {
+  // Verifies that the objects in meta data array contains the required 
+  // properties. Takes a meta object array as an argument. Returns true 
+  // if the data is valid or an error message describing the invalid data.
+
+  let validProps       = ['name', 'value'];
+  let noPropsFound     = (metaArr.length === 0);
+  let tooManyProps     = false;
+  let propsAreValid    = true;
+  let missingMetaName  = false;
+  let missingMetaValue = false;
+
+  // Validate meta data props.
+  metaArr.forEach(metaObj => {
+
+    const props = Object.keys(metaObj);
+    
+    props.forEach(prop => (!validProps.includes(prop) && (propsAreValid = false)));
+    (props.length > validProps.length)  && (tooManyProps     = true);
+    (!metaObj.hasOwnProperty('name'))   && (missingMetaName  = true);
+    (!metaObj.hasOwnProperty('value'))  && (missingMetaValue = true);
+
+  });
+  
+  if (noPropsFound)          return errors.noPropsFound;
+  else if (tooManyProps)     return errors.tooManyProps;
+  else if (!propsAreValid)   return errors.invalidProps;
+  else if (missingMetaName)  return errors.missingMetaName;
+  else if (missingMetaValue) return errors.missingMetaValue;
+  else                       return true;
+
+};
+
+const editAlbumProps = (albumObj) => {
+  // Verifies that the album data object contains the required properties.
+  // Takes an album data object as an argument. Returns true if the data
+  // is valid or an error message describing the invalid data.
+
+  const validProps = ['title', 'description', 'access'];
+  const props = Object.keys(albumObj);
+
+  // Check if the userObj contains invalid props.
+  const propsAreValid = (props.length === props.filter(prop => validProps.includes(prop)).length);
+  const noPropsFound  = (props.length === 0);
+  const tooManyProps  = (props.length > validProps.length);
+
+  if (noPropsFound)        return errors.noPropsFound;
+  else if (tooManyProps)   return errors.tooManyProps;
+  else if (!propsAreValid) return errors.invalidProps;
+  else                     return true;
+};
+
+// Models
+const displayName = (name) => {
+
+};
+
+const email = (email) => {
 
 };
 
@@ -92,11 +173,74 @@ const password = (password, blacklist = [], hash = null) => {
     return passwordSchema.validate(password);
   }
   
+};
+
+const albumTitle = (title) => {
+  // Validates an album title. Takes a title string
+  // as an argument. Returns true or false.
+
+  if (typeof title !== 'string') return false;
+  else if (title.length > 120)   return false;
+  else                           return true;
+
+};
+
+const albumDescription = (description) => {
+  // Validates an album description. Takes a description string
+  // as an argument. Returns true or false.
+
+  if (typeof description !== 'string') return false;
+  else if (description.length > 300)   return false;
+  else                                 return true;
+
+};
+
+const albumAccess = (access) => {
+  // Validates an album access type. Takes an access string
+  // as an argument. Returns true or false.
+
+  const accessTypes = ['public', 'private'];
+
+  if (typeof access !== 'string')         return false;
+  else if (!accessTypes.includes(access)) return false;
+  else                                    return true;
+
 }
+
+const metaName = (name) => {
+  // Validates a meta field name. Takes a meta name string
+  // as an argument. Returns true or false.
+
+  if (typeof name !== 'string') return false;
+  else if (name.length < 2)     return false;
+  else if (name.length > 120)   return false;
+  else                          return true;
+
+};
+
+const metaValue = (value) => {
+  // Validates a meta field description. Takes a 
+  // meta description string as arguments. Returns
+  // true or false.
+
+  if (typeof value !== 'string') return false;
+  else if (value.length < 2)     return false;
+  else if (value.length > 300)   return false;
+  else                           return true;
+
+};
 
 module.exports = {
   registerUserData,
   loginUserData,
   editUserData,
   password,
+  createAlbumData,
+  albumTitle,
+  albumDescription,
+  albumAccess,
+  metaName,
+  metaValue,
+  addAlbumMetaData,
+  editAlbumProps,
 };

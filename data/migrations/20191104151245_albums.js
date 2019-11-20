@@ -22,13 +22,19 @@ exports.up = function(knex) {
       .defaultTo('public');
 
     // title
-    table.string('title', 255);
+    table.string('title', 255)
+      .notNullable();
 
     // description
-    table.text('description', 'longtext');
+    table.text('description', 'longtext')
+      .defaultTo(' ');
 
     // created_at
     table.timestamp('created_at')
+      .defaultTo(knex.fn.now());
+
+    // created_at
+    table.timestamp('updated_at')
       .defaultTo(knex.fn.now());
   
   });

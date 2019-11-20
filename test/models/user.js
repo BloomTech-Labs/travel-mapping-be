@@ -39,7 +39,7 @@ const INVALID_USERS =  [{
   password: 'not valid',
 }];
 
-describe('User models tests', () => {
+describe('Testing user models', () => {
 
   describe('createUser model', () => {
 

@@ -1,5 +1,6 @@
 const db          = require('../../data/dbConfig');
 const errors      = require('../../modules/modules').errors;
+const routes      = require('../../modules/modules').routes;
 const bcrypt      = require('bcrypt');
 const salt        = parseInt(process.env.PASS_SALT) || 10;
 const environment = process.env.NODE_ENV || 'development';
@@ -37,11 +38,9 @@ const INVALID_USERS = [{
   invalidProps: '',
 }];
 
-const registerEmailUrl = '/users/register/email';
-
 describe('User endpoint tests', () => {
 
-  describe('/users', () => {
+  describe(`${ routes.getUsers() }`, () => {
 
     beforeEach('clear data in users table', done => {
       db.select()
@@ -60,7 +59,7 @@ describe('User endpoint tests', () => {
     it('should respond with json data', done => {
 
       chai.request(server)
-        .get('/users')
+        .get(routes.getUsers())
         .then(res => {
 
           try {
@@ -77,7 +76,7 @@ describe('User endpoint tests', () => {
     it('should respond with a 200 status code', done => {
 
       chai.request(server)
-        .get('/users')
+        .get(routes.getUsers())
         .then(res => {
 
           try {
@@ -93,7 +92,7 @@ describe('User endpoint tests', () => {
 
   });
 
-  describe('/users/:user_id', () => {
+  describe(`${ routes.getUserById() }`, () => {
 
     beforeEach('clear data in users table', done => {
       db.select()
@@ -111,10 +110,8 @@ describe('User endpoint tests', () => {
 
     it('should respond with json data', done => {
       
-      const getUserId0 = '/users/0';
-
       chai.request(server)
-        .get(getUserId0)
+        .get(routes.getUserById(0))
         .then(res => {
 
           expect(res).to.be.json;
@@ -126,10 +123,8 @@ describe('User endpoint tests', () => {
 
     it('should respond with a 200 status code', done => {
       
-      const getUserId0 = '/users/0';
-
       chai.request(server)
-        .get(getUserId0)
+        .get(routes.getUserById(0))
         .then(res => {
 
           expect(res).to.have.status(200);
@@ -146,16 +141,13 @@ describe('User endpoint tests', () => {
       .del()
       .then(()   => {
         
-        const getUserId0 = '/users/0';
-
         chai.request(server)
-          .get(getUserId0)
+          .get(routes.getUserById(0))
           .then(res => {
             expect(res).to.have.status(404);
             done();
 
         }).catch(err => done(err));
-
 
       })
       .catch(err => done(err));
@@ -169,10 +161,8 @@ describe('User endpoint tests', () => {
         .del()
         .then(()   => {
           
-          const getUserId0 = '/users/0';
-
           chai.request(server)
-            .get(getUserId0)
+            .get(routes.getUserById(0))
             .then(res => {
               expect(res.body).to.haveOwnProperty('userIdDoesNotExist');
               done();
@@ -189,10 +179,8 @@ describe('User endpoint tests', () => {
 
     it('should contain a user_id property', done => {
 
-      const getUserId0 = '/users/0';
-
       chai.request(server)
-        .get(getUserId0)
+        .get(routes.getUserById(0))
         .then(res => {
 
           expect(res.body).to.haveOwnProperty('user_id');
@@ -204,10 +192,8 @@ describe('User endpoint tests', () => {
 
     it('should contain an email property', done => {
 
-      const getUserId0 = '/users/0';
-
       chai.request(server)
-        .get(getUserId0)
+        .get(routes.getUserById(0))
         .then(res => {
 
           expect(res.body).to.haveOwnProperty('email');
@@ -219,7 +205,7 @@ describe('User endpoint tests', () => {
 
   });
 
-  describe('/users/register/email', () => {
+  describe(`${ routes.registerUser('email') }`, () => {
 
     const PASS = 'hkTQ%*03';
 
@@ -258,7 +244,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], password: PASS };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -274,7 +260,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], password: PASS };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
           expect(res).to.have.status(201);
@@ -288,7 +274,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], password: PASS };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -304,7 +290,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], password: PASS };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -329,7 +315,7 @@ describe('User endpoint tests', () => {
           const user = { ...validUsers[0], password: PASS };
 
           chai.request(server)
-            .post(registerEmailUrl)
+            .post(routes.registerUser('email'))
             .send(user)
             .then(res => {
     
@@ -357,7 +343,7 @@ describe('User endpoint tests', () => {
           const user = { ...validUsers[0], password: PASS };
 
           chai.request(server)
-            .post(registerEmailUrl)
+            .post(routes.registerUser('email'))
             .send(user)
             .then(res => {
     
@@ -385,7 +371,7 @@ describe('User endpoint tests', () => {
           const user = { ...validUsers[0], display_name: 'validDisplayName', password: PASS };
 
           chai.request(server)
-            .post(registerEmailUrl)
+            .post(routes.registerUser('email'))
             .send(user)
             .then(res => {
     
@@ -413,7 +399,7 @@ describe('User endpoint tests', () => {
           const user = { ...validUsers[0], display_name: 'validDisplayName', password: PASS };
 
           chai.request(server)
-            .post(registerEmailUrl)
+            .post(routes.registerUser('email'))
             .send(user)
             .then(res => {
     
@@ -438,7 +424,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], display_name: 'not valid', password: PASS };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -460,7 +446,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], display_name: 'not valid', password: PASS };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -482,7 +468,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], email: 'not valid', password: PASS };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -504,7 +490,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], email: 'not valid', password: PASS };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -526,7 +512,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], password: 'not valid' };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -548,7 +534,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], password: 'not valid' };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -570,7 +556,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], password: PASS, invalidProp: 'not valid' };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -592,7 +578,7 @@ describe('User endpoint tests', () => {
       const user = { ...validUsers[0], password: PASS, invalidProp: 'not valid' };
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -615,7 +601,7 @@ describe('User endpoint tests', () => {
       delete user.display_name;
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -638,7 +624,7 @@ describe('User endpoint tests', () => {
       delete user.display_name;
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -661,7 +647,7 @@ describe('User endpoint tests', () => {
       delete user.email;
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -684,7 +670,7 @@ describe('User endpoint tests', () => {
       delete user.email;
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -707,7 +693,7 @@ describe('User endpoint tests', () => {
       delete user.password;
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -730,7 +716,7 @@ describe('User endpoint tests', () => {
       delete user.password;
 
       chai.request(server)
-        .post(registerEmailUrl)
+        .post(routes.registerUser('email'))
         .send(user)
         .then(res => {
 
@@ -749,7 +735,7 @@ describe('User endpoint tests', () => {
 
   });
 
-  describe('/users/login/email', () => {
+  describe(`${ routes.loginUser('email') }`, () => {
 
     const PASS = 'hkTQ%*03';
 
@@ -793,7 +779,7 @@ describe('User endpoint tests', () => {
       const { email } = validUsers[0];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, PASS, })
         .then(res => {
 
@@ -812,7 +798,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: PASS, })
         .then(res => {
 
@@ -833,7 +819,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: PASS, })
         .then(res => {
 
@@ -853,7 +839,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: PASS, })
         .then(res => {
 
@@ -873,7 +859,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: '' })
         .then(res => {
 
@@ -895,7 +881,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: '' })
         .then(res => {
 
@@ -915,7 +901,7 @@ describe('User endpoint tests', () => {
     it('should respond with a 404 status code when an email does not exist', done => {
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email: 'invalid@email.com', password: PASS })
         .then(res => {
 
@@ -935,7 +921,7 @@ describe('User endpoint tests', () => {
     it('should respond with emailDoesNotExist property when an email does not exist', done => {
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email: 'invalid@email.com', password: PASS })
         .then(res => {
 
@@ -957,7 +943,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: PASS, invalidProp: 'not valid' })
         .then(res => {
 
@@ -979,7 +965,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: PASS, invalidProp: 'not valid' })
         .then(res => {
 
@@ -1001,7 +987,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ password: PASS })
         .then(res => {
 
@@ -1023,7 +1009,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ password: PASS })
         .then(res => {
 
@@ -1045,7 +1031,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email })
         .then(res => {
 
@@ -1067,7 +1053,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[1];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email })
         .then(res => {
 
@@ -1089,7 +1075,7 @@ describe('User endpoint tests', () => {
       const { email, } = validUsers[3];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: PASS })
         .then(res => {
 
@@ -1111,7 +1097,7 @@ describe('User endpoint tests', () => {
       const { email } = validUsers[3];
 
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password: PASS })
         .then(res => {
 
@@ -1130,7 +1116,7 @@ describe('User endpoint tests', () => {
 
   });
 
-  describe('/users/:user_id/edit', () => {
+  describe(`${ routes.editUser() }`, () => {
 
     const PASS = 'hkTQ%*03';
 
@@ -1188,7 +1174,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1197,7 +1183,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1228,7 +1214,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1237,7 +1223,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1263,7 +1249,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1272,7 +1258,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send({})
           .then(res => {
@@ -1298,7 +1284,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1307,7 +1293,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send({})
           .then(res => {
@@ -1333,7 +1319,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1342,7 +1328,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send({ invalidProp: 'not valid' })
           .then(res => {
@@ -1368,7 +1354,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1377,7 +1363,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send({ invalidProp: 'not valid' })
           .then(res => {
@@ -1408,7 +1394,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1448,7 +1434,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1488,7 +1474,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1497,7 +1483,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1528,7 +1514,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1537,7 +1523,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1568,7 +1554,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1577,7 +1563,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1608,7 +1594,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1617,7 +1603,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1648,7 +1634,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1657,7 +1643,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1688,7 +1674,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1697,7 +1683,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1728,7 +1714,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1737,7 +1723,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1768,7 +1754,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1777,7 +1763,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1808,7 +1794,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1817,7 +1803,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1848,7 +1834,7 @@ describe('User endpoint tests', () => {
 
        // Login
        chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1857,7 +1843,7 @@ describe('User endpoint tests', () => {
 
         // Edit user
         chai.request(server)
-          .put(`/users/${ user_id }/edit`)
+          .put(routes.editUser(user_id))
           .set('Authorization', `Bearer ${ jwt }`)
           .send(editUser)
           .then(res => {
@@ -1889,7 +1875,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1898,7 +1884,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .put(`/users/${ user_id }/edit`)
+            .put(routes.editUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .send(editUser)
             .then(editRes => {
@@ -1929,7 +1915,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1938,7 +1924,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .put(`/users/${ user_id }/edit`)
+            .put(routes.editUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .send(editUser)
             .then(editRes => {
@@ -1969,7 +1955,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -1978,7 +1964,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .put(`/users/${ user_id }/edit`)
+            .put(routes.editUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .send(editUser)
             .then(editRes => {
@@ -2009,7 +1995,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -2018,7 +2004,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .put(`/users/${ user_id }/edit`)
+            .put(routes.editUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .send(editUser)
             .then(editRes => {
@@ -2039,7 +2025,7 @@ describe('User endpoint tests', () => {
 
   });
 
-  describe('/users/:user_id/remove', () => {
+  describe(`${ routes.removeUser() }`, () => {
 
     const PASS = 'hkTQ%*03';
 
@@ -2092,7 +2078,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -2101,7 +2087,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .delete(`/users/${ user_id }/remove`)
+            .delete(routes.removeUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .then(deleteRes => {
 
@@ -2126,7 +2112,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -2135,7 +2121,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .delete(`/users/${ user_id }/remove`)
+            .delete(routes.removeUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .then(deleteRes => {
 
@@ -2161,7 +2147,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -2170,7 +2156,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .delete(`/users/${ user_id }/remove`)
+            .delete(routes.removeUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .then(deleteRes => {
 
@@ -2195,7 +2181,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -2204,7 +2190,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .delete(`/users/${ user_id }/remove`)
+            .delete(routes.removeUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .then(deleteRes => {
 
@@ -2230,7 +2216,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -2239,7 +2225,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .delete(`/users/${ user_id }/remove`)
+            .delete(routes.removeUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .then(deleteRes => {
 
@@ -2265,7 +2251,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -2274,7 +2260,7 @@ describe('User endpoint tests', () => {
 
           // Remove user
           chai.request(server)
-            .delete(`/users/${ user_id }/remove`)
+            .delete(routes.removeUser(user_id))
             .set('Authorization', `Bearer ${ jwt }`)
             .then(deleteRes => {
 
@@ -2299,7 +2285,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 
@@ -2333,7 +2319,7 @@ describe('User endpoint tests', () => {
 
       // Login
       chai.request(server)
-        .post('/users/login/email')
+        .post(routes.loginUser('email'))
         .send({ email, password })
         .then(loginRes => {
 

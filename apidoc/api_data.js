@@ -1,6 +1,945 @@
 define({ "api": [
   {
     "type": "post",
+    "url": "/albums/{album_id}/meta/add",
+    "title": "Add album meta data",
+    "name": "Add_meta_data",
+    "group": "Albums",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner collaborator"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The albums ID</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "Object[]",
+            "optional": false,
+            "field": "metaData",
+            "description": "<p>A list of meta data objects</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "1-120",
+            "optional": false,
+            "field": "metaData[name]",
+            "description": "<p>The name of the meta field</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "1-300",
+            "optional": false,
+            "field": "metaData[value]",
+            "description": "<p>The value of the meta field</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/albums/642/meta/add\n[{\n    \"name\": \"Location\",\n    \"value\": \"Mexico\"\n}]",
+          "type": "json"
+        },
+        {
+          "title": "Example Request",
+          "content": "/albums/642/meta/add\n[{\n     \"name\": \"Location\",\n     \"value\": \"Over there\"\n}, {\n     \"name\": \"People\",\n     \"value\": \"Family\"\n}]",
+          "type": "json"
+        }
+      ]
+    },
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The ID of the user who owns the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>The title of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>The description of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "access",
+            "description": "<p>The access type of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "created_at",
+            "description": "<p>The date and time the album was created</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "updated_at",
+            "description": "<p>The date and time the album was updated</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "meta",
+            "description": "<p>The albums custom meta data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "noPropsFound",
+            "description": "<p>No properties were sent with the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidProps",
+            "description": "<p>The properties on the request body are not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumIdDoesNotExist",
+            "description": "<p>The album_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "metaFieldExists",
+            "description": "<p>A meta field with that name already exists</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMetaName",
+            "description": "<p>The meta field name is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMetaValue",
+            "description": "<p>The meta description is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Already Exists",
+          "content": "HTTP/1.1 400\n{\n    \"metaFieldExists\": \"a meta field with that name already exists\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Invalid Description",
+          "content": "HTTP/1.1 400\n{\n    \"invalidMetaDescription\": \"meta description is not valid\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/album.js",
+    "groupTitle": "Albums"
+  },
+  {
+    "type": "post",
+    "url": "/users/{user_id}/albums/create",
+    "title": "Create a new album",
+    "name": "Create_new_album",
+    "group": "Albums",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The users ID</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "0-120",
+            "optional": false,
+            "field": "title",
+            "description": "<p>The title of the album</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Text",
+            "size": "0-300",
+            "optional": true,
+            "field": "description",
+            "description": "<p>A description of the album</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "allowedValues": [
+              "\"public\"",
+              "\"private\""
+            ],
+            "optional": true,
+            "field": "access",
+            "defaultValue": "public",
+            "description": "<p>Access type of the album</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/users/6534/albums/create\n{\n    \"title\": \"Vacation Photos\",\n    \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n    \"access\": \"public\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request",
+          "content": "/users/6534/albums/create\n{\n    \"title\": \"Wedding Photos\",\n    \"description\": \"The everyone was fun at the wedding over there awesome\",\n    \"access\": \"private\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The created album ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The ID of the user who owns the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>The title of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>The description of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "access",
+            "description": "<p>The album access type</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "created_at",
+            "description": "<p>The date and time the album was created</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "updated_at",
+            "description": "<p>The date and time the album was updated</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "meta",
+            "description": "<p>An empty placeholder object for album meta data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {}\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "noPropsFound",
+            "description": "<p>No properties were sent with the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidProps",
+            "description": "<p>The properties on the request body are not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumTitleExists",
+            "description": "<p>There is already an album with that title</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidAlbumTitle",
+            "description": "<p>The album title is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidAlbumDescription",
+            "description": "<p>The album description is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidAlbumAccess",
+            "description": "<p>The album access type is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingAlbumTitle",
+            "description": "<p>Request body is missing the required title property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Title Exists",
+          "content": "HTTP/1.1 400\n{\n    \"titleExists\": \"there is already an album with that title\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Missing Description",
+          "content": "HTTP/1.1 400\n{\n    \"missingDescription\": \"request body is missing the required description property\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/album.js",
+    "groupTitle": "Albums"
+  },
+  {
+    "type": "put",
+    "url": "/albums/{album_id}/edit",
+    "title": "Edit an album",
+    "name": "Edit_an_album",
+    "group": "Albums",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner collaborator"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The albums ID</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "0-120",
+            "optional": true,
+            "field": "title",
+            "description": "<p>The title of the album</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Text",
+            "size": "0-300",
+            "optional": true,
+            "field": "description",
+            "description": "<p>A description of the album</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "allowedValues": [
+              "\"public\"",
+              "\"private\""
+            ],
+            "optional": true,
+            "field": "access",
+            "defaultValue": "public",
+            "description": "<p>Access type of the album</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/albums/642/edit\n{\n    \"access\": \"private\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request",
+          "content": "/albums/642/edit\n{\n    \"title\": \"Vacation Photos\",\n    \"description\": \"Awesome fun vacation time in the Mexico with all the friends\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The ID of the user who owns the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>The title of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>The description of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "access",
+            "description": "<p>The access type of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "created_at",
+            "description": "<p>The date and time the album was created</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "updated_at",
+            "description": "<p>The date and time the album was updated</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "meta",
+            "description": "<p>The albums custom meta data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumIdDoesNotExist",
+            "description": "<p>The album_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "noPropsFound",
+            "description": "<p>No properties were sent with the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidProps",
+            "description": "<p>The properties on the request body are not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "tooManyProps",
+            "description": "<p>The request body contains too many properties</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumTitleExists",
+            "description": "<p>There is already an album with that title</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidAlbumTitle",
+            "description": "<p>The album title is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidAlbumDescription",
+            "description": "<p>The album description is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidAlbumAccess",
+            "description": "<p>The album access type is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"albumIdDoesNotExist\": \"album id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Invalid Description",
+          "content": "HTTP/1.1 400\n{\n    \"invalidMetaDescription\": \"meta description is not valid\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/album.js",
+    "groupTitle": "Albums"
+  },
+  {
+    "type": "get",
+    "url": "/users/:user_id/albums",
+    "title": "Get a users albums",
+    "name": "Get_users_albums",
+    "group": "Albums",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "any"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": true,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The users ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "albums",
+            "description": "<p>A list of the users albums</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n[{\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Mexico\",\n       \"people\": \"Friends\"\n   }\n}, {\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Over There\",\n       \"people\": \"Family\"\n   }\n}]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "User Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/album.js",
+    "groupTitle": "Albums"
+  },
+  {
+    "type": "delete",
+    "url": "/albums/{album_id}/remove",
+    "title": "Remove an album",
+    "name": "Remove_an_album",
+    "group": "Albums",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The albums ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumIdDoesNotExist",
+            "description": "<p>The album_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"albumIdDoesNotExist\": \"album id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Unauthorized",
+          "content": "HTTP/1.1 400\n{\n    \"unauthorized\": \"you are not authorized to make the request\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/album.js",
+    "groupTitle": "Albums"
+  },
+  {
+    "type": "post",
     "url": "/test",
     "title": "Create a new test",
     "name": "Create_Test",
@@ -166,23 +1105,23 @@ define({ "api": [
           {
             "group": "Request Body",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "display_name",
-            "description": "<p>The users display name (Optional)</p>"
+            "description": "<p>The users display name</p>"
           },
           {
             "group": "Request Body",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "email",
-            "description": "<p>The users email address (Optional)</p>"
+            "description": "<p>The users email address</p>"
           },
           {
             "group": "Request Body",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "password",
-            "description": "<p>The users password (Optional)</p>"
+            "description": "<p>The users password</p>"
           }
         ]
       },
@@ -233,13 +1172,41 @@ define({ "api": [
             "optional": false,
             "field": "user_id",
             "description": "<p>The registered users ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "display_name",
+            "description": "<p>The users display name</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>The users email address</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "created_at",
+            "description": "<p>The date and time the user was created</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "updated_at",
+            "description": "<p>The date and time the user was updated</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n{\n    \"user_id\": 6534,\n}",
+          "content": " HTTP/1.1 200 OK\n {\n   \"user_id\": 6534,\n   \"display_name\": \"jdoe25\",\n   \"email\": \"john.doe@mail.com\",\n   \"is_admin\": \"false\",\n   \"created_at\": \"2019-11-17 03:41:51\",\n   \"updated_at\": \"2019-11-17 03:41:51\"\n}",
           "type": "json"
         }
       ]
@@ -343,7 +1310,7 @@ define({ "api": [
   {
     "type": "post",
     "url": "/users/{user_id}",
-    "title": "Get a specific user",
+    "title": "Get a single user",
     "name": "Get_specific_user",
     "group": "Users",
     "version": "0.1.0",
@@ -536,6 +1503,33 @@ define({ "api": [
         }
       ]
     },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The registered users ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"user_id\": 6534,\n   \"display_name\": \"jdoe25\",\n   \"email\": \"john.doe@mail.com\",\n   \"is_admin\": false,\n   \"created_at\": \"2019-11-17 03:41:51\",\n   \"updated_at\": \"2019-11-17 03:41:51\",\n   \"token\": \"eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "error": {
       "fields": {
         "Error 4xx": [
@@ -698,7 +1692,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"user_id\": 0,\n   \"token\": \"eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"user_id\": 6534,\n   \"display_name\": \"jdoe25\",\n   \"email\": \"john.doe@mail.com\",\n   \"is_admin\": \"false\",\n   \"created_at\": \"2019-11-17 03:41:51\",\n   \"updated_at\": \"2019-11-17 03:41:51\",\n   \"token\": \"eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
           "type": "json"
         }
       ]
