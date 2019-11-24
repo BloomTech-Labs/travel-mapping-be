@@ -3,11 +3,11 @@ node_js:
   - node
 script:
   - npm run migrate
-  - npm run seed
   - npm test
 notifications:
   email:
     - brandon.g.elzy@gmail.com
   on_success: never
   on_failure: always
-  
+env:
+ - NODE_ENV=testing JWT_SECRET=test PASS_SALT=10
