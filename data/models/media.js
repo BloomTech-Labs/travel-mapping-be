@@ -38,9 +38,6 @@ const createMedia = (user_id, mediaArr, done) => {
             let titleExists      = false;
             let titleIsValid     = true;
             let captionIsValid   = true;
-            // let metaNameIsValid  = true;
-            // let metaValueIsValid = true;
-            // let metaNameExists   = false;
 
             // Validate data and add user_id to media.
             const newMediaArr = mediaArr.map(mediaObj => {

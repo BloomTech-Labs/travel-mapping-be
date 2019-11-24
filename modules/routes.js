@@ -20,8 +20,8 @@ module.exports = {
   removeMetaData:   (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/meta/remove` : '/albums/:album_id/meta/remove'),
 
   // Media
-  getAlbumsMedia: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/media` : '/albums/:album_id/media'), // Send media that belong to an album
-  addAlbumsMedia: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/media/add` : '/albums/:album_id/media/add'),
+  getAlbumsMedia: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/media`   : '/albums/:album_id/media'), // Send media that belong to an album
+  addAlbumsMedia: (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media/add` : '/users/:user_id/media/add'),
   
   // Comments
   getAlbumsComments: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/comments` : '/albums/:album_id/comments'),
