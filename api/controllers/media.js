@@ -22,8 +22,19 @@ const addAlbumsMedia = (req, res, next) => {
 
         if (createMediaErr) next(createMediaErr);
         else {
-          
-          res.status(200).json(createdMediaArr);
+
+          const mediaIdArr = createdMediaArr.map(mediaObj => mediaObj.media_id);
+
+          models.media.createMediaToAlbums(albums, mediaIdArr, (createMediaAlbumErr, createMediaAlbumNum) => {
+
+            if (createMediaAlbumErr) done(createMediaAlbumErr);
+            else {
+
+              res.status(200).json(createdMediaArr);
+
+            }
+
+          });
 
         }
 

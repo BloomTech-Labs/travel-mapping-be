@@ -45,5 +45,6 @@ module.exports = {
   invalidMediaTitle:       'media title is not valid',
   invalidMediaCaption:     'media caption is not valid',
   mediaTitleExists:        'media title already exists',
+  mediaIdDoesNotExist:     'media id does not exist',
 
 };

@@ -55,12 +55,18 @@ const ALBUMS = [{
   access: 'private',
 }, {
   album_id: 2,
+  user_id: 0,
+  title: 'Another title',
+  description: 'Another short description about an album',
+  access: 'private',
+}, {
+  album_id: 3,
   user_id: 2,
   title: 'A title',
   description: 'A short description about an album',
   access: 'public',
 }, {
-  album_id: 3,
+  album_id: 4,
   user_id: 2,
   title: 'Another title',
   description: 'Another short description about an album',
@@ -84,31 +90,106 @@ const ALBUMS_META = [{
   value: 'Mexico',
 }];
 
+const MEDIA = [{
+  media_id: 0,
+  user_id: 0,
+  title: 'Test Photo Title',
+  caption: 'A Photo Caption'
+}, {
+  media_id: 1,
+  user_id: 2,
+  title: 'Another Test Photo Title',
+  caption: 'Another Photo Caption'
+}];
+
+const MEDIA_TO_ALBUMS = [{
+  media_id: 0,
+  album_id: 0,
+}, {
+  media_id: 1,
+  album_id: 3,
+}];
+
+const KEYWORDS = [{
+  keyword_id: 0,
+  name: 'keyword-one',
+}, {
+  keyword_id: 1,
+  name: 'keyword-two',
+}, {
+  keyword_id: 2,
+  name: 'keyword-three',
+}];
+
+const KEYWORDS_TO_MEDIA = [{
+  keyword_id: 0,
+  media_id: 0  
+}, {
+  keyword_id: 1,
+  media_id: 0
+}, {
+  keyword_id: 1,
+  media_id: 1
+}, {
+  keyword_id: 2,
+  media_id: 1
+}];
+
+const MEDIA_META = [{
+  mediaMeta_id: 0,
+  media_id: 0,
+  name: 'Location',
+  value: 'Mexico',
+}, {
+  mediaMeta_id: 1,
+  media_id: 0,
+  name: 'People',
+  value: 'Friends',
+}, {
+  mediaMeta_id: 2,
+  media_id: 1,
+  name: 'Location',
+  value: 'Mexico',
+}];
+
 describe('Media endpoint tests', () => {
 
   describe(`${ routes.addAlbumsMedia() }`, () => {
 
-    beforeEach('clear data in users and albums tables', done => {
+    beforeEach('clear data in users, media, keywords', done => {
       db.select()
         .from('users')
         .del()
         .then(() => {
         
-          db.select()
-            .from('albums')
-            .del()
-            .then(()   => done())
-            .catch(err => done(err));
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => {
+
+              db.select()
+                .from('media')
+                .del()
+                .then(() => {
+
+                  db.select()
+                    .from('keywords')
+                    .del()
+                    .then(()   => done())
+                    .catch(err => done(err));
+
+                }).catch(err => done(err));
+
+            // }).catch(err => done(err));
         
-        })
-        .catch(err => done(err));
+        }).catch(err => done(err));
 
       
     });
 
-    beforeEach('add data to users and albums tables', done => {
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
 
-      db('users').insert(USERS)
+    db('users').insert(USERS)
       .then(userData => {
         
         db('albums').insert(ALBUMS)
@@ -121,8 +202,38 @@ describe('Media endpoint tests', () => {
 
           }).catch(err => done(err));
 
-      })
-      .catch(err => done(err));
+      }).catch(err => done(err));
+
+    });
+
+    beforeEach('create media, keywords, and mediaMeta data', done => {
+
+    db('media').insert(MEDIA)
+      .then(mediaData => {
+
+        db('mediaAlbums').insert(MEDIA_TO_ALBUMS)
+          .then(mediaAlbumsData => {
+
+            db('keywords').insert(KEYWORDS)
+              .then(keywordsData => {
+
+                db('mediaKeywords').insert(KEYWORDS_TO_MEDIA)
+                  .then(keywordsMediaData => {
+
+                    db('mediaMeta').insert(MEDIA_META)
+                      .then(mediaMetaData => {
+
+                        done();
+
+                      }).catch(mediaMetaErr => done(mediaMetaErr));
+
+                  }).catch(keywordsMediaErr => done(keywordsMediaErr));
+
+              }).catch(keywordsErr => done(keywordsErr));
+
+          }).catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+      }).catch(mediaErr => done(mediaErr))
 
     });
 
@@ -134,7 +245,7 @@ describe('Media endpoint tests', () => {
         "media": [{
            "title": "A Photo Title",
            "caption": "A short caption for a photo",
-           "keywords": ["keyword one", "keyword two", "keyword three"],
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
            "meta": [{
               "name": "Location",
               "value": "Mexico"
@@ -142,7 +253,7 @@ describe('Media endpoint tests', () => {
         }, {
            "title": "A Photo Another Title",
            "caption": "Another short caption for a photo",
-           "keywords": ["keyword one", "keyword two", "keyword three"],
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
            "meta": [{
               "name": "People",
               "value": "Family"
@@ -168,8 +279,6 @@ describe('Media endpoint tests', () => {
             .then(createRes => {
 
               try {
-
-                console.log(createRes.body);
 
                 expect(createRes).to.be.json;
                 done();

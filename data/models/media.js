@@ -9,18 +9,55 @@ const returning   = (environment === 'review'  ||
                      environment === 'staging' ||
                      environment === 'production');
 
-const createMediaToAlbums = (user_id, albumArr, mediaDataArr, done) => {
-  // Takes a user ID, an array of album IDs, an array of media
-  // objects and a callback function as arguments. Creates the
-  // media in the database and adds them to each album in the
-  // album array. Passes null and an array of created media
-  // objects to the callback function.
+const createMediaToAlbums = (albumIdArr, mediaIdArr, done) => {
+  // Takes an array of album IDs, an array of media IDs, and a
+  // callback function as parameters. Adds each media ID to
+  // each album ID. Returns null and ? to the callback function.
+
+  if (albumIdArr.length === 0 || mediaIdArr.length === 0) done(null, [0]);
+  else {
+    
+    // Check if albums exist.
+    db('albums').whereIn('album_id', albumIdArr)
+      .select('album_id').then(albumArr => {
+
+        if (albumArr.length !== albumIdArr.length) done(new Error(errors.albumIdDoesNotExist));
+        else {
+
+          // Check if media exists.
+          db('media').whereIn('media_id', mediaIdArr)
+            .select('media_id').then(mediaArr => {
+
+              if (mediaArr.length !== mediaIdArr.length) done(new Error(errors.mediaIdDoesNotExist));
+              else {
+
+                const mediaToAlbums = [];
+                albumIdArr.forEach(album_id => (mediaIdArr.forEach(media_id => mediaToAlbums.push({ album_id, media_id }))));
+
+                // Create mediaToAlbums.
+                db('mediaAlbums').insert(mediaToAlbums)
+                  .then(numArr => {
+
+                    done(null, numArr);
+
+                  }).catch(numErr => done(numErr));
+                
+              }
+
+            }).catch(mediaErr => done(mediaErr));
+
+        }
+
+      }).catch(albumErr => done(albumErr));
+  }
+
+  
 
 };
 
 const createMedia = (user_id, mediaArr, done) => {
   // Takes a user ID, an array of media objects, and a 
-  // callback function as arguments. Creates the media in 
+  // callback function as parameters. Creates the media in 
   // the database and passes an array of media objects and 
   // null to the callback function.
 
@@ -80,6 +117,12 @@ const createMedia = (user_id, mediaArr, done) => {
       }
 
     }).catch(userIdErr => done(userIdErr));
+
+};
+
+const createKeywords = (keywordsArr, done) => {
+
+  
 
 };
 

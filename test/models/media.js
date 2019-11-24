@@ -154,6 +154,172 @@ const MEDIA_META = [{
 
 describe('Testing media models', () => {
 
+  describe('createMediaToAlbums model', () => {
+
+    beforeEach('clear data in users, media, keywords', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => {
+
+              db.select()
+                .from('media')
+                .del()
+                .then(() => {
+
+                  db.select()
+                    .from('keywords')
+                    .del()
+                    .then(()   => done())
+                    .catch(err => done(err));
+
+                }).catch(err => done(err));
+
+            // }).catch(err => done(err));
+        
+        }).catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+    db('users').insert(USERS)
+      .then(userData => {
+        
+        db('albums').insert(ALBUMS)
+          .then(albumData => {
+
+            db('albumsMeta').insert(ALBUMS_META)
+              .then(albumsMetaData => {
+                done()
+              }).catch(albumsMetaErr => done(albumsMetaErr));
+
+          }).catch(err => done(err));
+
+      }).catch(err => done(err));
+
+    });
+
+    beforeEach('create media, keywords, and mediaMeta data', done => {
+
+    db('media').insert(MEDIA)
+      .then(mediaData => {
+
+        db('mediaAlbums').insert(MEDIA_TO_ALBUMS)
+          .then(mediaAlbumsData => {
+
+            db('keywords').insert(KEYWORDS)
+              .then(keywordsData => {
+
+                db('mediaKeywords').insert(KEYWORDS_TO_MEDIA)
+                  .then(keywordsMediaData => {
+
+                    db('mediaMeta').insert(MEDIA_META)
+                      .then(mediaMetaData => {
+
+                        done();
+
+                      }).catch(mediaMetaErr => done(mediaMetaErr));
+
+                  }).catch(keywordsMediaErr => done(keywordsMediaErr));
+
+              }).catch(keywordsErr => done(keywordsErr));
+
+          }).catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+      }).catch(mediaErr => done(mediaErr))
+
+    });
+
+    it('should pass null to a callback function after creating the data', done => {
+
+      const media  = [0, 1];
+      const albums = [0, 1, 2];
+
+      models.media.createMediaToAlbums(albums, media, (createErr, mediaToAlbumsArr) => {
+
+        try {
+
+          expect(createErr).to.equal(null);
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass null to a callback function after creating the data', done => {
+
+      const media  = [0, 1];
+      const albums = [];
+
+      models.media.createMediaToAlbums(albums, media, (createErr, mediaToAlbumsArr) => {
+
+        try {
+
+          expect(createErr).to.equal(null);
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when an album ID does not exist', done => {
+
+      const media  = [0, 1];
+      const albums = [0, 1, 2, 404];
+
+      models.media.createMediaToAlbums(albums, media, (createErr, mediaToAlbumsArr) => {
+
+        try {
+
+          expect(createErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when a media ID does not exist', done => {
+
+      const media  = [0, 1, 404];
+      const albums = [0, 1, 2];
+
+      models.media.createMediaToAlbums(albums, media, (createErr, mediaToAlbumsArr) => {
+
+        try {
+
+          expect(createErr).to.be.an('error');
+          done();
+
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+  });
+
   describe('createMedia model', () => {
 
     beforeEach('clear data in users, media, keywords', done => {

@@ -44,7 +44,7 @@ const api         = { ...controllers, ...middleware };
  *          "media": [{
  *             "title": "A Photo Title",
  *             "caption": "A short caption for a photo",
- *             "keywords": ["keyword one", "keyword two", "keyword three"],
+ *             "keywords": ["keyword-one", "keyword-two", "keyword-three"],
  *             "meta": [{
  *                "name": "Location",
  *                "value": "Mexico"
@@ -52,7 +52,7 @@ const api         = { ...controllers, ...middleware };
  *          }, {
  *             "title": "A Photo Another Title",
  *             "caption": "Another short caption for a photo",
- *             "keywords": ["keyword one", "keyword two", "keyword three"],
+ *             "keywords": ["keyword-one", "keyword-two", "keyword-three"],
  *             "meta": [{
  *                "name": "People",
  *                "value": "Family"
@@ -73,7 +73,7 @@ const api         = { ...controllers, ...middleware };
  *        "albums": [0, 1, 2, 3],
  *        "title": "A Photo Title",
  *        "caption": "A short caption for a photo",
- *        "keywords": ["keyword one", "keyword two", "keyword three"],
+ *        "keywords": ["keyword-one", "keyword-two", "keyword-three"],
  *        "meta": {
  *            "Location": "Mexico",
  *        }
@@ -85,7 +85,7 @@ const api         = { ...controllers, ...middleware };
  *        "albums": [0, 1, 2, 3],
  *        "title": "A Photo Another Title",
  *        "caption": "A short caption for another photo",
- *        "keywords": ["keyword one", "keyword two", "keyword three"],
+ *        "keywords": ["keyword-one", "keyword-two", "keyword-three"],
  *        "meta": {
  *            "People": "Family",
  *            "Meta Name": "Meta Value"

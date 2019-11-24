@@ -20,10 +20,10 @@ exports.up = function(knex) {
     table.bigInteger('cover_id')
       .unsigned()
       // .notNullable()
-      .references('media_id')
-      .inTable('media')
-      .onUpdate('CASCADE')
-      .onDelete('CASCADE');
+      // .references('media_id')
+      // .inTable('media')
+      // .onUpdate('CASCADE')
+      // .onDelete('CASCADE');
 
     // access
     table.enu('access', ['public', 'private'])

@@ -1028,7 +1028,7 @@
       "examples": [
         {
           "title": "Example Request",
-          "content": "/users/6542/media/add\n{\n    \"albums\": [0, 1, 2, 3],\n    \"media\": [{\n       \"title\": \"A Photo Title\",\n       \"caption\": \"A short caption for a photo\",\n       \"keywords\": [\"keyword one\", \"keyword two\", \"keyword three\"],\n       \"meta\": [{\n          \"name\": \"Location\",\n          \"value\": \"Mexico\"\n       }]\n    }, {\n       \"title\": \"A Photo Another Title\",\n       \"caption\": \"Another short caption for a photo\",\n       \"keywords\": [\"keyword one\", \"keyword two\", \"keyword three\"],\n       \"meta\": [{\n          \"name\": \"People\",\n          \"value\": \"Family\"\n       }, {\n          \"name\": \"Meta Name\",\n          \"value\": \"Meta Value\"\n       }]\n    }]\n}",
+          "content": "/users/6542/media/add\n{\n    \"albums\": [0, 1, 2, 3],\n    \"media\": [{\n       \"title\": \"A Photo Title\",\n       \"caption\": \"A short caption for a photo\",\n       \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n       \"meta\": [{\n          \"name\": \"Location\",\n          \"value\": \"Mexico\"\n       }]\n    }, {\n       \"title\": \"A Photo Another Title\",\n       \"caption\": \"Another short caption for a photo\",\n       \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n       \"meta\": [{\n          \"name\": \"People\",\n          \"value\": \"Family\"\n       }, {\n          \"name\": \"Meta Name\",\n          \"value\": \"Meta Value\"\n       }]\n    }]\n}",
           "type": "json"
         }
       ]
@@ -1068,7 +1068,7 @@
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword one\", \"keyword two\", \"keyword three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword one\", \"keyword two\", \"keyword three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
+          "content": "HTTP/1.1 201 CREATED\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
           "type": "json"
         }
       ]
