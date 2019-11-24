@@ -575,4 +575,164 @@ describe('Testing the validation module functions', () => {
 
   });
 
+  describe('mediaCaption function', () => {
+
+    it('should return true when the caption is valid', () => {
+
+      const validCaption = 'valid description';
+
+      expect(validate.mediaCaption(validCaption)).to.equal(true);
+
+    });
+
+    it('should return false when the caption is more than 300 characters', () => {
+
+      let invalidCaption;
+
+      for(let i = 0; i !== 50; i++) invalidCaption += 'abc123';
+
+      expect(validate.mediaCaption(invalidCaption)).to.equal(false);
+
+    });
+
+    it('should return false when the caption is not a string', () => {
+
+      const invalidCaption = 12345;
+
+      expect(validate.mediaCaption(invalidCaption)).to.equal(false);
+
+    });
+
+  });
+
+  describe('mediaTitle function', () => {
+
+    it('should return true when the title is valid', () => {
+
+      const validTitle = 'valid title';
+
+      expect(validate.mediaTitle(validTitle)).to.equal(true);
+
+    });
+
+    it('should return false when the title is more than 120 characters', () => {
+
+      let invalidTitle;
+
+      for(let i = 0; i < 20; i++) invalidTitle += 'abc123';
+
+      expect(validate.mediaTitle(invalidTitle)).to.equal(false);
+
+    });
+
+    it('should return false when the title is not a string', () => {
+
+      const invalidTitle = 12345;
+
+      expect(validate.mediaTitle(invalidTitle)).to.equal(false);
+
+    });
+
+  });
+
+  describe('addMediaProps function', () => {
+
+    it('should return true when the properties are valid', () => {
+
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword one", "keyword two", "keyword three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword one", "keyword two", "keyword three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      expect(validate.addMediaProps(media)).to.equal(true);
+
+    });
+
+    it(`should return ${ errors.noPropsFound } when no props are passed`, () => {
+
+      expect(validate.addMediaProps({})).to.equal(errors.noPropsFound);
+
+    });
+
+    it(`should return ${ errors.invalidProps } when invalid props are passed`, () => {
+
+      const media = {
+        invalidProp: 'not valid',
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword one", "keyword two", "keyword three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword one", "keyword two", "keyword three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      expect(validate.addMediaProps(media)).to.equal(errors.invalidProps);
+
+    });
+
+    it(`should return ${ errors.invalidProps } when invalid props are passed`, () => {
+
+      const media = {
+        
+        "albums": [0, 1, 2, 3],
+        "media": [{
+          invalidProp: 'not valid',
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword one", "keyword two", "keyword three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword one", "keyword two", "keyword three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      expect(validate.addMediaProps(media)).to.equal(errors.invalidProps);
+
+    });
+
+  });
+
 });

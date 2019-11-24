@@ -137,6 +137,70 @@ const editAlbumProps = (albumObj) => {
   else                     return true;
 };
 
+const addMediaProps = (mediaObj) => {
+  // Verifies that the media data object contains the required properties.
+  // Takes a media data object as an argument. Returns true if the data
+  // is valid or an error message describing the invalid data.
+
+  const validBodyProps  = ['albums', 'media'];
+  const validMediaProps = ['title', 'caption', 'keywords', 'meta'];
+  const validMetaProps  = ['name', 'value'];
+
+  const bodyProps = Object.keys(mediaObj) || [];
+  const mediaArr  = mediaObj.media        || [];
+
+  let noPropsFound  = false;
+  let invalidProps  = false;
+  let missingAlbums = false;
+  let missingMedia  = false;
+  let missingTitle  = false;
+  let missingName   = false;
+  let missingValue  = false;
+  let tooManyProps  = false;
+
+  (bodyProps.length === 0)        && (noPropsFound  = true);
+  (!bodyProps.includes('albums')) && (missingAlbums = true);
+  (!bodyProps.includes('media'))  && (missingMedia  = true);
+  (bodyProps.length > validBodyProps.length) && (tooManyProps = true);
+  bodyProps.forEach(prop => (!validBodyProps.includes(prop) && (invalidProps = true)));
+
+  mediaArr.forEach(media => {
+
+    const mediaProps = Object.keys(media);
+    
+    (!mediaProps.includes('title')) && (missingTitle = true);
+    (mediaProps.length > validMediaProps.length) && (tooManyProps = true);
+    mediaProps.forEach(prop => (!validMediaProps.includes(prop)) && (invalidProps = true));
+    
+    if (typeof media.meta !== 'undefined') {
+      
+      media.meta.forEach(meta => {
+        
+        const metaProps = Object.keys(meta);
+        
+        (!metaProps.includes('name'))  && (missingName  = true);
+        (!metaProps.includes('value')) && (missingValue = true);
+        (metaProps.length > validMetaProps.length) && (tooManyProps = true);
+        metaProps.forEach(prop => (!validMetaProps.includes(prop)) && (invalidProps = true));
+        
+      });
+      
+    }
+    
+  });
+  
+  if (noPropsFound)       return errors.noPropsFound;
+  else if (invalidProps)  return errors.invalidProps;
+  else if (missingAlbums) return errors.missingAlbums;
+  else if (missingMedia)  return errors.missingMedia;
+  else if (missingTitle)  return errors.missingMediaTitle;
+  else if (missingName)   return errors.missingMetaName;
+  else if (missingValue)  return errors.missingMetaValue;
+  else if (tooManyProps)  return errors.tooManyProps;
+  else                    return true;
+
+};
+
 // Models
 const displayName = (name) => {
 
@@ -230,6 +294,26 @@ const metaValue = (value) => {
 
 };
 
+const mediaTitle = (title) => {
+  // Validates a media title. Takes a title string
+  // as an argument. Returns true or false.
+
+  if (typeof title !== 'string') return false;
+  else if (title.length > 120)   return false;
+  else                           return true;
+
+};
+
+const mediaCaption = (caption) => {
+  // Validates a media caption. Takes a description 
+  // string as an argument. Returns true or false.
+
+  if (typeof caption !== 'string') return false;
+  else if (caption.length > 300)   return false;
+  else                             return true;
+
+};
+
 module.exports = {
   registerUserData,
   loginUserData,
@@ -243,4 +327,7 @@ module.exports = {
   metaValue,
   addAlbumMetaData,
   editAlbumProps,
+  mediaTitle,
+  mediaCaption,
+  addMediaProps,
 };

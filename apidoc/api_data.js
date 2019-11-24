@@ -415,7 +415,7 @@ define({ "api": [
             "type": "Object",
             "optional": false,
             "field": "userIdDoesNotExist",
-            "description": "<p>The user_id does not exist in the database</p>"
+            "description": "<p>The user ID does not exist in the database</p>"
           },
           {
             "group": "Error 4xx",
@@ -937,6 +937,276 @@ define({ "api": [
     },
     "filename": "api/routes/album.js",
     "groupTitle": "Albums"
+  },
+  {
+    "type": "post",
+    "url": "/users/{user_id}/media/add",
+    "title": "Add media to albums",
+    "name": "Add_media",
+    "group": "Media",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner collaborator"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The users ID</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "Integer[]",
+            "optional": false,
+            "field": "albums",
+            "description": "<p>A list of album IDs</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Object[]",
+            "optional": false,
+            "field": "media",
+            "description": "<p>A list of media objects</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "2-120",
+            "optional": false,
+            "field": "media[title]",
+            "description": "<p>A title for the media</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Text",
+            "size": "0-300",
+            "optional": true,
+            "field": "media[caption]",
+            "description": "<p>A caption for the media</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String[]",
+            "size": "2-120",
+            "optional": true,
+            "field": "media[keywords]",
+            "description": "<p>A list of keywords describing the media</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Object[]",
+            "optional": true,
+            "field": "media[meta]",
+            "description": "<p>A list of meta data objects</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "2-120",
+            "optional": false,
+            "field": "meta[name]",
+            "description": "<p>The name of the meta field</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "2-300",
+            "optional": false,
+            "field": "meta[value]",
+            "description": "<p>The value of the meta field</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/users/6542/media/add\n{\n    \"albums\": [0, 1, 2, 3],\n    \"media\": [{\n       \"title\": \"A Photo Title\",\n       \"caption\": \"A short caption for a photo\",\n       \"keywords\": [\"keyword one\", \"keyword two\", \"keyword three\"],\n       \"meta\": [{\n          \"name\": \"Location\",\n          \"value\": \"Mexico\"\n       }]\n    }, {\n       \"title\": \"A Photo Another Title\",\n       \"caption\": \"Another short caption for a photo\",\n       \"keywords\": [\"keyword one\", \"keyword two\", \"keyword three\"],\n       \"meta\": [{\n          \"name\": \"People\",\n          \"value\": \"Family\"\n       }, {\n          \"name\": \"Meta Name\",\n          \"value\": \"Meta Value\"\n       }]\n    }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "media",
+            "description": "<p>A list of uploaded media</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 201 CREATED\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword one\", \"keyword two\", \"keyword three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword one\", \"keyword two\", \"keyword three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n}]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "noPropsFound",
+            "description": "<p>No properties were sent with the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidProps",
+            "description": "<p>The properties on the request body are not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumIdDoesNotExist",
+            "description": "<p>The album ID does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "mediaTitleExists",
+            "description": "<p>The media title already exists</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "metaNameExists",
+            "description": "<p>A meta field with that name already exists</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMediaTitle",
+            "description": "<p>The media title is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMediaDescription",
+            "description": "<p>The media description is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidKeywords",
+            "description": "<p>The keywords are not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMetaName",
+            "description": "<p>The meta field name is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMetaValue",
+            "description": "<p>The meta field value is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingAlbums",
+            "description": "<p>Request body is missing the required albums property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingMedia",
+            "description": "<p>Request body is missing the required media property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingTitle",
+            "description": "<p>Request body is missing the required title property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingName",
+            "description": "<p>Request body is missing the required name property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingValue",
+            "description": "<p>Request body is missing the required value property</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      }
+    },
+    "filename": "api/routes/media.js",
+    "groupTitle": "Media"
   },
   {
     "type": "post",
@@ -1630,7 +1900,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "type",
-            "description": "<p>Required. The type of user registration. Options: email, google, facebook, twitter</p>"
+            "description": "<p>The type of user registration. Options: email, google, facebook, twitter</p>"
           }
         ],
         "Request Body": [

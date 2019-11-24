@@ -11,7 +11,8 @@ const PORT        = process.env.PORT     || 4000;
 const environment = process.env.NODE_ENV || 'development';
 
 const fileUpload = require('express-fileupload')({
-  useTempFiles: true
+  useTempFiles: true,
+  tempFileDir: './tmp_img',
 });
 
 // Declare variables.
