@@ -122,6 +122,7 @@ const createMedia = (user_id, mediaArr, done) => {
 
 const createKeywords = (keywordsArr, done) => {
 
+
   
 
 };
