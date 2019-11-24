@@ -21,8 +21,8 @@ const createMediaToAlbums = (user_id, albumArr, mediaDataArr, done) => {
 const createMedia = (user_id, mediaArr, done) => {
   // Takes a user ID, an array of media objects, and a 
   // callback function as arguments. Creates the media in 
-  // the database and passes an array of media IDs and null 
-  // to the callback function.
+  // the database and passes an array of media objects and 
+  // null to the callback function.
 
   // Check if user id exists.
   db('users').where({ user_id })
