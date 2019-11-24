@@ -77,6 +77,8 @@ const api         = { ...controllers, ...middleware };
  *        "meta": {
  *            "Location": "Mexico",
  *        }
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:42:57"
  *      }, {
  *        "media_id": 1,
  *        "user_id": 6542,
@@ -88,6 +90,8 @@ const api         = { ...controllers, ...middleware };
  *            "People": "Family",
  *            "Meta Name": "Meta Value"
  *        }
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:42:57"
  *     }]
  * 
  *   @apiError {Object} noPropsFound No properties were sent with the request

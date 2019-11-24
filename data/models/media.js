@@ -33,16 +33,16 @@ const createMedia = (user_id, mediaArr, done) => {
 
         // Get media titles
         db('media').where({ user_id })
-          .select('title').then(titleArr => {
-          
-            let titleExists      = false;
-            let titleIsValid     = true;
-            let captionIsValid   = true;
+          .select().then(titleArr => {
+
+            let titleExists    = false;
+            let titleIsValid   = true;
+            let captionIsValid = true;
 
             // Validate data and add user_id to media.
             const newMediaArr = mediaArr.map(mediaObj => {
               
-              titleArr.forEach(mediaTitle => (title === mediaTitle) && (titleExists = true));
+              titleArr.forEach(mediaTitle => (mediaObj.title === mediaTitle.title) && (titleExists = true));
               
               if (!validate.mediaTitle(mediaObj.title))     titleIsValid   = false;
               if (!validate.mediaCaption(mediaObj.caption)) captionIsValid = false;
