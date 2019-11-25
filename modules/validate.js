@@ -1,4 +1,5 @@
 const passwordValidator = require('password-validator');
+const validator         = require('validator');
 const bcrypt            = require('bcrypt');
 const errors            = require('./errors');
 
@@ -314,6 +315,18 @@ const mediaCaption = (caption) => {
 
 };
 
+const keyword = (keyword) => {
+  // Takes a keyword string as a parameter.
+  // Returns true or false.
+
+  if (typeof keyword !== 'string')      return false;
+  if (keyword.length < 2)               return false;
+  if (keyword.length > 120)             return false;
+  if (validator.contains(keyword, ' ')) return false;
+  else                                  return true;
+
+};
+
 module.exports = {
   registerUserData,
   loginUserData,
@@ -330,4 +343,5 @@ module.exports = {
   mediaTitle,
   mediaCaption,
   addMediaProps,
+  keyword,
 };

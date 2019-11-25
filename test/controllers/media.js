@@ -280,6 +280,8 @@ describe('Media endpoint tests', () => {
 
               try {
 
+                console.log(createRes.body);
+
                 expect(createRes).to.be.json;
                 done();
 

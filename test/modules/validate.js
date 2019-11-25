@@ -1072,4 +1072,50 @@ describe('Testing the validation module functions', () => {
 
   });
 
+  describe('keyword function', () => {
+
+    it('should return true when the keyword is valid', () => {
+
+      const keyword = 'valid-keyword';
+
+      expect(validate.keyword(keyword)).to.equal(true);
+
+    });
+
+    it('should return false when the keyword is not a string', () => {
+
+      const keyword = 5432;
+
+      expect(validate.keyword(keyword)).to.equal(false);
+
+    });
+
+    it('should return false when the keyword is less than 2 characters', () => {
+
+      const keyword = 'k';
+
+      expect(validate.keyword(keyword)).to.equal(false);
+
+    });
+
+    it('should return false when the keyword is more than 120 characters', () => {
+
+      let keyword = 'too-long';
+
+      for (let i = 0; i < 16; i++) keyword += 'too-long';
+
+      expect(validate.keyword(keyword)).to.equal(false);
+
+    });
+
+    it('should return false when the keyword contains spaces', () => {
+
+      let keyword = 'not valid';
+
+      expect(validate.keyword(keyword)).to.equal(false);
+
+    });
+
+  });
+
 });
