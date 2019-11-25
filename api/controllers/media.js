@@ -5,7 +5,7 @@ const jwt      = require('jsonwebtoken');
 
 const addAlbumsMedia = (req, res, next) => {
   
-  // console.log(req.files)
+  // console.log(req.body)
 
   const errorMsgOrTrue = validate.addMediaProps(req.body);
 
@@ -47,17 +47,23 @@ const addAlbumsMedia = (req, res, next) => {
 
                       const mediaMetaArr = media.map(mediaObj => mediaObj.meta);
 
-                      console.log(mediaMetaArr);
-                      // console.log(mediaIdArr);
-                      // console.log(keywordsIdArr);
-  
-                      res.status(200).json(keywordsObjArr);
+                      models.media.createManyMediaMeta(mediaIdArr, mediaMetaArr, (createErr, mediaMetaData) => {
+
+                        if (createErr) done(createErr);
+                        else {
+
+                          // Create media response body.
+                          const media = createdMediaArr.map((mediaObj, i) => Object.assign({}, mediaObj, { albums, keywords: keywords[i], meta: mediaMetaData[i] }));
+
+                          res.status(200).json(media);
+
+                        }
+
+                      });
 
                     }
                     
-
                   });
-
 
                 }
 

@@ -295,7 +295,7 @@ const createManyMediaMeta = (mediaIdArr, mediaMetaArr, done) => {
                 .then(mediaMetaNum => {
 
                   // Convert name and value props to a single prop.
-                  const mediaMetaObjArr = mediaMetaArr.map(metaObjArr => metaObjArr.map(metaObj => ({ [metaObj.name]: metaObj.value })));
+                  const mediaMetaObjArr = mediaMetaArr.map(metaObjArr => metaObjArr.reduce((obj, metaObj) => Object.assign({}, obj, { [metaObj.name]: metaObj.value }), {}));
 
                   done(null, mediaMetaObjArr);
 
