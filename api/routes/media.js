@@ -117,7 +117,7 @@ const api         = { ...controllers, ...middleware };
  * 
  */
 // #endregion
-router.post(routes.addAlbumsMedia(), api.media.addAlbumsMedia, sentryError);
+router.post(routes.addAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermission, api.media.addAlbumsMedia, sentryError);
 
 // Error handler.
 router.use((err, req, res, next) => {

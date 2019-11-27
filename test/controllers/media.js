@@ -1859,7 +1859,7 @@ describe('Media endpoint tests', () => {
 
     it('should respond with a 404 status code when the user ID does not exist', done => {
 
-      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { user_id, email, password } = Object.assign({}, USERS[2], { password: PASS });
       const media = {
         "albums": [0, 1, 2, 3],
         "media": [{
@@ -1915,7 +1915,7 @@ describe('Media endpoint tests', () => {
 
     it('should respond with an userIdDoesNotExist property when the user ID does not exist', done => {
 
-      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { user_id, email, password } = Object.assign({}, USERS[2], { password: PASS });
       const media = {
         "albums": [0, 1, 2, 3],
         "media": [{
@@ -2195,7 +2195,7 @@ describe('Media endpoint tests', () => {
         }).catch(loginErr => done(loginErr));
   
     });
-
+    
     it('should respond with a 401 status code when the user is not the owner or admin', done => {
 
       const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
@@ -2220,7 +2220,7 @@ describe('Media endpoint tests', () => {
               "name": "People",
               "value": "Family"
            }, {
-              "name": "People",
+              "name": "Meta Name",
               "value": "Meta Value"
            }]
       }]};
@@ -2279,7 +2279,7 @@ describe('Media endpoint tests', () => {
               "name": "People",
               "value": "Family"
            }, {
-              "name": "People",
+              "name": "Meta Name",
               "value": "Meta Value"
            }]
       }]};
@@ -2338,7 +2338,7 @@ describe('Media endpoint tests', () => {
               "name": "People",
               "value": "Family"
            }, {
-              "name": "People",
+              "name": "Meta Name",
               "value": "Meta Value"
            }]
       }]};
@@ -2360,7 +2360,7 @@ describe('Media endpoint tests', () => {
 
               try {
 
-                expect(createRes).to.haveOwnProperty('unauthorized');
+                expect(createRes).to.have.status(201);
                 done();
 
               } catch (err) {
