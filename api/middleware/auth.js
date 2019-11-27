@@ -35,6 +35,7 @@ const verifyPermission = (req, res, next) => {
 
     switch(req.route.path) {
 
+      case routes.addAlbumsMedia():
       case routes.createAlbum():
       case routes.removeUser():
       case routes.editUser():

@@ -174,6 +174,9 @@ router.use((err, req, res, next) => {
     case errors.repeatedMetaName:
       res.status(400).json({ repeatedMetaName: errors.repeatedMetaName });
         break;
+    case errors.unauthorized:
+      res.status(401).json({ unauthorized: errors.unauthorized });
+        break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });
         break;

@@ -2196,6 +2196,183 @@ describe('Media endpoint tests', () => {
   
     });
 
+    it('should respond with a 401 status code when the user is not the owner or admin', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }, {
+            "name": "People",
+            "value": "Meta Value"
+          }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "People",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(1))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(401);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an unauthorized property when the user is not the owner or admin', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }, {
+            "name": "People",
+            "value": "Meta Value"
+          }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "People",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(1))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.haveOwnProperty('unauthorized');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 201 status code when the user is not the owner but is admin', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[2], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }, {
+            "name": "People",
+            "value": "Meta Value"
+          }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "People",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(0))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.haveOwnProperty('unauthorized');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
   });
 
 });
