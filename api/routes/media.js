@@ -77,6 +77,7 @@ const api         = { ...controllers, ...middleware };
  *        "meta": {
  *            "Location": "Mexico",
  *        }
+ *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title",
  *        "created_at": "2019-11-06 18:42:57",
  *        "updated_at": "2019-11-06 18:42:57"
  *      }, {
@@ -90,6 +91,7 @@ const api         = { ...controllers, ...middleware };
  *            "People": "Family",
  *            "Meta Name": "Meta Value"
  *        }
+ *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/Another%20Photo%20Title",
  *        "created_at": "2019-11-06 18:42:57",
  *        "updated_at": "2019-11-06 18:42:57"
  *     }]
@@ -99,7 +101,7 @@ const api         = { ...controllers, ...middleware };
  *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
  *   @apiError {Object} albumIdDoesNotExist The album ID does not exist in the database
  *   @apiError {Object} mediaTitleExists The media title already exists
- *   @apiError {Object} metaNameExists A meta field with that name already exists
+ *   @apiError {Object} repeatedMetaName The meta object already contains the meta name
  *   @apiError {Object} invalidMediaTitle The media title is not valid
  *   @apiError {Object} invalidMediaDescription The media description is not valid
  *   @apiError {Object} invalidKeywords The keywords are not valid
@@ -108,8 +110,8 @@ const api         = { ...controllers, ...middleware };
  *   @apiError {Object} missingAlbums Request body is missing the required albums property
  *   @apiError {Object} missingMedia Request body is missing the required media property
  *   @apiError {Object} missingTitle Request body is missing the required title property
- *   @apiError {Object} missingName Request body is missing the required name property
- *   @apiError {Object} missingValue Request body is missing the required value property
+ *   @apiError {Object} missingMetaName Request body is missing the required name property
+ *   @apiError {Object} missingMetaValue Request body is missing the required value property
  *   @apiError {Object} unauthorized You are not authorized to make the request
  *   @apiError {Object} serverError Internal server error
  * 
@@ -121,7 +123,57 @@ router.post(routes.addAlbumsMedia(), api.media.addAlbumsMedia, sentryError);
 router.use((err, req, res, next) => {
 
   switch (err.message) {
-
+    case errors.albumIdDoesNotExist:
+      res.status(404).json({ albumIdDoesNotExist: errors.albumIdDoesNotExist });
+        break;
+    case errors.missingAlbums:
+      res.status(400).json({ missingAlbums: errors.missingAlbums });
+        break;
+    case errors.missingMedia:
+        res.status(400).json({ missingMedia: errors.missingMedia });
+          break;
+    case errors.missingMediaTitle:
+        res.status(400).json({ missingMediaTitle: errors.missingMediaTitle });
+          break;
+    case errors.invalidMediaTitle:
+      res.status(400).json({ invalidMediaTitle: errors.invalidMediaTitle });
+        break;
+    case errors.invalidMediaCaption:
+      res.status(400).json({ invalidMediaCaption: errors.invalidMediaCaption });
+        break;
+    case errors.invalidKeywords:
+      res.status(400).json({ invalidKeywords: errors.invalidKeywords });
+        break;
+    case errors.invalidMetaName:
+      res.status(400).json({ invalidMetaName: errors.invalidMetaName });
+        break;
+    case errors.invalidMetaValue:
+      res.status(400).json({ invalidMetaValue: errors.invalidMetaValue });
+        break;
+    case errors.missingMetaName:
+      res.status(400).json({ missingMetaName: errors.missingMetaName });
+        break;
+    case errors.missingMetaValue:
+      res.status(400).json({ missingMetaValue: errors.missingMetaValue });
+        break;
+    case errors.noPropsFound:
+      res.status(400).json({ noPropsFound: errors.noPropsFound });
+        break;
+    case errors.invalidProps:
+      res.status(400).json({ invalidProps: errors.invalidProps });
+        break;
+    case errors.userIdDoesNotExist:
+      res.status(404).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
+        break;
+    case errors.mediaTitleExists:
+      res.status(400).json({ mediaTitleExists: errors.mediaTitleExists });
+        break;
+    case errors.metaFieldExists:
+      res.status(400).json({ metaFieldExists: errors.metaFieldExists });
+        break;
+    case errors.repeatedMetaName:
+      res.status(400).json({ repeatedMetaName: errors.repeatedMetaName });
+        break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });
         break;

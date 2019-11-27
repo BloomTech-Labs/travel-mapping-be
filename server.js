@@ -12,7 +12,7 @@ const environment = process.env.NODE_ENV || 'development';
 
 const fileUpload = require('express-fileupload')({
   useTempFiles: true,
-  tempFileDir: './tmp_img',
+  // tempFileDir: './tmp_img',
 });
 
 // Declare variables.

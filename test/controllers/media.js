@@ -293,6 +293,1909 @@ describe('Media endpoint tests', () => {
   
     });
 
+    it('should respond with a 201 status code', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(201);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 201 status code when no album IDs are given', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(201);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the request does not contain an albums property', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        // "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a missingAlbums property when the request does not contain an albums property', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        // "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('missingAlbums');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the request does not contain a media property', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3]
+      };
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a missingMedia property when the request does not contain a media property', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3]
+      };
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('missingMedia');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 404 status code when an album does not exist', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3, 404],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(404);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an albumIdDoesNotExist property when an album does not exist', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3, 404],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('albumIdDoesNotExist');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the request does not contain a media title', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+          //  "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an missingMediaTitle property when an album does not exist', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+          //  "title": "A Photo Title",
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('missingMediaTitle');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the media title is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": 1234,
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an invalidMediaTitle property when the media title is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": 1234,
+           "caption": "A short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('invalidMediaTitle');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the media caption is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": 1234,
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an invalidMediaCaption property when the media caption is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": 1234,
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('invalidMediaCaption');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when a media keyword is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": [1234, "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an invalidKeywords property when a media keyword', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "not valid", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('invalidKeywords');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when a media meta name is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": 1234,
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an invalidMetaName property when a media meta name is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('invalidMetaName');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when a media meta name is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": 1234,
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an invalidMetaName property when a media meta name is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('invalidMetaName');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when a media meta value is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": 1234
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an invalidMetaValue property when a media meta value is not valid', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": 1234
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('invalidMetaValue');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the request is missing the meta name property', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              // "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an missingMetaName property when the request is missing the meta name property', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              // "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('missingMetaName');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the request is missing the meta value property', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              // "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an missingMetaValue property when the request is missing the meta value property', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              // "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('missingMetaValue');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when no props were sent with request', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an noPropsFound property when no props were sent with request', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('noPropsFound');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when invalid props were sent with request', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        invalidProp: 'not valid',
+        invalidProp: 'not valid',
+      };
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an invalidProps property when no props were sent with request', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        invalidProp: 'not valid',
+        invalidProp: 'not valid',
+      };
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('invalidProps');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 404 status code when the user ID does not exist', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(404))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(404);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an userIdDoesNotExist property when the user ID does not exist', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(404))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('userIdDoesNotExist');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the media title already exists', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "Test Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an mediaTitleExists property when the media title already exists', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "Test Photo Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "Meta Name",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('mediaTitleExists');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with a 400 status code when the meta names are the same', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "People",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes).to.have.status(400);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
+    it('should respond with an repeatedMetaName property when the meta names are the same', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const media = {
+        "albums": [0, 1, 2, 3],
+        "media": [{
+           "title": "A Photo Title",
+           "caption": "A photo caption",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "Location",
+              "value": "Mexico"
+           }, {
+            "name": "People",
+            "value": "Meta Value"
+          }]
+        }, {
+           "title": "A Photo Another Title",
+           "caption": "Another short caption for a photo",
+           "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+           "meta": [{
+              "name": "People",
+              "value": "Family"
+           }, {
+              "name": "People",
+              "value": "Meta Value"
+           }]
+      }]};
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+          const { token } = loginRes.body;
+
+          // Create media.
+          chai.request(server)
+            .post(routes.addAlbumsMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .send(media)
+            .then(createRes => {
+
+              try {
+
+                expect(createRes.body).to.haveOwnProperty('repeatedMetaName');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+  
+    });
+
   });
 
 });

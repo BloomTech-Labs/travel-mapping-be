@@ -82,7 +82,7 @@ const createMedia = (user_id, mediaArr, done) => {
               titleArr.forEach(mediaTitle => (mediaObj.title === mediaTitle.title) && (titleExists = true));
               
               if (!validate.mediaTitle(mediaObj.title))     titleIsValid   = false;
-              if (!validate.mediaCaption(mediaObj.caption)) captionIsValid = false;
+              if (mediaObj.caption && !validate.mediaCaption(mediaObj.caption)) captionIsValid = false;
 
               return Object.assign({}, mediaObj, { user_id });
             });
@@ -128,11 +128,13 @@ const createManyKeywords = (keywordsArr, done) => {
   // callback function.
   
   let invalidKeywords = false;
-  
+  let keywordsLength = keywordsArr.reduce((num, arr) => (num + arr.length), 0);
+
   // Validate the keywords.
   keywordsArr.forEach(keywordArr => (keywordArr.forEach(keyword => (!validate.keyword(keyword)) && (invalidKeywords = true))));
   
-  if (invalidKeywords) done(new Error(errors.invalidKeywords));
+  if (keywordsLength === 0) done(null, [[]]);
+  else if (invalidKeywords) done(new Error(errors.invalidKeywords));
   else {
     
     // Reduce the 2D array to 1D array. Removes repeat keywords.
@@ -204,54 +206,60 @@ const createManyKeywordsToMedia = (mediaIdArr, keywordIdArr, done) => {
   // in the database and passes the number created to the callback
   // function.
 
-  // Check if media exists.
-  db('media').whereIn('media_id', mediaIdArr)
-    .select('media_id').then(mediaArr => {
+  const keywordsLength = keywordIdArr.reduce((num, arr) => (num + arr.length), 0);
 
-      if (mediaArr.length === 0) done(new Error(errors.mediaIdDoesNotExist));
-      else {
+  if (keywordsLength === 0) done(null, 0);
+  else {
 
-        const uniqueKeywordIdArr = keywordIdArr.reduce((arr, idArr) => arr.concat(idArr.filter(id => (!arr.includes(id)))), []);
+    // Check if media exists.
+    db('media').whereIn('media_id', mediaIdArr)
+      .select('media_id').then(mediaArr => {
 
-        // Check if keywords exist
-        db('keywords').whereIn('keyword_id', uniqueKeywordIdArr)
-          .select('keyword_id').then(keywordArr => {
+        
+        if (mediaArr.length === 0) done(new Error(errors.mediaIdDoesNotExist));
+        else {
 
-            if (keywordArr.length === 0) done(new Error(errors.keywordIdDoesNotExist));
-            else {
+          const uniqueKeywordIdArr = keywordIdArr.reduce((arr, idArr) => arr.concat(idArr.filter(id => (!arr.includes(id)))), []);
 
-              // Create 2D array of media ID and keyword ID pairs.
-              const keywordsToMediaDataArr = mediaIdArr.reduce((arr, media_id, i) => arr.concat(keywordIdArr[i].map(keyword_id => [media_id, keyword_id])), []);
-              
-              // Check if relationships already exists.
-              db('mediaKeywords').whereIn(['media_id', 'keyword_id'], keywordsToMediaDataArr)
-              .select()
-              .then(keyToMedArr => {
+          // Check if keywords exist
+          db('keywords').whereIn('keyword_id', uniqueKeywordIdArr)
+            .select('keyword_id').then(keywordArr => {
+
+              if (keywordArr.length === 0) done(new Error(errors.keywordIdDoesNotExist));
+              else {
+
+                // Create 2D array of media ID and keyword ID pairs.
+                const keywordsToMediaDataArr = mediaIdArr.reduce((arr, media_id, i) => arr.concat(keywordIdArr[i].map(keyword_id => [media_id, keyword_id])), []);
                 
-                // Create object array to represent relational data.
-                const keywordsToMediaObjArr = mediaIdArr.reduce((arr, media_id, i) => arr.concat(keywordIdArr[i].map(keyword_id => ({ media_id, keyword_id }))), []);
+                // Check if relationships already exists.
+                db('mediaKeywords').whereIn(['media_id', 'keyword_id'], keywordsToMediaDataArr)
+                .select()
+                .then(keyToMedArr => {
+                  
+                  // Create object array to represent relational data.
+                  const keywordsToMediaObjArr = mediaIdArr.reduce((arr, media_id, i) => arr.concat(keywordIdArr[i].map(keyword_id => ({ media_id, keyword_id }))), []);
 
-                // If relationship already exists, remove it from object array.
-                keywordsToMediaObjArr.forEach((keyMedObj, i) => keyToMedArr.forEach(keyToMedObj => (keyMedObj.media_id === keyToMedObj.media_id && keyMedObj.keyword_id === keyToMedObj.keyword_id) && (keywordsToMediaObjArr.splice(i, 1))));
+                  // If relationship already exists, remove it from object array.
+                  keywordsToMediaObjArr.forEach((keyMedObj, i) => keyToMedArr.forEach(keyToMedObj => (keyMedObj.media_id === keyToMedObj.media_id && keyMedObj.keyword_id === keyToMedObj.keyword_id) && (keywordsToMediaObjArr.splice(i, 1))));
 
-                // Create relationships in database.
-                db('mediaKeywords').insert(keywordsToMediaObjArr)
-                  .then(createArr => {
-                    
-                    done(null, createArr);
+                  // Create relationships in database.
+                  db('mediaKeywords').insert(keywordsToMediaObjArr)
+                    .then(createArr => {
+                      
+                      done(null, createArr);
 
-                  }).catch(createErr => done(createErr));
+                    }).catch(createErr => done(createErr));
 
-                }).catch(keyToMedErr => done(keyToMedErr));
+                  }).catch(keyToMedErr => done(keyToMedErr));
 
-            }
+              }
 
-          }).catch(keywordErr => done(keywordErr));
+            }).catch(keywordErr => done(keywordErr));
 
-      }
+        }
 
-    }).catch(mediaErr => done(mediaErr));
-
+      }).catch(mediaErr => done(mediaErr));
+  }
 };
 
 const createManyMediaMeta = (mediaIdArr, mediaMetaArr, done) => {
@@ -260,54 +268,63 @@ const createManyMediaMeta = (mediaIdArr, mediaMetaArr, done) => {
   // defines the relationships. passes null and the created meta data
   // to the callback function.
 
-  // Check if media exists.
-  db('media').whereIn('media_id', mediaIdArr)
-    .select('media_id').then(existingMediaIdArr => {
+  const mediaMetaLength = mediaMetaArr.reduce((num, arr) => (num + arr.length), 0);
 
-      let mediaIdExists    = true;
-      let invalidMetaName  = false;
-      let invalidMetaValue = false;
+  if (mediaMetaLength === 0) done(null, [[]]);
+  else {
 
-      // Validate data
-      mediaIdExists = (existingMediaIdArr.length === mediaIdArr.length);
-      mediaMetaArr.forEach(metaArr => metaArr.forEach(metaObj => ((!validate.metaName(metaObj.name) && (invalidMetaName = true)), (!validate.metaValue(metaObj.value) && (invalidMetaValue = true)))));
+    // Check if media exists.
+    db('media').whereIn('media_id', mediaIdArr)
+      .select('media_id').then(existingMediaIdArr => {
 
-      if (!mediaIdExists)        done(new Error(errors.mediaIdDoesNotExist));
-      else if (invalidMetaName)  done(new Error(errors.invalidMetaName));
-      else if (invalidMetaValue) done(new Error(errors.invalidMetaValue));
-      else {
+        let mediaIdExists    = true;
+        let invalidMetaName  = false;
+        let invalidMetaValue = false;
+        let repeatedMetaName  = false;
 
-        // Create 2D array of media ID and meta name pairs.
-        const mediaIdMetaNameArr = mediaIdArr.reduce((arr, media_id, i) => arr.concat(mediaMetaArr[i].map(metaObj => [media_id, metaObj.name])), []);
+        // Validate data
+        mediaIdExists = (existingMediaIdArr.length === mediaIdArr.length);
+        mediaMetaArr.forEach(metaArr => metaArr.forEach(metaObj => ((!validate.metaName(metaObj.name) && (invalidMetaName = true)), (!validate.metaValue(metaObj.value) && (invalidMetaValue = true)))));
+        mediaMetaArr.map(metaArr => metaArr.map(({ name }) => name)).forEach((nameArr, i) => nameArr.filter(name => nameArr[i] === name).length > 1 && (repeatedMetaName = true));
+        
+        if (!mediaIdExists)        done(new Error(errors.mediaIdDoesNotExist));
+        else if (repeatedMetaName) done(new Error(errors.repeatedMetaName));
+        else if (invalidMetaName)  done(new Error(errors.invalidMetaName));
+        else if (invalidMetaValue) done(new Error(errors.invalidMetaValue));
+        else {
 
-        // Check if meta data already exists.
-        db('mediaMeta').whereIn(['media_id', 'name'], mediaIdMetaNameArr)
-          .select().then(existingMediaMeta => {
+          // Create 2D array of media ID and meta name pairs.
+          const mediaIdMetaNameArr = mediaIdArr.reduce((arr, media_id, i) => arr.concat(mediaMetaArr[i].map(metaObj => [media_id, metaObj.name])), []);
 
-            if (existingMediaMeta.length !== 0) done(new Error(errors.metaFieldExists));
-            else {
+          // Check if meta data already exists.
+          db('mediaMeta').whereIn(['media_id', 'name'], mediaIdMetaNameArr)
+            .select().then(existingMediaMeta => {
 
-              // Create array of mediaMeta objects.
-              const mediaMetaData = mediaIdArr.reduce((arr, media_id, i) => arr.concat(mediaMetaArr[i].map(metaObj => ({ media_id, name: metaObj.name, value: metaObj.value }))), []);
+              if (existingMediaMeta.length !== 0) done(new Error(errors.metaFieldExists));
+              else {
 
-              // Create the mediaMeta data.
-              db('mediaMeta').insert(mediaMetaData)
-                .then(mediaMetaNum => {
+                // Create array of mediaMeta objects.
+                const mediaMetaData = mediaIdArr.reduce((arr, media_id, i) => arr.concat(mediaMetaArr[i].map(metaObj => ({ media_id, name: metaObj.name, value: metaObj.value }))), []);
 
-                  // Convert name and value props to a single prop.
-                  const mediaMetaObjArr = mediaMetaArr.map(metaObjArr => metaObjArr.reduce((obj, metaObj) => Object.assign({}, obj, { [metaObj.name]: metaObj.value }), {}));
+                // Create the mediaMeta data.
+                db('mediaMeta').insert(mediaMetaData)
+                  .then(mediaMetaNum => {
 
-                  done(null, mediaMetaObjArr);
+                    // Convert name and value props to a single prop.
+                    const mediaMetaObjArr = mediaMetaArr.map(metaObjArr => metaObjArr.reduce((obj, metaObj) => Object.assign({}, obj, { [metaObj.name]: metaObj.value }), {}));
 
-                }).catch(mediaMetaErr => done(mediaMetaErr));
+                    done(null, mediaMetaObjArr);
 
-            }
+                  }).catch(mediaMetaErr => done(mediaMetaErr));
 
-          }).catch(existingMediaMetaErr => done(existingMediaMetaErr));
+              }
 
-      }
+            }).catch(existingMediaMetaErr => done(existingMediaMetaErr));
 
-    }).catch(mediaIdErr => done(mediaIdErr));
+        }
+
+      }).catch(mediaIdErr => done(mediaIdErr));
+  }
 
 };
 
