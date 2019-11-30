@@ -100,6 +100,21 @@ const MEDIA = [{
   user_id: 2,
   title: 'Another Test Photo Title',
   caption: 'Another Photo Caption'
+}, {
+  media_id: 2,
+  user_id: 0,
+  title: 'Media Without Keywords',
+  caption: 'This media has no keywords'
+}, {
+  media_id: 3,
+  user_id: 0,
+  title: 'Media Without Meta Data',
+  caption: 'This media has no meta data'
+}, {
+  media_id: 4,
+  user_id: 0,
+  title: 'Media Without Meta Data or Keywords',
+  caption: 'This media has no keywords or meta data'
 }];
 
 const MEDIA_TO_ALBUMS = [{
@@ -108,6 +123,18 @@ const MEDIA_TO_ALBUMS = [{
 }, {
   media_id: 1,
   album_id: 3,
+}, {
+  media_id: 1,
+  album_id: 0,
+}, {
+  media_id: 2,
+  album_id: 0,
+}, {
+  media_id: 3,
+  album_id: 0,
+}, {
+  media_id: 4,
+  album_id: 0,
 }];
 
 const KEYWORDS = [{
@@ -142,6 +169,12 @@ const KEYWORDS_TO_MEDIA = [{
 }, {
   keyword_id: 2,
   media_id: 1
+}, {
+  keyword_id: 0,
+  media_id: 3
+}, {
+  keyword_id: 1,
+  media_id: 3
 }];
 
 const MEDIA_META = [{
@@ -159,9 +192,140 @@ const MEDIA_META = [{
   media_id: 1,
   name: 'Location',
   value: 'Mexico',
+}, {
+  mediaMeta_id: 3,
+  media_id: 2,
+  name: 'People',
+  value: 'Friends',
+}, {
+  mediaMeta_id: 4,
+  media_id: 2,
+  name: 'Location',
+  value: 'Mexico',
 }];
 
 describe('Testing media models', () => {
+
+  describe('retrieveAlbumsMedia model', () => {
+
+    beforeEach('clear data in users, media, keywords', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => {
+
+              db.select()
+                .from('media')
+                .del()
+                .then(() => {
+
+                  db.select()
+                    .from('keywords')
+                    .del()
+                    .then(()   => done())
+                    .catch(err => done(err));
+
+                }).catch(err => done(err));
+
+            // }).catch(err => done(err));
+        
+        }).catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+    db('users').insert(USERS)
+      .then(userData => {
+        
+        db('albums').insert(ALBUMS)
+          .then(albumData => {
+
+            db('albumsMeta').insert(ALBUMS_META)
+              .then(albumsMetaData => {
+                done()
+              }).catch(albumsMetaErr => done(albumsMetaErr));
+
+          }).catch(err => done(err));
+
+      }).catch(err => done(err));
+
+    });
+
+    beforeEach('create media, keywords, and mediaMeta data', done => {
+
+      db('media').insert(MEDIA)
+        .then(mediaData => {
+  
+          db('mediaAlbums').insert(MEDIA_TO_ALBUMS)
+            .then(mediaAlbumsData => {
+  
+              db('keywords').insert(KEYWORDS)
+                .then(keywordsData => {
+  
+                  db('mediaKeywords').insert(KEYWORDS_TO_MEDIA)
+                    .then(keywordsMediaData => {
+  
+                      db('mediaMeta').insert(MEDIA_META)
+                        .then(mediaMetaData => {
+
+                          done();
+  
+                        }).catch(mediaMetaErr => done(mediaMetaErr));
+  
+                    }).catch(keywordsMediaErr => done(keywordsMediaErr));
+  
+                }).catch(keywordsErr => done(keywordsErr));
+  
+            }).catch(mediaAlbumsErr => done(mediaAlbumsErr));
+  
+        }).catch(mediaErr => done(mediaErr))
+  
+    });
+
+    it('should pass null to a callback function', done => {
+
+      const { album_id } = ALBUMS[3];
+
+      models.media.retrieveAlbumsMedia(album_id, (retrieveErr, mediaArr) => {
+
+        try {
+
+          expect(retrieveErr).to.equal(null);
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the album ID does not exist', done => {
+
+      models.media.retrieveAlbumsMedia(404, (retrieveErr, mediaArr) => {
+
+        try {
+
+          expect(retrieveErr).to.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+  });
 
   describe('createManyMediaMeta model', () => {
 

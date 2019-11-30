@@ -118,6 +118,11 @@ const addAlbumsMedia = (req, res, next) => {
   //*/
 };
 
+const getAlbumsMedia = (req, res, next) => {
+
+};
+
 module.exports = {
   addAlbumsMedia,
+  getAlbumsMedia,
 };
