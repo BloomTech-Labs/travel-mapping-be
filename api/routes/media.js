@@ -135,7 +135,7 @@ router.post(routes.addAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermis
 // #region
 /**
  * 
- *  @api {post} /users/{user_id}/media/add Get an albums media
+ *  @api {get} /users/{user_id}/media/add Get an albums media
  *  @apiName Get-albums-media
  *  @apiGroup Media
  *  @apiVersion 0.1.0
