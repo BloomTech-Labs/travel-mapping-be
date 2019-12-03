@@ -12,14 +12,9 @@ const uploadMedia = (mediaBuffer, options) => {
       api_secret: process.env.CLOUDINARY_SECRET_KEY
     });
 
-    // console.log(btoa(mediaBuffer.toString()));
-
     cloudinary.uploader.upload(mediaBuffer, options, (err, res) => {
-      if (err) {
-        reject(err);
-      } else {
-        return resolve(res);
-      }
+      if (err)     reject(err);
+       else return resolve(res);
     });
   });
 
