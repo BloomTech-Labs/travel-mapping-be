@@ -1221,7 +1221,7 @@ define({ "api": [
     "groupTitle": "Media"
   },
   {
-    "type": "post",
+    "type": "get",
     "url": "/users/{user_id}/media/add",
     "title": "Get an albums media",
     "name": "Get_albums_media",
