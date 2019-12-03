@@ -63,6 +63,7 @@ const verifyPermission = (req, res, next) => {
         break;
 
       // Uses the album ID and users email to check permissions and authorize users.
+      case routes.getAlbumsMedia():
       case routes.editAlbum():
       case routes.addAlbumMetaData():
       case routes.removeAlbum():

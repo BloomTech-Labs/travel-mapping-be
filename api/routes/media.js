@@ -201,7 +201,7 @@ router.post(routes.addAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermis
  *      }
  */
 // #endregion
-router.get(routes.getAlbumsMedia(), api.media.getAlbumsMedia, sentryError);
+router.get(routes.getAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermission, api.media.getAlbumsMedia, sentryError);
 
 // Error handler.
 router.use((err, req, res, next) => {

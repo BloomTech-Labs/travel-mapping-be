@@ -382,10 +382,15 @@ const retrieveAlbumsMedia = (album_id, done) => {
                           mediaMetaJoinArr.forEach(({ media_id, name, value }) => mediaMetaObjArr.forEach((mediaMetaObj, i) => (media_id === mediaMetaObj.media_id) && (mediaMetaObjArr[i].meta[name] = value)));
 
                           // Combine all data.
-                          mediaObjArr.forEach(({ media_id }, i) => {
-                            mediaAlbumsArr.forEach(mediaAlbumsObj => (media_id === mediaAlbumsObj.media_id) ? (mediaObjArr[i].albums = mediaAlbumsObj.albums) : (mediaObjArr[i].albums = []));
-                            mediaKeywordsObjArr.forEach(mediaKeywordsObj => (media_id === mediaKeywordsObj.media_id) ? (mediaObjArr[i].keywords = mediaKeywordsObj.keywords) : (mediaObjArr[i].keywords = []));
-                            mediaMetaObjArr.forEach(mediaMetaObj => (media_id === mediaMetaObj.media_id) ? (mediaObjArr[i].meta = mediaMetaObj.meta) : (mediaObjArr[i].meta = {}));
+                          mediaObjArr.forEach(mediaObj => {
+
+                            mediaObj.albums   = [];
+                            mediaObj.keywords = [];
+                            mediaObj.meta     = {};
+
+                            mediaAlbumsArr.forEach(mediaAlbumsObj => (mediaObj.media_id === mediaAlbumsObj.media_id) && (mediaAlbumsObj.albums.forEach(album_id => mediaObj.albums.push(album_id))));
+                            mediaKeywordsObjArr.forEach(mediaKeywordsObj => (mediaObj.media_id === mediaKeywordsObj.media_id) && (mediaKeywordsObj.keywords.forEach(keyword => mediaObj.keywords.push(keyword))));
+                            mediaMetaObjArr.forEach(mediaMetaObj => (mediaObj.media_id === mediaMetaObj.media_id) && (mediaObj.meta = mediaMetaObj.meta));
                           });
 
                           done(null, mediaObjArr);

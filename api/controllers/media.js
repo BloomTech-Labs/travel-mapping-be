@@ -78,7 +78,7 @@ const addAlbumsMedia = (req, res, next) => {
                             Promise.all(uploadPromiseArr).then(values => {
 
                               // Add image url to media objects.
-                              media.forEach((mediaObj, i) => mediaObj.media_url = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${ user_id }/${ mediaObj.title }`);
+                              media.forEach((mediaObj, i) => mediaObj.media_url = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${ user_id }/${ mediaObj.title }`.replace(/\s/g, '%20'));
                               
                               res.status(201).json(media);
 
@@ -119,6 +119,37 @@ const addAlbumsMedia = (req, res, next) => {
 };
 
 const getAlbumsMedia = (req, res, next) => {
+
+  const album_id = parseInt(req.params.album_id);
+
+  try {
+
+    models.media.retrieveAlbumsMedia(album_id, (retrieveErr, mediaArr) => {
+
+      if (retrieveErr) next(retrieveErr);
+      else {
+
+        if (req.isAdmin || req.isOwner) {
+
+          // Add image url to media.
+          mediaArr.forEach((mediaObj, i) => {
+
+            mediaObj.image_url = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${ mediaObj.user_id }/${ mediaObj.title }`.replace(/\s/g, '%20');
+
+          });
+
+          res.status(200).json(mediaArr);
+
+        } else next(new Error(errors.unauthorized));
+
+      }
+
+    });
+
+  } catch (err) {
+    console.error(err);
+    next(new Error(errors.serverError));
+  }
 
 };
 

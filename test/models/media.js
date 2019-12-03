@@ -291,7 +291,7 @@ describe('Testing media models', () => {
 
     it('should pass null to a callback function', done => {
 
-      const { album_id } = ALBUMS[3];
+      const { album_id } = ALBUMS[0];
 
       models.media.retrieveAlbumsMedia(album_id, (retrieveErr, mediaArr) => {
 
@@ -327,6 +327,8 @@ describe('Testing media models', () => {
 
   });
 
+  // #region
+  /*
   describe('createManyMediaMeta model', () => {
 
     beforeEach('clear data in users, media, keywords', done => {
@@ -1237,5 +1239,7 @@ describe('Testing media models', () => {
     });
 
   });
+  */
+ // #endregion
 
 });

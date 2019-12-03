@@ -100,6 +100,21 @@ const MEDIA = [{
   user_id: 2,
   title: 'Another Test Photo Title',
   caption: 'Another Photo Caption'
+}, {
+  media_id: 2,
+  user_id: 0,
+  title: 'Media Without Keywords',
+  caption: 'This media has no keywords'
+}, {
+  media_id: 3,
+  user_id: 0,
+  title: 'Media Without Meta Data',
+  caption: 'This media has no meta data'
+}, {
+  media_id: 4,
+  user_id: 0,
+  title: 'Media Without Meta Data or Keywords',
+  caption: 'This media has no keywords or meta data'
 }];
 
 const MEDIA_TO_ALBUMS = [{
@@ -108,6 +123,18 @@ const MEDIA_TO_ALBUMS = [{
 }, {
   media_id: 1,
   album_id: 3,
+}, {
+  media_id: 1,
+  album_id: 0,
+}, {
+  media_id: 2,
+  album_id: 0,
+}, {
+  media_id: 3,
+  album_id: 0,
+}, {
+  media_id: 4,
+  album_id: 0,
 }];
 
 const KEYWORDS = [{
@@ -119,6 +146,15 @@ const KEYWORDS = [{
 }, {
   keyword_id: 2,
   name: 'keyword-three',
+}, {
+  keyword_id: 3,
+  name: 'keyword-four',
+}, {
+  keyword_id: 4,
+  name: 'keyword-five',
+}, {
+  keyword_id: 5,
+  name: 'keyword-six',
 }];
 
 const KEYWORDS_TO_MEDIA = [{
@@ -133,6 +169,12 @@ const KEYWORDS_TO_MEDIA = [{
 }, {
   keyword_id: 2,
   media_id: 1
+}, {
+  keyword_id: 0,
+  media_id: 3
+}, {
+  keyword_id: 1,
+  media_id: 3
 }];
 
 const MEDIA_META = [{
@@ -150,10 +192,243 @@ const MEDIA_META = [{
   media_id: 1,
   name: 'Location',
   value: 'Mexico',
+}, {
+  mediaMeta_id: 3,
+  media_id: 2,
+  name: 'People',
+  value: 'Friends',
+}, {
+  mediaMeta_id: 4,
+  media_id: 2,
+  name: 'Location',
+  value: 'Mexico',
 }];
 
 describe('Media endpoint tests', () => {
 
+  describe(`${ routes.getAlbumsMedia() }`, () => {
+
+    beforeEach('clear data in users, media, keywords', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => {
+
+              db.select()
+                .from('media')
+                .del()
+                .then(() => {
+
+                  db.select()
+                    .from('keywords')
+                    .del()
+                    .then(()   => done())
+                    .catch(err => done(err));
+
+                }).catch(err => done(err));
+
+            // }).catch(err => done(err));
+        
+        }).catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+      db('users').insert(USERS)
+        .then(userData => {
+          
+          db('albums').insert(ALBUMS)
+            .then(albumData => {
+
+              db('albumsMeta').insert(ALBUMS_META)
+                .then(albumsMetaData => {
+                  done()
+                }).catch(albumsMetaErr => done(albumsMetaErr));
+
+            }).catch(err => done(err));
+
+        }).catch(err => done(err));
+
+    });
+
+    beforeEach('create media, keywords, and mediaMeta data', done => {
+
+      db('media').insert(MEDIA)
+        .then(mediaData => {
+
+          db('mediaAlbums').insert(MEDIA_TO_ALBUMS)
+            .then(mediaAlbumsData => {
+
+              db('keywords').insert(KEYWORDS)
+                .then(keywordsData => {
+
+                  db('mediaKeywords').insert(KEYWORDS_TO_MEDIA)
+                    .then(keywordsMediaData => {
+
+                      db('mediaMeta').insert(MEDIA_META)
+                        .then(mediaMetaData => {
+
+                          done();
+
+                        }).catch(mediaMetaErr => done(mediaMetaErr));
+
+                    }).catch(keywordsMediaErr => done(keywordsMediaErr));
+
+                }).catch(keywordsErr => done(keywordsErr));
+
+            }).catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+        }).catch(mediaErr => done(mediaErr))
+
+    });
+
+    it('should respond with json data', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+         const { token } = loginRes.body;
+
+         // Get media.
+          chai.request(server)
+            .get(routes.getAlbumsMedia(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(albumsMediaRes => {
+
+              try {
+
+                expect(albumsMediaRes).to.be.json;
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code', done => {
+
+      const { email, password } = Object.assign({}, USERS[0], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+         const { token } = loginRes.body;
+
+         // Get media.
+          chai.request(server)
+            .get(routes.getAlbumsMedia(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(albumsMediaRes => {
+
+              try {
+
+                expect(albumsMediaRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 401 status code when the user is not the owner or an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[1], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+         const { token } = loginRes.body;
+
+         // Get media.
+          chai.request(server)
+            .get(routes.getAlbumsMedia(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(albumsMediaRes => {
+
+              try {
+
+                expect(albumsMediaRes).to.have.status(401);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an unauthorized property when the user is not the owner or an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[1], { password: PASS });
+      const { album_id } = ALBUMS[0];
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+         const { token } = loginRes.body;
+
+         // Get media.
+          chai.request(server)
+            .get(routes.getAlbumsMedia(album_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(albumsMediaRes => {
+
+              try {
+
+                expect(albumsMediaRes.body).to.haveOwnProperty('unauthorized');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+  });
+
+  // #region
+  // /*
   describe(`${ routes.addAlbumsMedia() }`, () => {
 
     beforeEach('clear data in users, media, keywords', done => {
@@ -2374,5 +2649,7 @@ describe('Media endpoint tests', () => {
     });
 
   });
+  // */
+  // #endregion
 
 });
