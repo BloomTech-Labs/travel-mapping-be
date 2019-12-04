@@ -18,6 +18,9 @@ module.exports = {
   invalidProps:        'request props not valid',
   missingMetaName:     'request is missing required name property',
   missingMetaValue:    'request is missing required value property',
+  missingAlbums:       'request is missing required albums property',
+  missingMedia:        'request is missing required media property',
+  missingMediaTitle:   'request is missing required title property',
 
   // Model errors
   userDoesNotExist:        'user does not exist',
@@ -37,8 +40,14 @@ module.exports = {
   invalidAlbumAccess:      'album access type is not valid',
   albumIdDoesNotExist:     'album id does not exist',
   metaFieldExists:         'a meta field with that name already exists',
+  repeatedMetaName:        'meta object contains repeated meta name',
   invalidMetaName:         'meta data field name is not valid',
   invalidMetaValue:        'meta data description is not valid',
-
+  invalidMediaTitle:       'media title is not valid',
+  invalidMediaCaption:     'media caption is not valid',
+  invalidKeywords:         'media keywords are not valid',
+  mediaTitleExists:        'media title already exists',
+  mediaIdDoesNotExist:     'media id does not exist',
+  keywordIdDoesNotExist:   'keyword id does not exist',
 
 };

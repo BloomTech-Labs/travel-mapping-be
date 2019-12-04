@@ -243,7 +243,7 @@ router.delete(routes.removeUser(), api.auth.verifyToken, api.auth.verifyPermissi
  * 
  *  @apiPermission user
  * 
- *  @apiParam (URL Parameters) {String} type Required. The type of user registration. Options: email, google, facebook, twitter
+ *  @apiParam (URL Parameters) {String} type The type of user registration. Options: email, google, facebook, twitter
  * 
  *  @apiParam (Request Body) {String} display_name The users display name (Required)
  *  @apiParam (Request Body) {String} email The users email address (Required)
@@ -401,14 +401,14 @@ router.use((err, req, res, next) => {
 
   switch (err.message) {
     case errors.unauthorized:
-        res.status(401).json({ unauthorized: errors.unauthorized });
+      res.status(401).json({ unauthorized: errors.unauthorized });
         break;
     case errors.userIdDoesNotExist:
-        res.status(404).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
+      res.status(404).json({ userIdDoesNotExist: errors.userIdDoesNotExist });
         break;
     case errors.displayNameExists:
       res.status(400).json({ displayNameExists: errors.displayNameExists });
-      break;
+        break;
     case errors.emailExists:
       res.status(400).json({ emailExists: errors.emailExists });
       break;

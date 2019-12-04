@@ -28,8 +28,8 @@ exports.up = function(knex) {
       .defaultTo('photo');
 
     // media_url
-    table.string('media_url', 255)
-      .notNullable();
+    // table.string('media_url', 255)
+    //   .notNullable();
 
     // created_at
     table.timestamp('created_at')

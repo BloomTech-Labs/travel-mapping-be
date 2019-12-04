@@ -35,6 +35,8 @@ const verifyPermission = (req, res, next) => {
 
     switch(req.route.path) {
 
+      // Uses the users ID and email to check permissions and authorize users.
+      case routes.addAlbumsMedia():
       case routes.createAlbum():
       case routes.removeUser():
       case routes.editUser():
@@ -59,6 +61,9 @@ const verifyPermission = (req, res, next) => {
           });
         } else next(new Error(errors.unauthorized));
         break;
+
+      // Uses the album ID and users email to check permissions and authorize users.
+      case routes.getAlbumsMedia():
       case routes.editAlbum():
       case routes.addAlbumMetaData():
       case routes.removeAlbum():
@@ -93,6 +98,7 @@ const verifyPermission = (req, res, next) => {
         });
         break;
 
+      // Uses the user ID and users email to check permissions and sets the permission on the request.
       case routes.getUsersAlbums():
 
         if (email !== null) {

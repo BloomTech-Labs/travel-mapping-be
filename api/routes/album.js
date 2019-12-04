@@ -147,7 +147,7 @@ router.get(routes.getUsersAlbums(), api.auth.verifyToken, api.auth.verifyPermiss
  * 
  *   @apiError {Object} noPropsFound No properties were sent with the request
  *   @apiError {Object} invalidProps The properties on the request body are not valid
- *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
+ *   @apiError {Object} userIdDoesNotExist The user ID does not exist in the database
  *   @apiError {Object} albumTitleExists There is already an album with that title
  *   @apiError {Object} invalidAlbumTitle The album title is not valid
  *   @apiError {Object} invalidAlbumDescription The album description is not valid
