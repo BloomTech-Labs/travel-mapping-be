@@ -43,7 +43,8 @@ const api         = { ...controllers, ...middleware };
  *        "meta": {
  *            "location": "Mexico",
  *            "people": "Friends"
- *        }
+ *        },
+ *        "cover_url": ""
  *     }, {
  *        "album_id": 4356,
  *        "user_id": 6534,
@@ -55,7 +56,8 @@ const api         = { ...controllers, ...middleware };
  *        "meta": {
  *            "location": "Over There",
  *            "people": "Family"
- *        }
+ *        },
+ *        "cover_url": ""
  *     }]
  * 
  *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database

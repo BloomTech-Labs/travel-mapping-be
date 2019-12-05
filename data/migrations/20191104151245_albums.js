@@ -19,11 +19,7 @@ exports.up = function(knex) {
     // cover_id
     table.bigInteger('cover_id')
       .unsigned()
-      // .notNullable()
-      // .references('media_id')
-      // .inTable('media')
-      // .onUpdate('CASCADE')
-      // .onDelete('CASCADE');
+      .defaultTo(null);
 
     // access
     table.enu('access', ['public', 'private'])

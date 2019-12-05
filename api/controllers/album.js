@@ -1,6 +1,7 @@
 const validate = require('../../modules/modules').validate;
 const errors   = require('../../modules/modules').errors;
 const album    = require('../../data/models/models').album;
+const media    = require('../../data/models/models').media;
 const jwt      = require('jsonwebtoken');
 
 const createAlbum = (req, res, next) => {
@@ -41,15 +42,67 @@ const getUsersAlbums = (req, res, next) => {
 
       const { isOwner, isAdmin, collabAlbums, } = req;
       if (retrieveErr) next(retrieveErr);
-      else if (isOwner || isAdmin) {
+      else {
 
-        // Send all albums.
-        res.status(200).json(albumsArr);
+        
+        // Add cover_url to albums objects
+        media.retrieveUsersMedia(user_id, (retrieveMediaErr, mediaArr) => {
 
-      } else {
+          if (retrieveMediaErr) next(retrieveMediaErr);
+          else {
+
+            albumsArr.forEach(albumObj => {
+
+              if (albumObj.cover_id === null) {
+
+                for (let i = 0; i < mediaArr.length; i++) {
+
+                  if (mediaArr[i].albums.includes(albumObj.album_id)) {
+
+                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaArr[i].user_id }/${ mediaArr[i].title}`.replace(/\s/g, '%20');
+                    i = mediaArr.length;
+
+                  }
+
+                }
+
+              } else {
+
+                mediaArr.forEach(mediaObj => {
+
+                  if (albumObj.cover_id === mediaObj.media_id) {
+  
+                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaObj.user_id }/${ mediaObj.title}`.replace(/\s/g, '%20');
+  
+                  } else {
+  
+                    albumObj.cover_url = null;
+  
+                  }
+  
+                });
+
+              }
+
+              delete albumObj.cover_id;
+
+            });
+
+            if (isOwner || isAdmin) {
+
+              // Send all albums.
+              res.status(200).json(albumsArr);
     
-        // Send public albums only.
-        res.status(200).json(albumsArr.filter(albumObj => albumObj.access !== 'private'));
+            } else {
+        
+              // Send public albums only.
+              res.status(200).json(albumsArr.filter(albumObj => albumObj.access !== 'private'));
+    
+            }
+
+          }
+
+        });
 
       }
 
