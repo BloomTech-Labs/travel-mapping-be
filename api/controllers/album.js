@@ -19,7 +19,10 @@ const createAlbum = (req, res, next) => {
       album.createAlbum({user_id, ...albumObj, }, (createErr, newAlbumObj) => {
 
         if (createErr) next(createErr);
-        else res.status(201).json({ ...newAlbumObj });
+        else {
+          newAlbumObj.cover_url = albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+          res.status(201).json({ ...newAlbumObj })
+        };
 
       });
 
@@ -55,14 +58,16 @@ const getUsersAlbums = (req, res, next) => {
 
               if (albumObj.cover_id === null) {
 
+                if (mediaArr.length === 0) albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+                
                 for (let i = 0; i < mediaArr.length; i++) {
-
+                  
                   if (mediaArr[i].albums.includes(albumObj.album_id)) {
 
-                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaArr[i].user_id }/${ mediaArr[i].title}`.replace(/\s/g, '%20');
+                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaArr[i].user_id }/${ mediaArr[i].title }.jpg`;
                     i = mediaArr.length;
 
-                  }
+                  } else albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
 
                 }
 
@@ -72,11 +77,11 @@ const getUsersAlbums = (req, res, next) => {
 
                   if (albumObj.cover_id === mediaObj.media_id) {
   
-                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaObj.user_id }/${ mediaObj.title}`.replace(/\s/g, '%20');
+                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaObj.user_id }/${ mediaObj.title }.jpg`;
   
                   } else {
   
-                    albumObj.cover_url = null;
+                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
   
                   }
   
@@ -129,10 +134,56 @@ const addAlbumMetaData = (req, res, next) => {
 
       if (req.isOwner || req.isAdmin) {
 
-        album.createAlbumMeta(album_id, metaDataArr, (createErr, metaObj) => {
+        album.createAlbumMeta(album_id, metaDataArr, (createErr, albumObj) => {
 
           if (createErr) next(createErr);
-          else res.status(201).json(metaObj);
+          else {
+          
+            // Add cover_url to albums objects
+            media.retrieveUsersMedia(albumObj.user_id, (retrieveMediaErr, mediaArr) => {
+
+              if (retrieveMediaErr) next(retrieveMediaErr);
+              else {
+
+                if (albumObj.cover_id === null) {
+
+                  if (mediaArr.length === 0) albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+                  
+                  for (let i = 0; i < mediaArr.length; i++) {
+                    
+                    if (mediaArr[i].albums.includes(albumObj.album_id)) {
+  
+                      albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaArr[i].user_id }/${ mediaArr[i].title }.jpg`;
+                      i = mediaArr.length;
+  
+                    } else albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+  
+                  }
+  
+                } else {
+  
+                  mediaArr.forEach(mediaObj => {
+  
+                    if (albumObj.cover_id === mediaObj.media_id) {
+    
+                      albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaObj.user_id }/${ mediaObj.title }.jpg`;
+    
+                    } else {
+    
+                      albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+    
+                    }
+    
+                  });
+  
+                }
+  
+                delete albumObj.cover_id;
+
+              }
+              res.status(201).json(albumObj);
+            });
+          }
   
         });
 

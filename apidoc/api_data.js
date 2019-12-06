@@ -145,12 +145,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   }\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         },
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   }\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         }
       ]
@@ -383,12 +383,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {}\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {},\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         },
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {}\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {},\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         }
       ]
@@ -635,12 +635,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         },
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         }
       ]
@@ -796,7 +796,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n[{\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Mexico\",\n       \"people\": \"Friends\"\n   },\n   \"cover_url\": \"\"\n}, {\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Over There\",\n       \"people\": \"Family\"\n   },\n   \"cover_url\": \"\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Mexico\",\n       \"people\": \"Friends\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}, {\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Over There\",\n       \"people\": \"Family\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}]",
           "type": "json"
         }
       ]
@@ -1326,143 +1326,6 @@ define({ "api": [
     },
     "filename": "api/routes/media.js",
     "groupTitle": "Media"
-  },
-  {
-    "type": "post",
-    "url": "/test",
-    "title": "Create a new test",
-    "name": "Create_Test",
-    "group": "Tests",
-    "version": "0.1.0",
-    "filename": "api/routes/test.js",
-    "groupTitle": "Tests"
-  },
-  {
-    "type": "get",
-    "url": "/test/:test_id",
-    "title": "Get a specific test",
-    "name": "Get_test_by_id",
-    "group": "Tests",
-    "version": "0.1.0",
-    "parameter": {
-      "fields": {
-        "URL Parameters": [
-          {
-            "group": "URL Parameters",
-            "type": "Integer",
-            "optional": false,
-            "field": "test_id",
-            "description": "<p>Unique test ID.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Example Request:",
-          "content": "https://piktorlog.herokuapp.com/test/0",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Integer",
-            "optional": false,
-            "field": "test_id",
-            "description": "<p>Unique test ID.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "name",
-            "description": "<p>A test name.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "title",
-            "description": "<p>A test title.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "description",
-            "description": "<p>A test description.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "created_at",
-            "description": "<p>The date and time the record was created.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Example Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"test_id\": \"0\",\n  \"name\": \"John Doe\",\n  \"title\": \"John Doe's Test\",\n  \"description\": \"John Doe's test data API endpoint awesome\",\n  \"created_at\": \"2019-11-06 18:42:57\",\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "TestNotFound",
-            "description": "<p>The test was not found.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Example Error:",
-          "content": "HTTP/1.1 404 Not Found\n{\n  \"error\": \"the test with the test_id of 0 was not found\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "api/routes/test.js",
-    "groupTitle": "Tests"
-  },
-  {
-    "type": "get",
-    "url": "/test",
-    "title": "Get a list of tests",
-    "name": "Get_test_list",
-    "group": "Tests",
-    "version": "0.1.0",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Object[]",
-            "optional": false,
-            "field": "tests",
-            "description": "<p>A List of test objects.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Example Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n  \"test_id\": \"0\",\n  \"name\": \"John Doe\",\n  \"title\": \"John Doe's Test\",\n  \"description\": \"John Doe's test data API endpoint awesome\",\n  \"created_at\": \"2019-11-06 18:42:57\",\n}, {\n  \"test_id\": \"1\",\n  \"name\": \"Jane Smith\",\n  \"title\": \"Jane Smith's Test\",\n  \"description\": \"Jane Smith's test data API endpoint awesome\",\n  \"created_at\": \"2019-11-06 18:42:57\",\n}]",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "api/routes/test.js",
-    "groupTitle": "Tests"
   },
   {
     "type": "put",

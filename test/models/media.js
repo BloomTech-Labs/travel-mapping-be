@@ -297,8 +297,6 @@ describe('Testing media models', () => {
 
         try {
 
-          console.log(mediaArr);
-
           expect(retrieveErr).to.equal(null);
           done();
 

@@ -73,14 +73,15 @@ const addAlbumsMedia = (req, res, next) => {
                             const createdMediaTitleArr = createdMediaArr.map(media => media.title);
                             
                             // Array of promises for uploading multiple files at once.
-                            const uploadPromiseArr = createdMediaTitleArr.map((title, i) => cloudinary.uploadMedia(mediaTmpPathArr[i], { public_id: `${ user_id }/${ title }`, overwrite: false }));
+                            const uploadPromiseArr = createdMediaTitleArr.map((title, i) => cloudinary.uploadMedia(mediaTmpPathArr[i], { public_id: `${ user_id }/${ title }`, overwrite: false, format: 'jpg', }));
 
                             Promise.all(uploadPromiseArr).then(values => {
 
                               // Add image url to media objects.
-                              media.forEach((mediaObj, i) => { 
-                                mediaObj.media_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/${ user_id }/${ mediaObj.title }`.replace(/\s/g, '%20');
-                                mediaObj.thumbnail_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ user_id }/${ mediaObj.title}`.replace(/\s/g, '%20');
+                              media.forEach((mediaObj, i) => {
+                                /*.replace(/\s/g, '%20')*/
+                                mediaObj.media_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/${ user_id }/${ mediaObj.title }.jpg`;
+                                mediaObj.thumbnail_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ user_id }/${ mediaObj.title}.jpg`;
                               });
                               
                               res.status(201).json(media);
@@ -136,9 +137,9 @@ const getAlbumsMedia = (req, res, next) => {
 
           // Add image url to media.
           mediaArr.forEach((mediaObj, i) => {
-
-            mediaObj.image_url = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${ mediaObj.user_id }/${ mediaObj.title }`.replace(/\s/g, '%20');
-            mediaObj.thumbnail_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaObj.user_id }/${ mediaObj.title}`.replace(/\s/g, '%20');
+            /*.replace(/\s/g, '%20')*/
+            mediaObj.image_url = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${ mediaObj.user_id }/${ mediaObj.title }.jpg`;
+            mediaObj.thumbnail_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaObj.user_id }/${ mediaObj.title}.jpg`;
 
           });
 
