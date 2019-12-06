@@ -206,6 +206,228 @@ const MEDIA_META = [{
 
 describe('Media endpoint tests', () => {
 
+  describe(`${ routes.getUsersMedia() }`, () => {
+
+    beforeEach('clear data in users, media, keywords', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => {
+
+              db.select()
+                .from('media')
+                .del()
+                .then(() => {
+
+                  db.select()
+                    .from('keywords')
+                    .del()
+                    .then(()   => done())
+                    .catch(err => done(err));
+
+                }).catch(err => done(err));
+
+            // }).catch(err => done(err));
+        
+        }).catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+      db('users').insert(USERS)
+        .then(userData => {
+          
+          db('albums').insert(ALBUMS)
+            .then(albumData => {
+
+              db('albumsMeta').insert(ALBUMS_META)
+                .then(albumsMetaData => {
+                  done()
+                }).catch(albumsMetaErr => done(albumsMetaErr));
+
+            }).catch(err => done(err));
+
+        }).catch(err => done(err));
+
+    });
+
+    beforeEach('create media, keywords, and mediaMeta data', done => {
+
+      db('media').insert(MEDIA)
+        .then(mediaData => {
+
+          db('mediaAlbums').insert(MEDIA_TO_ALBUMS)
+            .then(mediaAlbumsData => {
+
+              db('keywords').insert(KEYWORDS)
+                .then(keywordsData => {
+
+                  db('mediaKeywords').insert(KEYWORDS_TO_MEDIA)
+                    .then(keywordsMediaData => {
+
+                      db('mediaMeta').insert(MEDIA_META)
+                        .then(mediaMetaData => {
+
+                          done();
+
+                        }).catch(mediaMetaErr => done(mediaMetaErr));
+
+                    }).catch(keywordsMediaErr => done(keywordsMediaErr));
+
+                }).catch(keywordsErr => done(keywordsErr));
+
+            }).catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+        }).catch(mediaErr => done(mediaErr))
+
+    });
+
+    it('should respond with json data', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+         const { token } = loginRes.body;
+
+         // Get media.
+          chai.request(server)
+            .get(routes.getUsersMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(albumsMediaRes => {
+
+              try {
+
+                expect(albumsMediaRes).to.be.json;
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 200 status code', done => {
+
+      const { user_id, email, password } = Object.assign({}, USERS[0], { password: PASS });
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+         const { token } = loginRes.body;
+
+         // Get media.
+          chai.request(server)
+            .get(routes.getUsersMedia(user_id))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(usersMediaRes => {
+
+              try {
+
+                // console.log(usersMediaRes.body);
+
+                expect(usersMediaRes).to.have.status(200);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with a 401 status code when the user is not the owner or an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[1], { password: PASS });
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+         const { token } = loginRes.body;
+
+         // Get media.
+          chai.request(server)
+            .get(routes.getUsersMedia(0))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(usersMediaRes => {
+
+              try {
+
+                expect(usersMediaRes).to.have.status(401);
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+    it('should respond with an unauthorized property when the user is not the owner or an admin', done => {
+
+      const { email, password } = Object.assign({}, USERS[1], { password: PASS });
+
+      // Login.
+      chai.request(server)
+        .post(routes.loginUser('email'))
+        .send({ email, password })
+        .then(loginRes => {
+
+         const { token } = loginRes.body;
+
+         // Get media.
+          chai.request(server)
+            .get(routes.getUsersMedia(0))
+            .set('Authorization', `Bearer ${ token }`)
+            .then(usersMediaRes => {
+
+              try {
+
+                expect(usersMediaRes.body).to.haveOwnProperty('unauthorized');
+                done();
+
+              } catch (err) {
+                done(err);
+              }
+
+            }).catch(createErr => done(createErr));
+
+        }).catch(loginErr => done(loginErr));
+
+    });
+
+  });
+
+  // #region
+  // /*
+
   describe(`${ routes.getAlbumsMedia() }`, () => {
 
     beforeEach('clear data in users, media, keywords', done => {
@@ -427,8 +649,7 @@ describe('Media endpoint tests', () => {
 
   });
 
-  // #region
-  // /*
+
   describe(`${ routes.addAlbumsMedia() }`, () => {
 
     beforeEach('clear data in users, media, keywords', done => {

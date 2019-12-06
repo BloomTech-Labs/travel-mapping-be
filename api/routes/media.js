@@ -77,7 +77,8 @@ const api         = { ...controllers, ...middleware };
  *        "meta": {
  *            "Location": "Mexico",
  *        }
- *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title",
+ *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg",
+ *        "thumbnail_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg",
  *        "created_at": "2019-11-06 18:42:57",
  *        "updated_at": "2019-11-06 18:42:57"
  *      }, {
@@ -91,7 +92,8 @@ const api         = { ...controllers, ...middleware };
  *            "People": "Family",
  *            "Meta Name": "Meta Value"
  *        }
- *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/Another%20Photo%20Title",
+ *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg",
+ *        "thumbnail_url: "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg",
  *        "created_at": "2019-11-06 18:42:57",
  *        "updated_at": "2019-11-06 18:42:57"
  *     }]
@@ -165,7 +167,8 @@ router.post(routes.addAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermis
  *        "meta": {
  *            "Location": "Mexico",
  *        }
- *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title",
+ *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg",
+ *        "thumbnail_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg",
  *        "created_at": "2019-11-06 18:42:57",
  *        "updated_at": "2019-11-06 18:42:57"
  *      }, {
@@ -179,7 +182,8 @@ router.post(routes.addAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermis
  *            "People": "Family",
  *            "Meta Name": "Meta Value"
  *        }
- *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/Another%20Photo%20Title",
+ *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg",
+ *        "thumbnail_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg",
  *        "created_at": "2019-11-06 18:42:57",
  *        "updated_at": "2019-11-06 18:42:57"
  *     }]
@@ -202,6 +206,79 @@ router.post(routes.addAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermis
  */
 // #endregion
 router.get(routes.getAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermission, api.media.getAlbumsMedia, sentryError);
+
+// HTTP/1.1 200 OK
+// #region
+/**
+ * 
+ *  @api {get} /users/{user_id}/media Get a users media
+ *  @apiName Get-users-media
+ *  @apiGroup Media
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission admin owner
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} user_id The users ID
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     [{
+ *        "media_id": 0,
+ *        "user_id": 6542,
+ *        "albums": [0, 1, 2, 3],
+ *        "title": "A Photo Title",
+ *        "caption": "A short caption for a photo",
+ *        "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+ *        "meta": {
+ *            "Location": "Mexico",
+ *        }
+ *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg",
+ *        "thumbnail_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg",
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:42:57"
+ *      }, {
+ *        "media_id": 1,
+ *        "user_id": 6542,
+ *        "albums": [0, 1, 2, 3],
+ *        "title": "A Photo Another Title",
+ *        "caption": "A short caption for another photo",
+ *        "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+ *        "meta": {
+ *            "People": "Family",
+ *            "Meta Name": "Meta Value"
+ *        }
+ *        "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg",
+ *        "thumbnail_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg",
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "updated_at": "2019-11-06 18:42:57"
+ *     }]
+ * 
+ *   @apiError {Object} userIdDoesNotExist The album ID does not exist in the database
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample Does Not Exists
+ *      HTTP/1.1 404
+ *      {
+ *          "userIdDoesNotExist": "album id does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Server Error
+ *      HTTP/1.1 500
+ *      {
+ *          "serverError": "server error"
+ *      }
+ * 
+ */
+// #endregion
+router.get(routes.getUsersMedia(), api.auth.verifyToken, api.auth.verifyPermission, api.media.getUsersMedia, sentryError);
 
 // Error handler.
 router.use((err, req, res, next) => {

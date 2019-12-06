@@ -36,6 +36,7 @@ const verifyPermission = (req, res, next) => {
 
       // Uses the users ID and email to check permissions and authorize users.
       case routes.addAlbumsMedia():
+      case routes.getUsersMedia():
       case routes.createAlbum():
       case routes.removeUser():
       case routes.editUser():

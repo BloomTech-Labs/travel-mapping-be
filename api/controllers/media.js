@@ -158,7 +158,40 @@ const getAlbumsMedia = (req, res, next) => {
 
 };
 
+const getUsersMedia = (req, res, next) => {
+
+  const user_id = parseInt(req.params.user_id);
+
+  try {
+
+    models.media.retrieveUsersMedia(user_id, (retrieveErr, mediaArr) => {
+
+      if (retrieveErr) next(retrieveErr);
+      else {
+
+        // Add image url to media.
+        mediaArr.forEach((mediaObj, i) => {
+          /*.replace(/\s/g, '%20')*/
+          mediaObj.image_url = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${ mediaObj.user_id }/${ mediaObj.title }.jpg`;
+          mediaObj.thumbnail_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaObj.user_id }/${ mediaObj.title}.jpg`;
+
+        });
+
+        res.status(200).json(mediaArr);
+
+      }
+
+    });
+
+  } catch (err) {
+    console.error(err);
+    next(new Error(errors.serverError));
+  }
+
+};
+
 module.exports = {
   addAlbumsMedia,
   getAlbumsMedia,
+  getUsersMedia,
 };
