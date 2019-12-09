@@ -17,9 +17,9 @@ describe('Testing the utils module functions', () => {
 
     });
 
-    it('should return https://piktorlogstaging.herokuapp.com when review is passed', () => {
+    it('should return https://piktorlogstaging-pr-0.herokuapp.com when review is passed', () => {
 
-      expect(utils.getEnvironmentHost('review')).to.equal('https://piktorlogstaging.herokuapp.com');
+      expect(utils.getEnvironmentHost('review')).to.equal('https://piktorlogstaging-pr-0.herokuapp.com');
 
     });
 
