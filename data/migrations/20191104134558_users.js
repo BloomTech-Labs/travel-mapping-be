@@ -1,21 +1,3 @@
-const environment = process.env.NODE_ENV || 'development';
-
-// Get database.
-let database = 'sqlite';
-switch (environment) {
-
-  default:
-  case 'development':
-  case 'testing':
-    database = 'sqlite';
-    break;
-  case 'review':
-  case 'staging':
-  case 'production':
-    database = 'postgresql';
-    break;
-
-};
 
 exports.up = function(knex) {
   
@@ -23,9 +5,7 @@ exports.up = function(knex) {
   return knex.schema.createTable('users', table => {
 
     // user_id
-    if (database = 'sqlite') table.bigIncrements('user_id').primary();
-    else table.bigSerial('user_id').primary();
-    
+    table.increments('user_id').primary();
 
     // display_name
     table.string('display_name', 255)
