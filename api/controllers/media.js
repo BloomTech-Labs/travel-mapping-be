@@ -209,7 +209,7 @@ const viewUsersMedia = (req, res, next) => {
   const tmpMediaPath       = path.resolve(__dirname, `../../tmp_media/${ process.env.CLOUDINARY_SERVER_ACCESS_KEY }_${ user_id }_${ title }`);
   const cloudinaryMediaUrl = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${ type === 'thumbnail' ? 'w_400,h_400,c_thumb/' : '' }${ process.env.CLOUDINARY_SERVER_ACCESS_KEY }/${ user_id }/${ title }`;
 
-  const media = fs.createWriteStream(`./tmp_media/${ process.env.CLOUDINARY_SERVER_ACCESS_KEY }_${ user_id }_${ title }`);
+  const media = fs.createWriteStream(path.resolve(__dirname, `../../tmp_media/${ process.env.CLOUDINARY_SERVER_ACCESS_KEY }_${ user_id }_${ title }`));
 
   http.get(cloudinaryMediaUrl, (cloudinaryRes) => {
 
@@ -254,7 +254,7 @@ const viewMedia = (req, res, next) => {
 
   console.log(cloudinaryMediaUrl);
 
-  const media = fs.createWriteStream(`./tmp_media/${ title }`);
+  const media = fs.createWriteStream(path.resolve(__dirname, `../../tmp_media/${ title }`));
 
   http.get(cloudinaryMediaUrl, (cloudinaryRes) => {
 
