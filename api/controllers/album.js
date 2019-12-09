@@ -1,8 +1,11 @@
-const validate = require('../../modules/modules').validate;
-const errors   = require('../../modules/modules').errors;
-const album    = require('../../data/models/models').album;
-const media    = require('../../data/models/models').media;
-const jwt      = require('jsonwebtoken');
+const validate    = require('../../modules/modules').validate;
+const errors      = require('../../modules/modules').errors;
+const album       = require('../../data/models/models').album;
+const media       = require('../../data/models/models').media;
+const utils       = require('../../modules/modules').utils;
+const jwt         = require('jsonwebtoken');
+const environment = process.env.NODE_ENV || 'development';
+const serverHost  = utils.getEnvironmentHost(environment);
 
 const createAlbum = (req, res, next) => {
 
@@ -20,7 +23,7 @@ const createAlbum = (req, res, next) => {
 
         if (createErr) next(createErr);
         else {
-          newAlbumObj.cover_url = albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+          newAlbumObj.cover_url = albumObj.cover_url = `${ serverHost }/media/thumbnail/placeholder.jpg`;
           res.status(201).json({ ...newAlbumObj })
         };
 
@@ -58,16 +61,17 @@ const getUsersAlbums = (req, res, next) => {
 
               if (albumObj.cover_id === null) {
 
-                if (mediaArr.length === 0) albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+                if (mediaArr.length === 0) albumObj.cover_url = `${ serverHost }/media/thumbnail/placeholder.jpg`;
                 
                 for (let i = 0; i < mediaArr.length; i++) {
                   
                   if (mediaArr[i].albums.includes(albumObj.album_id)) {
 
-                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaArr[i].user_id }/${ mediaArr[i].title }.jpg`;
+                    albumObj.cover_url = `${ serverHost }/users/${ mediaArr[i].user_id }/media/thumbnail/${ mediaArr[i].title }`;
+                    // albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ process.env.CLOUDINARY_SERVER_ACCESS_KEY }/${ mediaArr[i].user_id }/${ mediaArr[i].title }.jpg`;
                     i = mediaArr.length;
 
-                  } else albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+                  } else albumObj.cover_url = `${ serverHost }/media/thumbnail/placeholder.jpg`;
 
                 }
 
@@ -77,11 +81,12 @@ const getUsersAlbums = (req, res, next) => {
 
                   if (albumObj.cover_id === mediaObj.media_id) {
   
-                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ mediaObj.user_id }/${ mediaObj.title }.jpg`;
+                    albumObj.cover_url = `${ serverHost }/users/${ mediaObj.user_id }/media/thumbnail/${ mediaObj.title }`;
+                    // albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ process.env.CLOUDINARY_SERVER_ACCESS_KEY }/${ mediaObj.user_id }/${ mediaObj.title }.jpg`;
   
                   } else {
   
-                    albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/placeholder.jpg`;
+                    albumObj.cover_url = `${ serverHost }/media/thumbnail/placeholder.jpg`;
   
                   }
   

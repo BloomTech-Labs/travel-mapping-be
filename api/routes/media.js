@@ -280,6 +280,12 @@ router.get(routes.getAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermiss
 // #endregion
 router.get(routes.getUsersMedia(), api.auth.verifyToken, api.auth.verifyPermission, api.media.getUsersMedia, sentryError);
 
+// Route for serving users media from Cloudinary.
+router.get(routes.viewUsersMedia(), /* api.auth.verifyToken, api.auth.verifyPermission, */ api.media.viewUsersMedia, sentryError);
+
+// Route for serving all other media from Cloudinary.
+router.get(routes.viewMedia(), api.media.viewMedia, sentryError);
+
 // Error handler.
 router.use((err, req, res, next) => {
 

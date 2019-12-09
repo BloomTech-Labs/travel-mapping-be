@@ -206,6 +206,11 @@ const MEDIA_META = [{
 
 describe('Media endpoint tests', () => {
 
+
+
+
+  // #region
+  // /*
   describe(`${ routes.getUsersMedia() }`, () => {
 
     beforeEach('clear data in users, media, keywords', done => {
@@ -424,9 +429,6 @@ describe('Media endpoint tests', () => {
     });
 
   });
-
-  // #region
-  // /*
 
   describe(`${ routes.getAlbumsMedia() }`, () => {
 
@@ -648,7 +650,6 @@ describe('Media endpoint tests', () => {
     });
 
   });
-
 
   describe(`${ routes.addAlbumsMedia() }`, () => {
 

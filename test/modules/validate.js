@@ -1,7 +1,7 @@
 const validate = require('../../modules/modules').validate;
 const errors   = require('../../modules/modules').errors;
-const bcrypt   = require('bcrypt');
 const expect   = require('chai').expect;
+const bcrypt   = require('bcrypt');
 const salt     = parseInt(process.env.PASS_SALT) || 10;
 
 describe('Testing the validation module functions', () => {
