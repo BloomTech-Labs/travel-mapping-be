@@ -50,7 +50,6 @@ const getUsersAlbums = (req, res, next) => {
       if (retrieveErr) next(retrieveErr);
       else {
 
-        
         // Add cover_url to albums objects
         media.retrieveUsersMedia(user_id, (retrieveMediaErr, mediaArr) => {
 
@@ -58,6 +57,9 @@ const getUsersAlbums = (req, res, next) => {
           else {
 
             albumsArr.forEach(albumObj => {
+
+              albumObj.album_id = parseInt(albumObj.album_id);
+              albumObj.user_id  = parseInt(albumObj.user_id);
 
               if (albumObj.cover_id === null) {
 
