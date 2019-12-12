@@ -5,10 +5,10 @@ exports.up = function(knex) {
   return knex.schema.createTable('mediaMeta', table => {
 
     // mediaMeta_id
-    table.bigIncrements('mediaMeta_id').primary();
+    table.increments('mediaMeta_id').primary();
 
     // media_id
-    table.bigInteger('media_id')
+    table.integer('media_id')
       .notNullable()
       .references('media_id')
       .inTable('media')

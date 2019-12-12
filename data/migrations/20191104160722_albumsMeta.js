@@ -5,10 +5,10 @@ exports.up = function(knex) {
   return knex.schema.createTable('albumsMeta', table => {
 
     // albumMeta_id
-    table.bigIncrements('albumMeta_id').primary();
+    table.increments('albumMeta_id').primary();
 
     // album_id
-    table.bigInteger('album_id')
+    table.integer('album_id')
       .notNullable()
       .references('album_id')
       .inTable('albums')
