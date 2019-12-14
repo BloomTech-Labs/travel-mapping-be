@@ -18,6 +18,7 @@ module.exports = {
   removeAlbum:      (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/remove`      : '/albums/:album_id/remove'),
   createAlbum:      (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/albums/create` : '/users/:user_id/albums/create'),
   editAlbum:        (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/edit`        : '/albums/:album_id/edit'),
+  getUsersAlbum:    (user_id, album_id) => (typeof user_id !== 'undefined' && typeof album_id !== 'undefined' ? `/users/${ user_id }/albums/${ album_id }` : '/users/:user_id/albums/:album_id'), // get data for a specific album
 
   // Media
   getAlbumsMedia: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/media`      : '/albums/:album_id/media'), // Send media that belongs to an album

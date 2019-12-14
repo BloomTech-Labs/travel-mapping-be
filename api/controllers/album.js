@@ -260,10 +260,35 @@ const removeAlbum = (req, res, next) => {
 
 };
 
+const getUsersAlbum = (req, res, next) => {
+  
+  const { album_id } = req.params;
+
+  if (req.isOwner || req.isAdmin) {
+    
+    try {
+
+      album.retrieveAlbumById(album_id, (retrieveError, album) => {
+
+        if (retrieveError) next(retrieveError);
+        else res.status(200).json(album);
+
+      });
+
+    } catch (err) {
+      console.error(err);
+      next(new Error(errors.serverError));
+    }
+
+  } else next(new Error(errors.unauthorized));
+
+};
+
 module.exports = {
   createAlbum,
   getUsersAlbums,
   addAlbumMetaData,
   editAlbum,
   removeAlbum,
+  getUsersAlbum
 };
