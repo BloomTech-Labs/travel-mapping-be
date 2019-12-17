@@ -486,6 +486,185 @@ define({ "api": [
   },
   {
     "type": "put",
+    "url": "/albums/:album_id/meta/edit",
+    "title": "Add/remove album metadata",
+    "name": "Edit_Album_MetaData",
+    "group": "Albums",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": true,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The albums ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/albums/7/edit\n{\n    \"add\": [\n      { \"name\": \"meta2\", \"value\": \"value2\" }\n    ]\n    \"remove\": [\n      \"meta1\",\n      \"meta2\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The ID of the user who owns the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>The title of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>The description of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "access",
+            "description": "<p>The access type of the album</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "created_at",
+            "description": "<p>The date and time the album was created</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "updated_at",
+            "description": "<p>The date and time the album was updated</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "meta",
+            "description": "<p>The albums custom meta data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Mexico\",\n       \"people\": \"Friends\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumIdDoesNotExist",
+            "description": "<p>The album_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "metaFieldExists",
+            "description": "<p>A meta field with that name already exists</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMetaName",
+            "description": "<p>The meta field name is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMetaValue",
+            "description": "<p>The meta description is not valid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "User Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/album.js",
+    "groupTitle": "Albums"
+  },
+  {
+    "type": "put",
     "url": "/albums/{album_id}/edit",
     "title": "Edit an album",
     "name": "Edit_an_album",
