@@ -319,17 +319,24 @@ const editAlbumMeta = (req, res, next) => {
               album.createAlbumMeta(album_id, add, (createErr, albumAfterAdditions) => {
                 
                 if (createErr) next(createErr);
-                else {
-                  res.status(200).json(albumAfterAdditions);
-                }
+                else responseHandler(albumAfterAdditions);
               });
 
-            } else {
-              res.status(200).json(albumAfterRemovals);
-            }
+            } else responseHandler(albumAfterRemovals);
           }
 
         });
+
+        const responseHandler = (albumObj) => {
+
+          generateAlbumCover(albumObj, (mediaErr, albumWithCover) => {
+
+            if (mediaErr) next(mediaErr);
+            else res.status(200).json(albumWithCover);
+            
+          });
+
+        };
 
       } catch (err) {
         console.error(err);
