@@ -68,6 +68,7 @@ const verifyPermission = (req, res, next) => {
       case routes.removeAlbum():
       case routes.editAlbum():
       case routes.getUsersAlbum():
+      case routes.editAlbumMeta():
         
         const album_id = parseInt(req.params.album_id);
 

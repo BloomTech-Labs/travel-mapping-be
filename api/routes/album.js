@@ -486,6 +486,8 @@ router.delete(routes.removeAlbum(), api.auth.verifyToken, api.auth.verifyPermiss
 // #endregion
 router.get(routes.getUsersAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.album.getUsersAlbum);
 
+router.put(routes.editAlbumMeta(), api.auth.verifyToken, api.auth.verifyPermission, api.album.editAlbumMeta)
+
 // Error handler
 router.use((err, req, res, next) => {
 

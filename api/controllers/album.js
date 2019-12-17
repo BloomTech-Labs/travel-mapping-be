@@ -284,11 +284,59 @@ const getUsersAlbum = (req, res, next) => {
 
 };
 
+const editAlbumMeta = (req, res, next) => {
+
+  const { album_id } = req.params;
+  const { remove = [], add = [] } = req.body;
+
+  const invalidAddProps = (add && add.length) ? validate.addAlbumMetaData(add) : true;
+  const invalidRemoveProps = (remove && remove.length) ? validate.removeAlbumMetaData(remove) : true;
+
+  if (invalidAddProps !== true) next(new Error(invalidAddProps));
+  else if (invalidRemoveProps !== true) next(new Error(invalidRemoveProps));
+  else {
+  
+    if (req.isOwner || req.isAdmin) {
+
+      try {
+
+        album.removeAlbumMeta(album_id, remove, (removeError, albumAfterRemovals) => {
+        
+          if (removeError) next(removeError);
+          else {
+
+            if (add && add.length) {
+
+              album.createAlbumMeta(album_id, add, (createErr, albumAfterAdditions) => {
+                
+                if (createErr) next(createErr);
+                else {
+                  res.status(200).json(albumAfterAdditions);
+                }
+              });
+
+            } else {
+              res.status(200).json(albumAfterRemovals);
+            }
+          }
+
+        });
+
+      } catch (err) {
+        console.error(err);
+        next(new Error(errors.serverError));
+      }
+
+    } else next(new Error(errors.unauthorized));
+  }
+};
+
 module.exports = {
   createAlbum,
   getUsersAlbums,
   addAlbumMetaData,
   editAlbum,
   removeAlbum,
-  getUsersAlbum
+  getUsersAlbum,
+  editAlbumMeta
 };
