@@ -35,5 +35,7 @@ module.exports = {
   // Invitations
   createInvitation: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/invites/create` : '/albums/:album_id/invites/create'),
   getInvitesByAlbum: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/invites/` : '/albums/:album_id/invites/'),
+  getInvitesByUser: (user_id) => (typeof user_id !== 'undefined' ? `/users/${ user_id }/invites/from` : '/users/:user_id/invites/from'),
+  getInvitesForUser: (user_id) => (typeof user_id !== 'undefined' ? `/users/${ user_id }/invites/to` : '/users/:user_id/invites/to'),
 
 };

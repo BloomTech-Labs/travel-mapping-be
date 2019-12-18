@@ -40,6 +40,8 @@ const verifyPermission = (req, res, next) => {
       case routes.createAlbum():
       case routes.removeUser():
       case routes.editUser():
+      case routes.getInvitesByUser():
+      case routes.getInvitesForUser():
 
         if (email !== null) {
 

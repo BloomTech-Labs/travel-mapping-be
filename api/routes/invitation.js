@@ -10,6 +10,10 @@ router.post(routes.createInvitation(), api.auth.verifyToken, api.auth.verifyPerm
 
 router.get(routes.getInvitesByAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.getInvitesByAlbum);
 
+router.get(routes.getInvitesByUser(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.getInvitesByUser);
+
+router.get(routes.getInvitesForUser(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.getInvitesForUser);
+
 // Error handler
 router.use((err, req, res, next) => {
 

@@ -17,11 +17,7 @@ const createInvitation = (req, res, next) => {
         invitation.createInvitation(album_id, user_id, invited_user_id, (inviteErr, inviteObj) => {
           
           if (inviteErr) next(inviteErr);
-          else {
-
-            res.status(201).json(inviteObj);
-
-          }
+          else res.status(201).json(inviteObj);
 
         });
 
@@ -36,25 +32,24 @@ const createInvitation = (req, res, next) => {
 };
 
 const getInvitesByAlbum = (req, res, next) => {
+
   const album_id = parseInt(req.params.album_id);
 
   if (!album_id) next(new Error(errors.invalidProps))
   else {
+
     try {
+
       if (req.isOwner || req.isAdmin) {
 
         invitation.getInvitesByAlbum(album_id, (inviteErr, inviteArr) => {
 
           if (inviteErr) next(inviteErr);
-          else {
-
-            res.status(200).json(inviteArr);
-
-          }
+          else res.status(200).json(inviteArr);
 
         });
 
-      } else next(next(new Error(errors.unauthorized)));
+      } else next(new Error(errors.unauthorized));
 
     } catch (err) {
       console.error(err);
@@ -64,7 +59,59 @@ const getInvitesByAlbum = (req, res, next) => {
   }
 };
 
+const getInvitesByUser = (req, res, next) => {
+
+  const user_id = parseInt(req.params.user_id);
+
+  if (!user_id) next(new Error(errors.missingUserId));
+  else {
+
+    try {
+
+      invitation.getInvitesByUser(user_id, (inviteErr, inviteArr) => {
+
+        if (inviteErr) next(inviteErr);
+        else res.status(200).json(inviteArr);
+
+      });
+
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+
+  }
+
+};
+
+const getInvitesForUser = (req, res, next) => {
+
+  const user_id = parseInt(req.params.user_id);
+
+  if (!user_id) next(new Error(errors.missingUserId));
+  else {
+
+    try {
+
+      invitation.getInvitesForUser(user_id, (inviteErr, inviteArr) => {
+
+        if (inviteErr) next(inviteErr);
+        else res.status(200).json(inviteArr);
+
+      });
+
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+
+  }
+
+};
+
 module.exports = {
   createInvitation,
-  getInvitesByAlbum
+  getInvitesByAlbum,
+  getInvitesByUser,
+  getInvitesForUser,
 };

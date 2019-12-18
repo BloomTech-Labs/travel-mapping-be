@@ -70,7 +70,6 @@ const getInvitesByAlbum = (album_id, done) => {
           .select()
           .then(inviteArr => {
 
-            console.log(inviteArr);
             done(null, inviteArr);
 
           }).catch(inviteErr => done(inviteErr));
@@ -81,7 +80,33 @@ const getInvitesByAlbum = (album_id, done) => {
 
 };
 
+const getInvitesByUser = (user_id, done) => {
+ 
+  db('invitations').where({ user_id })
+    .select()  
+    .then(inviteArr => {
+
+      done(null, inviteArr);
+
+    }).catch(inviteErr => done(inviteErr));
+
+};
+
+const getInvitesForUser = (invited_user_id, done) => {
+
+  db('invitations').where({ invited_user_id })
+    .select()
+    .then(inviteArr => {
+
+      done(null, inviteArr);
+
+    }).catch(inviteErr => done(inviteErr));
+
+};
+
 module.exports = {
   createInvitation,
-  getInvitesByAlbum
+  getInvitesByAlbum,
+  getInvitesByUser,
+  getInvitesForUser,
 };
