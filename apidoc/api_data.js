@@ -1228,6 +1228,465 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/albums/:album_id/invites/create",
+    "title": "Invite a user to collaborate on an album",
+    "name": "Create_invitation",
+    "group": "Invitations",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "album owner"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": true,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>the user making the request</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Integer",
+            "optional": false,
+            "field": "invited_user_id",
+            "description": "<p>the user to be invited</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/albums/4563/invites/create\n{\n    \"user_id\": 45,\n    \"invited_user_id\": 132\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "invitation",
+            "description": "<p>the invitation object</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "selfInvitation",
+            "description": "<p>The user_id and the invited_user_id match</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidProps",
+            "description": "<p>missing required keys in the body</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "inviteeIdDoesNotExist",
+            "description": "<p>The invited_user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumIdDoesNotExist",
+            "description": "<p>The album_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "User Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/invitation.js",
+    "groupTitle": "Invitations"
+  },
+  {
+    "type": "get",
+    "url": "/albums/:album_id/invites",
+    "title": "get all pending invitations for an album",
+    "name": "Get_album_invitations",
+    "group": "Invitations",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "album owner"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": true,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "invitation",
+            "description": "<p>the invitation object</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "albumIdDoesNotExist",
+            "description": "<p>The album_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "User Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/invitation.js",
+    "groupTitle": "Invitations"
+  },
+  {
+    "type": "get",
+    "url": "/users/:user_id/invites/from",
+    "title": "get all pending invitations created by a user",
+    "name": "get_invites_from_user",
+    "group": "Invitations",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": true,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The user ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "invitation",
+            "description": "<p>the invitation object</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingUserId",
+            "description": "<p>the user_id was missing or not parsed correctly</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "User Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/invitation.js",
+    "groupTitle": "Invitations"
+  },
+  {
+    "type": "get",
+    "url": "/users/:user_id/invites/to",
+    "title": "get all pending invitations sent to a user",
+    "name": "get_invites_to_user",
+    "group": "Invitations",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": true,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>The user ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "invitation",
+            "description": "<p>the invitation object</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "missingUserId",
+            "description": "<p>the user_id was missing or not parsed correctly</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "User Does Not Exist",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/invitation.js",
+    "groupTitle": "Invitations"
+  },
+  {
+    "type": "post",
     "url": "/users/{user_id}/media/add",
     "title": "Add media to albums",
     "name": "Add_media",

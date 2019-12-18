@@ -6,12 +6,221 @@ const controllers = require('../controllers/controllers');
 const middleware  = require('../middleware/middleware');
 const api         = { ...controllers, ...middleware };
 
+
+// POST HTTP/1.1 200 OK
+// #region
+/**
+ * 
+ *  @api {post} /albums/:album_id/invites/create Invite a user to collaborate on an album
+ *  @apiName Create-invitation
+ *  @apiGroup Invitations
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission album owner
+ * 
+ *  @apiHeader (Headers) {String} [Authorization] JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} album_id The album ID
+ *  @apiParam (Request Body) {Integer} user_id the user making the request
+ *  @apiparam (Request Body) {Integer} invited_user_id the user to be invited
+ *  
+ *  @apiParamExample {json} Example Request
+ *      /albums/4563/invites/create
+ *      {
+ *          "user_id": 45,
+ *          "invited_user_id": 132
+ *      }
+ * 
+ *  @apiSuccess {Object[]} invitation the invitation object
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     {  
+ *        "invitation_id": 2345
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "invited_user_id": "2343",
+ *        "created_at": "2019-11-06 18:42:57"
+ *     }
+ *  
+ *   @apiError {Object} selfInvitation The user_id and the invited_user_id match
+ *   @apiError {Object} invalidProps missing required keys in the body
+ *   @apiError {Object} inviteeIdDoesNotExist The invited_user_id does not exist in the database
+ *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
+ *   @apiError {Object} albumIdDoesNotExist The album_id does not exist in the database
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample User Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ */
+// #endregion
 router.post(routes.createInvitation(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.createInvitation);
 
+
+// GET HTTP/1.1 200 OK
+// #region
+/**
+ * 
+ *  @api {get} /albums/:album_id/invites get all pending invitations for an album
+ *  @apiName Get-album-invitations
+ *  @apiGroup Invitations
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission album owner
+ * 
+ *  @apiHeader (Headers) {String} [Authorization] JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} album_id The album ID
+ *
+ *  @apiSuccess {Object[]} invitation the invitation object
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     [{  
+ *        "invitation_id": 2345
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "invited_user_id": "2343",
+ *        "created_at": "2019-11-06 18:42:57"
+ *     }, {
+ *        "invitation_id": 2345
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "invited_user_id": "2343",
+ *        "created_at": "2019-11-06 18:42:57"
+ *     }]
+ *  
+ *   @apiError {Object} albumIdDoesNotExist The album_id does not exist in the database
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample User Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ */
+// #endregion
 router.get(routes.getInvitesByAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.getInvitesByAlbum);
 
+// GET HTTP/1.1 200 OK
+// #region
+/**
+ * 
+ *  @api {get} /users/:user_id/invites/from get all pending invitations created by a user
+ *  @apiName get-invites-from-user
+ *  @apiGroup Invitations
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission user
+ * 
+ *  @apiHeader (Headers) {String} [Authorization] JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} user_id The user ID
+ *
+ *  @apiSuccess {Object[]} invitation the invitation object
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     [{  
+ *        "invitation_id": 2345
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "invited_user_id": "2343",
+ *        "created_at": "2019-11-06 18:42:57"
+ *     }, {
+ *        "invitation_id": 2345
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "invited_user_id": "2343",
+ *        "created_at": "2019-11-06 18:42:57"
+ *     }]
+ *  
+ *   @apiError {Object} missingUserId the user_id was missing or not parsed correctly
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample User Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ */
+// #endregion
 router.get(routes.getInvitesByUser(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.getInvitesByUser);
 
+// GET HTTP/1.1 200 OK
+// #region
+/**
+ * 
+ *  @api {get} /users/:user_id/invites/to get all pending invitations sent to a user
+ *  @apiName get-invites-to-user
+ *  @apiGroup Invitations
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission user
+ * 
+ *  @apiHeader (Headers) {String} [Authorization] JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} user_id The user ID
+ *
+ *  @apiSuccess {Object[]} invitation the invitation object
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     [{  
+ *        "invitation_id": 2345
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "invited_user_id": "2343",
+ *        "created_at": "2019-11-06 18:42:57"
+ *     }, {
+ *        "invitation_id": 2345
+ *        "album_id": 4356,
+ *        "user_id": 6534,
+ *        "invited_user_id": "2343",
+ *        "created_at": "2019-11-06 18:42:57"
+ *     }]
+ *  
+ *   @apiError {Object} missingUserId the user_id was missing or not parsed correctly
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample User Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ */
+// #endregion
 router.get(routes.getInvitesForUser(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.getInvitesForUser);
 
 // Error handler
