@@ -34,5 +34,6 @@ module.exports = {
 
   // Invitations
   createInvitation: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/invites/create` : '/albums/:album_id/invites/create'),
+  getInvitesByAlbum: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/invites/` : '/albums/:album_id/invites/'),
 
 };

@@ -35,6 +35,36 @@ const createInvitation = (req, res, next) => {
   }
 };
 
+const getInvitesByAlbum = (req, res, next) => {
+  const album_id = parseInt(req.params.album_id);
+
+  if (!album_id) next(new Error(errors.invalidProps))
+  else {
+    try {
+      if (req.isOwner || req.isAdmin) {
+
+        invitation.getInvitesByAlbum(album_id, (inviteErr, inviteArr) => {
+
+          if (inviteErr) next(inviteErr);
+          else {
+
+            res.status(200).json(inviteArr);
+
+          }
+
+        });
+
+      } else next(next(new Error(errors.unauthorized)));
+
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+
+  }
+};
+
 module.exports = {
-  createInvitation
+  createInvitation,
+  getInvitesByAlbum
 };

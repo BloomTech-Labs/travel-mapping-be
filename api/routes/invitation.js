@@ -8,6 +8,8 @@ const api         = { ...controllers, ...middleware };
 
 router.post(routes.createInvitation(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.createInvitation);
 
+router.get(routes.getInvitesByAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.getInvitesByAlbum);
+
 // Error handler
 router.use((err, req, res, next) => {
 
@@ -42,7 +44,7 @@ router.use((err, req, res, next) => {
     default:
       console.error(err);
       res.status(500).json({ serverError: errors.serverError });
-        break;
+      break;
   };
 });
 

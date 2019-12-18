@@ -56,6 +56,32 @@ const createInvitation = (album_id, user_id, invited_user_id, done) => {
   
 };
 
+const getInvitesByAlbum = (album_id, done) => {
+
+  // check that album exists
+  db('albums').where({ album_id })
+    .first()
+    .then(album => {
+
+      if (!album) done(new Error(errors.albumIdDoesNotExist));
+      else {
+
+        db('invitations').where({ album_id })
+          .select()
+          .then(inviteArr => {
+
+            console.log(inviteArr);
+            done(null, inviteArr);
+
+          }).catch(inviteErr => done(inviteErr));
+
+      }
+
+    }).catch(albumErr => done(albumErr));
+
+};
+
 module.exports = {
-  createInvitation
+  createInvitation,
+  getInvitesByAlbum
 };

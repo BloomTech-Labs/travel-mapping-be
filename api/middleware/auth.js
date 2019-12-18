@@ -70,6 +70,7 @@ const verifyPermission = (req, res, next) => {
       case routes.getUsersAlbum():
       case routes.editAlbumMeta():
       case routes.createInvitation():
+      case routes.getInvitesByAlbum():
         
         const album_id = parseInt(req.params.album_id);
 
