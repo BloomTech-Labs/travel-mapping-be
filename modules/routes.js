@@ -32,4 +32,7 @@ module.exports = {
   // Comments
   getAlbumsComments: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/comments` : '/albums/:album_id/comments'),
 
+  // Invitations
+  createInvitation: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/invites/create` : '/albums/:album_id/invites/create'),
+
 };
