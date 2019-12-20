@@ -104,9 +104,46 @@ const getInvitesForUser = (invited_user_id, done) => {
 
 };
 
+const deleteInviteById = (invitation_id, done) => {
+
+  db('invitations').where({ invitation_id })
+    .first()
+    .then(invite => {
+      console.log(invite);
+      if (!invite) done(new Error(errors.inviteeIdDoesNotExist));
+      else {
+
+        db('invitations').where({ invitation_id })
+          .del()
+          .then(removed => {
+          
+            done(null, { invitation_id: invite.invitation_id});
+
+          }).catch(removalError => done(removalError));
+
+      }
+
+    }).catch(inviteErr => done(inviteErr));
+
+};
+
+const getInviteById = (invitation_id, done) => {
+
+  db('invitations').where({ invitation_id })
+    .first()
+    .then(invite => {
+
+      done(null, invite);
+
+    }).catch(inviteErr => done(inviteErr));
+
+};
+
 module.exports = {
   createInvitation,
   getInvitesByAlbum,
   getInvitesByUser,
   getInvitesForUser,
+  deleteInviteById,
+  getInviteById,
 };

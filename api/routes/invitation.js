@@ -7,7 +7,7 @@ const middleware  = require('../middleware/middleware');
 const api         = { ...controllers, ...middleware };
 
 
-// POST HTTP/1.1 200 OK
+// POST HTTP/1.1 201 CREATED
 // #region
 /**
  * 
@@ -222,6 +222,48 @@ router.get(routes.getInvitesByUser(), api.auth.verifyToken, api.auth.verifyPermi
  */
 // #endregion
 router.get(routes.getInvitesForUser(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.getInvitesForUser);
+
+// DELETE HTTP/1.1 200 OK
+// #region
+/**
+ * 
+ *  @api {delete} /invites/:invite_id/remove delete the specified invitation
+ *  @apiName remove-invite
+ *  @apiGroup Invitations
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission user invited_user
+ * 
+ *  @apiHeader (Headers) {String} [Authorization] JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} invite_id The user ID
+ *
+ *  @apiSuccess {Integer} invite_id the removed invite
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ *     {  
+ *        "invitation_id": 2345
+ *     }
+ *  
+ *   @apiError {Object} invitationDoesNotExist invite_id does not match any existing invitation
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample User Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "invitationDoesNotExist": "invite id does not exist"
+ *      }
+ * 
+ */
+// #endregion
+router.delete(routes.removeInvitation(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.removeInvite);
 
 // Error handler
 router.use((err, req, res, next) => {

@@ -52,5 +52,6 @@ module.exports = {
   keywordIdDoesNotExist:   'keyword id does not exist',
   inviteeIdDoesNotExist:   'invitee id does not exist',
   invitationAlreadyexists: 'an invitation already exists',
+  invitationDoesNotExist:  'invite id does not exist',
 
 };

@@ -109,9 +109,30 @@ const getInvitesForUser = (req, res, next) => {
 
 };
 
+const removeInvite = (req, res, next) => {
+
+  const invite_id = parseInt(req.params.invite_id);
+
+  try {
+
+    invitation.deleteInviteById(invite_id, (inviteErr, removed) => {
+
+      if (inviteErr) next(inviteErr);
+      else res.status(200).json(removed);
+
+    });
+
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+
+};
+
 module.exports = {
   createInvitation,
   getInvitesByAlbum,
   getInvitesByUser,
   getInvitesForUser,
+  removeInvite
 };

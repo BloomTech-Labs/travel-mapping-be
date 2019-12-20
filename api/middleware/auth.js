@@ -125,6 +125,36 @@ const verifyPermission = (req, res, next) => {
           });
         } else next();
         break;
+
+      case routes.removeInvitation():
+
+        const invite_id = parseInt(req.params.invite_id);
+
+        if (email !== null) {
+          models.user.retrieveUserBy({ email }, (userRetrieveErr, userObj) => {
+
+            if (userRetrieveErr) next(userRetrieveErr);
+            else {
+
+              models.invitation.getInviteById(invite_id, (inviteRetrieveErr, inviteObj) => {
+
+                if (inviteRetrieveErr) next(inviteRetrieveErr);
+                else {
+
+                  req.isOwner = userObj.user_id === inviteObj.user_id || userObj.user_id === inviteObj.invited_user_id;
+                  res.isAdmin = userObj.is_admin;
+                  next();
+
+                }
+
+              });
+
+            }
+
+          });
+        } else next(new Error(errors.unauthorized));
+        break;
+
       default:
         next(new Error(errors.unauthorized));
         break;
