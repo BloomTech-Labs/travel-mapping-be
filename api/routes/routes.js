@@ -1,11 +1,11 @@
-const express    = require('express');
-const router     = express.Router();
+const express = require('express');
+const router  = express.Router();
 
 router.use([ 
-  require('./test'),
   require('./user'),
   require('./upload'),
   require('./album'),
+  require('./media'),
 ]);
 
 module.exports = router;

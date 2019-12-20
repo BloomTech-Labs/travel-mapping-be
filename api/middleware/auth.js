@@ -4,7 +4,6 @@ const models = require('../../data/models/models');
 const jwt    = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET;
 
-
 const verifyToken = (req, res, next) => {
 
   // Verify that the Authorization header exists and that it contains a token.
@@ -35,6 +34,12 @@ const verifyPermission = (req, res, next) => {
 
     switch(req.route.path) {
 
+      // Uses the users ID and email to check permissions and authorize users.
+      case routes.addAlbumsMedia():
+<<<<<<< HEAD
+=======
+      case routes.getUsersMedia():
+>>>>>>> cb10841390d2f0198548b1b298698f83f1c570d3
       case routes.createAlbum():
       case routes.removeUser():
       case routes.editUser():
@@ -59,9 +64,17 @@ const verifyPermission = (req, res, next) => {
           });
         } else next(new Error(errors.unauthorized));
         break;
+
+      // Uses the album ID and users email to check permissions and authorize users.
+<<<<<<< HEAD
+      case routes.getAlbumsMedia():
       case routes.editAlbum():
+=======
+>>>>>>> cb10841390d2f0198548b1b298698f83f1c570d3
       case routes.addAlbumMetaData():
+      case routes.getAlbumsMedia():
       case routes.removeAlbum():
+      case routes.editAlbum():
         
         const album_id = parseInt(req.params.album_id);
 
@@ -93,6 +106,7 @@ const verifyPermission = (req, res, next) => {
         });
         break;
 
+      // Uses the user ID and users email to check permissions and sets the permission on the request.
       case routes.getUsersAlbums():
 
         if (email !== null) {

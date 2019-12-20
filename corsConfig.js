@@ -26,9 +26,9 @@ module.exports = {
   },
 
   production: {
-    origin: 'https://piktorlog.com/',
+    origin: 'https://piktorlog.com',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
-  },
+  }
 
 };
