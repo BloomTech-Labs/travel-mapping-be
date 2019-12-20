@@ -5,10 +5,10 @@ exports.up = function(knex) {
   return knex.schema.createTable( 'media', table => {
 
     // media_id
-    table.bigIncrements('media_id').primary();
+    table.increments('media_id').primary();
 
     // user_id
-    table.bigInteger('user_id')
+    table.integer('user_id')
       .notNullable()
       .references('user_id')
       .inTable('users')
@@ -26,10 +26,6 @@ exports.up = function(knex) {
     table.enu('type', ['photo', 'video'])
       .notNullable()
       .defaultTo('photo');
-
-    // media_url
-    // table.string('media_url', 255)
-    //   .notNullable();
 
     // created_at
     table.timestamp('created_at')

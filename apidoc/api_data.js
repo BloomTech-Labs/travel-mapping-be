@@ -145,12 +145,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   }\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         },
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   }\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         }
       ]
@@ -383,12 +383,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {}\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {},\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         },
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {}\n}",
+          "content": "HTTP/1.1 201 CREATED\n{\n   \"album_id\": 0,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-17 03:02:35\",\n   \"updated_at\": \"2019-11-17 03:02:35\",\n   \"meta\": {},\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         }
       ]
@@ -635,12 +635,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Mexico\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         },
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 642,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:47:02\",\n   \"meta\": {\n       \"Location\": \"Over There\",\n       \"People\": \"Family\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
           "type": "json"
         }
       ]
@@ -796,7 +796,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n[{\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Mexico\",\n       \"people\": \"Friends\"\n   }\n}, {\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Over There\",\n       \"people\": \"Family\"\n   }\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Mexico\",\n       \"people\": \"Friends\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}, {\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Over There\",\n       \"people\": \"Family\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}]",
           "type": "json"
         }
       ]
@@ -1068,7 +1068,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/Another%20Photo%20Title\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
+          "content": "HTTP/1.1 201 CREATED\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url: \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
           "type": "json"
         }
       ]
@@ -1222,7 +1222,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/users/{user_id}/media/add",
+    "url": "/albums/{album_id}/media",
     "title": "Get an albums media",
     "name": "Get_albums_media",
     "group": "Media",
@@ -1280,7 +1280,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/Another%20Photo%20Title\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
           "type": "json"
         }
       ]
@@ -1328,22 +1328,37 @@ define({ "api": [
     "groupTitle": "Media"
   },
   {
-    "type": "post",
-    "url": "/test",
-    "title": "Create a new test",
-    "name": "Create_Test",
-    "group": "Tests",
-    "version": "0.1.0",
-    "filename": "api/routes/test.js",
-    "groupTitle": "Tests"
-  },
-  {
     "type": "get",
-    "url": "/test/:test_id",
-    "title": "Get a specific test",
-    "name": "Get_test_by_id",
-    "group": "Tests",
+    "url": "/users/{user_id}/media",
+    "title": "Get a users media",
+    "name": "Get_users_media",
+    "group": "Media",
     "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "parameter": {
       "fields": {
         "URL Parameters": [
@@ -1351,63 +1366,17 @@ define({ "api": [
             "group": "URL Parameters",
             "type": "Integer",
             "optional": false,
-            "field": "test_id",
-            "description": "<p>Unique test ID.</p>"
+            "field": "user_id",
+            "description": "<p>The users ID</p>"
           }
         ]
-      },
-      "examples": [
-        {
-          "title": "Example Request:",
-          "content": "https://piktorlog.herokuapp.com/test/0",
-          "type": "json"
-        }
-      ]
+      }
     },
     "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Integer",
-            "optional": false,
-            "field": "test_id",
-            "description": "<p>Unique test ID.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "name",
-            "description": "<p>A test name.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "title",
-            "description": "<p>A test title.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "description",
-            "description": "<p>A test description.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "created_at",
-            "description": "<p>The date and time the record was created.</p>"
-          }
-        ]
-      },
       "examples": [
         {
-          "title": "Example Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"test_id\": \"0\",\n  \"name\": \"John Doe\",\n  \"title\": \"John Doe's Test\",\n  \"description\": \"John Doe's test data API endpoint awesome\",\n  \"created_at\": \"2019-11-06 18:42:57\",\n}",
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
           "type": "json"
         }
       ]
@@ -1417,52 +1386,42 @@ define({ "api": [
         "Error 4xx": [
           {
             "group": "Error 4xx",
+            "type": "Object",
             "optional": false,
-            "field": "TestNotFound",
-            "description": "<p>The test was not found.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Example Error:",
-          "content": "HTTP/1.1 404 Not Found\n{\n  \"error\": \"the test with the test_id of 0 was not found\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "api/routes/test.js",
-    "groupTitle": "Tests"
-  },
-  {
-    "type": "get",
-    "url": "/test",
-    "title": "Get a list of tests",
-    "name": "Get_test_list",
-    "group": "Tests",
-    "version": "0.1.0",
-    "success": {
-      "fields": {
-        "Success 200": [
+            "field": "userIdDoesNotExist",
+            "description": "<p>The album ID does not exist in the database</p>"
+          },
           {
-            "group": "Success 200",
-            "type": "Object[]",
+            "group": "Error 4xx",
+            "type": "Object",
             "optional": false,
-            "field": "tests",
-            "description": "<p>A List of test objects.</p>"
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Example Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n  \"test_id\": \"0\",\n  \"name\": \"John Doe\",\n  \"title\": \"John Doe's Test\",\n  \"description\": \"John Doe's test data API endpoint awesome\",\n  \"created_at\": \"2019-11-06 18:42:57\",\n}, {\n  \"test_id\": \"1\",\n  \"name\": \"Jane Smith\",\n  \"title\": \"Jane Smith's Test\",\n  \"description\": \"Jane Smith's test data API endpoint awesome\",\n  \"created_at\": \"2019-11-06 18:42:57\",\n}]",
+          "title": "Does Not Exists",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"album id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 500\n{\n    \"serverError\": \"server error\"\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "api/routes/test.js",
-    "groupTitle": "Tests"
+    "filename": "api/routes/media.js",
+    "groupTitle": "Media"
   },
   {
     "type": "put",

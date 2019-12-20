@@ -43,7 +43,8 @@ const api         = { ...controllers, ...middleware };
  *        "meta": {
  *            "location": "Mexico",
  *            "people": "Friends"
- *        }
+ *        },
+ *        "cover_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg"
  *     }, {
  *        "album_id": 4356,
  *        "user_id": 6534,
@@ -55,7 +56,8 @@ const api         = { ...controllers, ...middleware };
  *        "meta": {
  *            "location": "Over There",
  *            "people": "Family"
- *        }
+ *        },
+ *        "cover_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg"
  *     }]
  * 
  *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
@@ -129,7 +131,8 @@ router.get(routes.getUsersAlbums(), api.auth.verifyToken, api.auth.verifyPermiss
  *        "access": "public",
  *        "created_at": "2019-11-17 03:02:35",
  *        "updated_at": "2019-11-17 03:02:35",
- *        "meta": {}
+ *        "meta": {},
+ *        "cover_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg"
  *     }
  * 
  *  @apiSuccessExample {json} Example Response
@@ -142,7 +145,8 @@ router.get(routes.getUsersAlbums(), api.auth.verifyToken, api.auth.verifyPermiss
  *        "access": "private",
  *        "created_at": "2019-11-17 03:02:35",
  *        "updated_at": "2019-11-17 03:02:35",
- *        "meta": {}
+ *        "meta": {},
+ *        "cover_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg"
  *     }
  * 
  *   @apiError {Object} noPropsFound No properties were sent with the request
@@ -232,7 +236,8 @@ router.post(routes.createAlbum(), api.auth.verifyToken, api.auth.verifyPermissio
  *        "updated_at": "2019-11-06 18:47:02",
  *        "meta": {
  *            "Location": "Mexico"
- *        }
+ *        },
+ *        "cover_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg"
  *     }
  * 
  *  @apiSuccessExample {json} Example Response
@@ -248,7 +253,8 @@ router.post(routes.createAlbum(), api.auth.verifyToken, api.auth.verifyPermissio
  *        "meta": {
  *            "Location": "Over There",
  *            "People": "Family"
- *        }
+ *        },
+ *        "cover_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg"
  *     }
  * 
  *   @apiError {Object} noPropsFound No properties were sent with the request
@@ -333,7 +339,8 @@ router.post(routes.addAlbumMetaData(), api.auth.verifyToken, api.auth.verifyPerm
  *        "updated_at": "2019-11-06 18:47:02",
  *        "meta": {
  *            "Location": "Mexico"
- *        }
+ *        },
+ *        "cover_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg"
  *     }
  * 
  *  @apiSuccessExample {json} Example Response
@@ -349,7 +356,8 @@ router.post(routes.addAlbumMetaData(), api.auth.verifyToken, api.auth.verifyPerm
  *        "meta": {
  *            "Location": "Over There",
  *            "People": "Family"
- *        }
+ *        },
+ *        "cover_url": "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg"
  *     }
  * 
  *   @apiError {Object} albumIdDoesNotExist The album_id does not exist in the database

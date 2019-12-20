@@ -1,7 +1,5 @@
 const cloudinary = require('cloudinary').v2;
 
-
-
 const uploadMedia = (mediaBuffer, options) => {
 
   return new Promise((resolve, reject) => {
@@ -13,7 +11,7 @@ const uploadMedia = (mediaBuffer, options) => {
     });
 
     cloudinary.uploader.upload(mediaBuffer, options, (err, res) => {
-      if (err)     reject(err);
+      if (err) reject(err);
        else return resolve(res);
     });
   });

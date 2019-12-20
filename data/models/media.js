@@ -412,6 +412,82 @@ const retrieveAlbumsMedia = (album_id, done) => {
 
 };
 
+const retrieveUsersMedia = (user_id, done) => {
+  // Takes a user ID and a callback function as parameters.
+  // Retrieves the media and its related data from the database
+  // and passes null and an array of data to the callback function.
+
+  // Check if user_id exists.
+  db('users').where({ user_id })
+    .select('user_id').then(userIdArr => {
+
+      let userIdExists = (userIdArr.length === 1);
+
+      if (!userIdExists) done(new Error(errors.userIdDoesNotExist));
+      else {
+
+        // Get media.
+        db('media').where({ user_id })
+        .select().then(mediaObjArr => {
+
+          const mediaIdArr = mediaObjArr.map(mediaObj => mediaObj.media_id);
+
+          // Get all albums media is in.
+          db('mediaAlbums').whereIn('media_id', mediaIdArr)
+            .select().then(mediaAlbumsObjArr => {
+
+              const mediaAlbumsArr = [];
+              mediaAlbumsObjArr.forEach(({ media_id }) => (!mediaAlbumsArr.includes(media_id)) && (mediaAlbumsArr.push(media_id)));
+              mediaAlbumsArr.forEach((media_id, i) => mediaAlbumsArr[i] = { media_id, albums: [] });
+              mediaAlbumsObjArr.forEach(({ media_id, album_id }) => mediaAlbumsArr.forEach(mediaAlbumObj => (media_id === mediaAlbumObj.media_id) && (mediaAlbumObj.albums.push(album_id))));
+
+              // Get media keywords
+              db('mediaKeywords').leftJoin('keywords', function() {
+                  this.on('mediaKeywords.keyword_id', '=', 'keywords.keyword_id').onIn('mediaKeywords.media_id', mediaIdArr);
+                }).select().then(mediaKeywordsJoinArr => {
+                  
+                  let mediaKeywordsObjArr = [];
+                  mediaKeywordsJoinArr.forEach(({ media_id }) => (!mediaKeywordsObjArr.includes(media_id)) && (mediaKeywordsObjArr.push(media_id)));
+                  mediaKeywordsObjArr.forEach((media_id, i) => mediaKeywordsObjArr[i] = { media_id, keywords: [] });
+                  mediaKeywordsJoinArr.forEach(({ media_id, name }) => mediaKeywordsObjArr.forEach((mediaKeywordsObj, i) => (media_id === mediaKeywordsObj.media_id) && (mediaKeywordsObjArr[i].keywords.push(name))));
+
+                  // Get media meta data.
+                  db('media').leftJoin('mediaMeta', function() {
+                    this.on('media.media_id', '=', 'mediaMeta.media_id').onIn('media.media_id', mediaIdArr);
+                  }).select().then(mediaMetaJoinArr => {
+
+                    const mediaMetaObjArr = [];
+                    mediaMetaJoinArr.forEach(({ media_id }) => (!mediaMetaObjArr.includes(media_id) && media_id !== null) && (mediaMetaObjArr.push(media_id)));
+                    mediaMetaObjArr.forEach((media_id, i) => mediaMetaObjArr[i] = { media_id, meta: {} });
+                    mediaMetaJoinArr.forEach(({ media_id, name, value }) => mediaMetaObjArr.forEach((mediaMetaObj, i) => (media_id === mediaMetaObj.media_id) && (mediaMetaObjArr[i].meta[name] = value)));
+
+                    // Combine all data.
+                    mediaObjArr.forEach(mediaObj => {
+
+                      mediaObj.albums   = [];
+                      mediaObj.keywords = [];
+                      mediaObj.meta     = {};
+
+                      mediaAlbumsArr.forEach(mediaAlbumsObj => (mediaObj.media_id === mediaAlbumsObj.media_id) && (mediaAlbumsObj.albums.forEach(album_id => mediaObj.albums.push(album_id))));
+                      mediaKeywordsObjArr.forEach(mediaKeywordsObj => (mediaObj.media_id === mediaKeywordsObj.media_id) && (mediaKeywordsObj.keywords.forEach(keyword => mediaObj.keywords.push(keyword))));
+                      mediaMetaObjArr.forEach(mediaMetaObj => (mediaObj.media_id === mediaMetaObj.media_id) && (mediaObj.meta = mediaMetaObj.meta));
+                    });
+
+                    done(null, mediaObjArr);
+
+                  }).catch(mediaMetaJoinErr => done(mediaMetaJoinErr));
+
+                }).catch(mediaKeywordsJoinErr => done(mediaKeywordsJoinErr));
+
+            }).catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+        }).catch(mediaObjErr => done(mediaObjErr));
+
+      }
+
+    }).catch(userIdErr => done(userIdErr));
+};
+
 module.exports = {
   createMediaToAlbums,
   createMedia,
@@ -419,4 +495,5 @@ module.exports = {
   createManyKeywordsToMedia,
   createManyMediaMeta,
   retrieveAlbumsMedia,
+  retrieveUsersMedia,
 };

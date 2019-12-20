@@ -5,10 +5,10 @@ exports.up = function(knex) {
   return knex.schema.createTable('albums', table =>  {
 
     // album_id
-    table.bigIncrements('album_id').primary();
+    table.increments('album_id').primary();
 
     // user_id
-    table.bigInteger('user_id')
+    table.integer('user_id')
       .unsigned()
       .notNullable()
       .references('user_id')
@@ -17,13 +17,9 @@ exports.up = function(knex) {
       .onDelete('CASCADE');
 
     // cover_id
-    table.bigInteger('cover_id')
+    table.integer('cover_id')
       .unsigned()
-      // .notNullable()
-      // .references('media_id')
-      // .inTable('media')
-      // .onUpdate('CASCADE')
-      // .onDelete('CASCADE');
+      .defaultTo(null);
 
     // access
     table.enu('access', ['public', 'private'])

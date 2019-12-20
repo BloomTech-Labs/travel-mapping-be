@@ -5,10 +5,10 @@ exports.up = function(knex) {
   return knex.schema.createTable('collaborators', table => {
 
     // collaborator_id
-    table.bigIncrements('collaborator_id').primary();
+    table.increments('collaborator_id').primary();
 
     // user_id
-    table.bigInteger('user_id')
+    table.integer('user_id')
       .notNullable()
       .references('user_id')
       .inTable('users')
@@ -16,7 +16,7 @@ exports.up = function(knex) {
       .onDelete('CASCADE');
 
     // album_id
-    table.bigInteger('album_id')
+    table.integer('album_id')
       .notNullable()
       .references('album_id')
       .inTable('albums')

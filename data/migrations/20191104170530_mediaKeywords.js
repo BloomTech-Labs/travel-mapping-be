@@ -5,7 +5,7 @@ exports.up = function(knex) {
   return knex.schema.createTable('mediaKeywords', table => {
 
     // media_id
-    table.bigInteger('media_id')
+    table.integer('media_id')
       .notNullable()
       .references('media_id')
       .inTable('media')
@@ -13,7 +13,7 @@ exports.up = function(knex) {
       .onDelete('CASCADE');
 
     // keyword_id
-    table.bigInteger('keyword_id')
+    table.integer('keyword_id')
       .notNullable()
       .references('keyword_id')
       .inTable('keywords')

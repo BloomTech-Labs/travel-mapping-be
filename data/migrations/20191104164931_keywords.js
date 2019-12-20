@@ -5,7 +5,7 @@ exports.up = function(knex) {
   return knex.schema.createTable('keywords', table => {
 
     // keyword_id
-    table.bigIncrements('keyword_id').primary();
+    table.increments('keyword_id').primary();
 
     // name
     table.string('name', 255)
