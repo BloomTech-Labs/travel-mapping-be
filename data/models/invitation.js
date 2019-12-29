@@ -139,6 +139,35 @@ const getInviteById = (invitation_id, done) => {
 
 };
 
+const acceptInvite = (invitation_id, done) => {
+
+  db('invitations').where({ invitation_id })
+    .first()
+    .then(invite => {
+      
+      if (!invite) done(new Error(invitationDoesNotExist));
+      else {
+
+        const { album_id, user_id } = invite;
+        db('collaborators').insert({ album_id, user_id })
+          .then(([ collaborator_id ]) => {
+
+            db('invitations').where({ invitation_id })
+              .del()
+              .then(() => {
+
+                done(null, { collaborator_id, album_id, user_id });
+
+              }).catch(err => done(err));
+
+          }).catch(err => done(err));
+
+      }
+
+    }).catch(err => done(err));
+
+};
+
 module.exports = {
   createInvitation,
   getInvitesByAlbum,
@@ -146,4 +175,5 @@ module.exports = {
   getInvitesForUser,
   deleteInviteById,
   getInviteById,
+  acceptInvite,
 };

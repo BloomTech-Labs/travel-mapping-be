@@ -129,10 +129,31 @@ const removeInvite = (req, res, next) => {
 
 };
 
+const acceptInvite = (req, res, next) => {
+
+  const invite_id = parseInt(req.params.invite_id);
+
+  try {
+
+    invitation.acceptInvite(invite_id, (inviteErr, collab) => {
+
+      if (inviteErr) next(inviteErr);
+      else res.status(201).json(collab);
+
+    });
+
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+
+};
+
 module.exports = {
   createInvitation,
   getInvitesByAlbum,
   getInvitesByUser,
   getInvitesForUser,
-  removeInvite
+  removeInvite,
+  acceptInvite,
 };

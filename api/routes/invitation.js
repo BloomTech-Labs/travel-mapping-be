@@ -265,6 +265,49 @@ router.get(routes.getInvitesForUser(), api.auth.verifyToken, api.auth.verifyPerm
 // #endregion
 router.delete(routes.removeInvitation(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.removeInvite);
 
+// GET HTTP/1.1 201 CREATED
+// #region
+/**
+ * 
+ *  @api {get} /invites/:invite_id/accept accept the invitation
+ *  @apiName accept-invite
+ *  @apiGroup Invitations
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission invited_user
+ * 
+ *  @apiHeader (Headers) {String} [Authorization] JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} invite_id The user ID
+ *
+ *  @apiSuccess {Integer} invite_id the accepted invite
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 201 CREATED
+ *     {  
+ *        "user_id": 2345,
+ *        "album_id": 25345
+ *     }
+ *  
+ *   @apiError {Object} invitationDoesNotExist invite_id does not match any existing invitation
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample User Does Not Exist
+ *      HTTP/1.1 404
+ *      {
+ *          "invitationDoesNotExist": "invite id does not exist"
+ *      }
+ * 
+ */
+// #endregion
+router.get(routes.acceptInvitation(), api.auth.verifyToken, api.auth.verifyPermission, api.invitation.acceptInvite);
+
 // Error handler
 router.use((err, req, res, next) => {
 

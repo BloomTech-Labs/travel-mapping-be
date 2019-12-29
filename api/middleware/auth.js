@@ -127,8 +127,35 @@ const verifyPermission = (req, res, next) => {
         break;
 
       case routes.removeInvitation():
+        
+        if (email !== null) {
+          models.user.retrieveUserBy({ email }, (userRetrieveErr, userObj) => {
 
-        const invite_id = parseInt(req.params.invite_id);
+            if (userRetrieveErr) next(userRetrieveErr);
+            else {
+
+              const invite_id = parseInt(req.params.invite_id);
+              models.invitation.getInviteById(invite_id, (inviteRetrieveErr, inviteObj) => {
+
+                if (inviteRetrieveErr) next(inviteRetrieveErr);
+                else if (!inviteObj) next(new Error(errors.invitationDoesNotExist));
+                else {
+
+                  req.isOwner = userObj.user_id === inviteObj.user_id || userObj.user_id === inviteObj.invited_user_id;
+                  res.isAdmin = userObj.is_admin;
+                  next();
+
+                }
+
+              });
+
+            }
+
+          });
+        } else next(new Error(errors.unauthorized));
+        break;
+
+      case routes.acceptInvitation():
 
         if (email !== null) {
           models.user.retrieveUserBy({ email }, (userRetrieveErr, userObj) => {
@@ -136,12 +163,14 @@ const verifyPermission = (req, res, next) => {
             if (userRetrieveErr) next(userRetrieveErr);
             else {
 
+              const invite_id = parseInt(req.params.invite_id);
               models.invitation.getInviteById(invite_id, (inviteRetrieveErr, inviteObj) => {
 
                 if (inviteRetrieveErr) next(inviteRetrieveErr);
+                else if (!inviteObj) next(new Error(errors.invitationDoesNotExist));
                 else {
 
-                  req.isOwner = userObj.user_id === inviteObj.user_id || userObj.user_id === inviteObj.invited_user_id;
+                  req.isOwner = userObj.user_id === inviteObj.invited_user_id;
                   res.isAdmin = userObj.is_admin;
                   next();
 
