@@ -285,13 +285,16 @@ router.delete(routes.removeInvitation(), api.auth.verifyToken, api.auth.verifyPe
  * 
  *  @apiParam (URL Parameters) {Integer} invite_id The user ID
  *
- *  @apiSuccess {Integer} invite_id the accepted invite
+ *  @apiSuccess {Integer} collaborator_id the id of the collaborator relationship
+ *  @apiSuccess {Integer} album_id the album they've joined
+ *  @apiSuccess {Integer} user_id the user added as a collaborator to the album
  * 
  *  @apiSuccessExample {json} Example Response
  *     HTTP/1.1 201 CREATED
  *     {  
- *        "user_id": 2345,
- *        "album_id": 25345
+ *       "collaborator_id": 3,
+ *       "album_id": 1,
+ *       "user_id": 1
  *     }
  *  
  *   @apiError {Object} invitationDoesNotExist invite_id does not match any existing invitation
