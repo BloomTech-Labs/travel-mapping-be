@@ -53,5 +53,6 @@ module.exports = {
   inviteeIdDoesNotExist:   'invitee id does not exist',
   invitationAlreadyexists: 'an invitation already exists',
   invitationDoesNotExist:  'invite id does not exist',
+  alreadyCollaborator:     'user is already a collaborator',
 
 };

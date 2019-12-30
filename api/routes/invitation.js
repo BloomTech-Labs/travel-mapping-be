@@ -342,6 +342,9 @@ router.use((err, req, res, next) => {
     case errors.invitationDoesNotExist:
       res.status(404).json({ invitationDoesNotExist: errors.invitationDoesNotExist });
       break;
+    case errors.alreadyCollaborator:
+      res.status(400).json({ alreadyCollaborator: errors.alreadyCollaborator });
+      break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });
       break;

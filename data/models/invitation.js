@@ -109,7 +109,7 @@ const deleteInviteById = (invitation_id, done) => {
   db('invitations').where({ invitation_id })
     .first()
     .then(invite => {
-      console.log(invite);
+      
       if (!invite) done(new Error(errors.inviteeIdDoesNotExist));
       else {
 
@@ -144,7 +144,7 @@ const acceptInvite = (invitation_id, done) => {
   db('invitations').where({ invitation_id })
     .first()
     .then(invite => {
-      
+
       if (!invite) done(new Error(invitationDoesNotExist));
       else {
 

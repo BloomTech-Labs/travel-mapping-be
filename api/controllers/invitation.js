@@ -1,4 +1,4 @@
-const invitation      = require('../../data/models/models').invitation;
+const { invitation, collaborator }      = require('../../data/models/models');
 const errors      = require('../../modules/modules').errors;
 
 const createInvitation = (req, res, next) => {
@@ -14,10 +14,20 @@ const createInvitation = (req, res, next) => {
 
       if (req.isOwner || req.isAdmin) {
 
-        invitation.createInvitation(album_id, user_id, invited_user_id, (inviteErr, inviteObj) => {
+        collaborator.checkCollaboration(album_id, user_id, (collabError, alreadyCollab) => {
+
+          if (collabError) next(collabError);
+          else if (alreadyCollab) next(new Error(errors.alreadyCollaborator));
+          else {
+
+            invitation.createInvitation(album_id, user_id, invited_user_id, (inviteErr, inviteObj) => {
           
-          if (inviteErr) next(inviteErr);
-          else res.status(201).json(inviteObj);
+              if (inviteErr) next(inviteErr);
+              else res.status(201).json(inviteObj);
+
+            });
+
+          }
 
         });
 
