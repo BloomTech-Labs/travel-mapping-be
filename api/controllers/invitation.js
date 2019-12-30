@@ -14,24 +14,14 @@ const createInvitation = (req, res, next) => {
 
       if (req.isOwner || req.isAdmin) {
 
-        collaborator.checkCollaboration(album_id, user_id, (collabError, alreadyCollab) => {
-
-          if (collabError) next(collabError);
-          else if (alreadyCollab) next(new Error(errors.alreadyCollaborator));
-          else {
-
-            invitation.createInvitation(album_id, user_id, invited_user_id, (inviteErr, inviteObj) => {
-          
-              if (inviteErr) next(inviteErr);
-              else res.status(201).json(inviteObj);
-
-            });
-
-          }
+        invitation.createInvitation(album_id, user_id, invited_user_id, (inviteErr, inviteObj) => {
+      
+          if (inviteErr) next(inviteErr);
+          else res.status(201).json(inviteObj);
 
         });
 
-      } else next(new Error(errors.unauthorized));
+      }
 
     } catch (err) {
       console.error(err);
@@ -78,12 +68,16 @@ const getInvitesByUser = (req, res, next) => {
 
     try {
 
-      invitation.getInvitesByUser(user_id, (inviteErr, inviteArr) => {
+      if (req.isOwner || req.isAdmin) {
 
-        if (inviteErr) next(inviteErr);
-        else res.status(200).json(inviteArr);
+        invitation.getInvitesByUser(user_id, (inviteErr, inviteArr) => {
 
-      });
+          if (inviteErr) next(inviteErr);
+          else res.status(200).json(inviteArr);
+
+        });
+
+      } else next(new Error(errors.unauthorized));
 
     } catch (err) {
       console.error(err);
@@ -103,12 +97,17 @@ const getInvitesForUser = (req, res, next) => {
 
     try {
 
-      invitation.getInvitesForUser(user_id, (inviteErr, inviteArr) => {
+      if (req.isOwner || req.isAdmin) {
 
-        if (inviteErr) next(inviteErr);
-        else res.status(200).json(inviteArr);
+      
+        invitation.getInvitesForUser(user_id, (inviteErr, inviteArr) => {
 
-      });
+          if (inviteErr) next(inviteErr);
+          else res.status(200).json(inviteArr);
+
+        });
+
+      } else next(new Error(errors.unauthorized));
 
     } catch (err) {
       console.error(err);
@@ -125,12 +124,16 @@ const removeInvite = (req, res, next) => {
 
   try {
 
-    invitation.deleteInviteById(invite_id, (inviteErr, removed) => {
+    if (req.isOwner || req.isAdmin) {
 
-      if (inviteErr) next(inviteErr);
-      else res.status(200).json(removed);
+      invitation.deleteInviteById(invite_id, (inviteErr, removed) => {
 
-    });
+        if (inviteErr) next(inviteErr);
+        else res.status(200).json(removed);
+
+      });
+
+    } else next(new Error(errors.unauthorized));
 
   } catch (err) {
     console.error(err);
@@ -145,12 +148,16 @@ const acceptInvite = (req, res, next) => {
 
   try {
 
-    invitation.acceptInvite(invite_id, (inviteErr, collab) => {
+    if (req.isOwner || req.isAdmin) {
 
-      if (inviteErr) next(inviteErr);
-      else res.status(201).json(collab);
+      invitation.acceptInvite(invite_id, (inviteErr, collab) => {
 
-    });
+        if (inviteErr) next(inviteErr);
+        else res.status(201).json(collab);
+
+      });
+
+    } else next(new Error(errors.unauthorized));
 
   } catch (err) {
     console.error(err);
