@@ -140,7 +140,7 @@ const addAlbumMetaData = (req, res, next) => {
       const album_id = parseInt(req.params.album_id);
       const metaDataArr = req.body;
 
-      if (req.isOwner || req.isAdmin) {
+      if (req.isOwner || req.isAdmin || req.isCollab) {
 
         album.createAlbumMeta(album_id, metaDataArr, (createErr, albumObj) => {
 
@@ -215,7 +215,7 @@ const editAlbum = (req, res, next) => {
   if (errorMsgOrTrue !== true) next(new Error(errorMsgOrTrue));
   else {
 
-    if (req.isOwner || req.isAdmin) {
+    if (req.isOwner || req.isAdmin || req.isCollab) {
 
       try {
 
@@ -261,11 +261,11 @@ const removeAlbum = (req, res, next) => {
 
 };
 
-const getUsersAlbum = (req, res, next) => {
+const getAlbum = (req, res, next) => {
   
   const { album_id } = req.params;
 
-  if (req.isOwner || req.isAdmin) {
+  if (req.isOwner || req.isAdmin || req.isCollab) {
     
     try {
 
@@ -305,7 +305,7 @@ const editAlbumMeta = (req, res, next) => {
   else if (invalidRemoveProps !== true) next(new Error(invalidRemoveProps));
   else {
   
-    if (req.isOwner || req.isAdmin) {
+    if (req.isOwner || req.isAdmin || req.isCollab) {
 
       try {
 
@@ -353,6 +353,6 @@ module.exports = {
   addAlbumMetaData,
   editAlbum,
   removeAlbum,
-  getUsersAlbum,
+  getAlbum,
   editAlbumMeta
 };
