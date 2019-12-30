@@ -69,7 +69,7 @@ const verifyPermission = (req, res, next) => {
       case routes.getAlbumsMedia():
       case routes.removeAlbum():
       case routes.editAlbum():
-      case routes.getUsersAlbum():
+      case routes.getAlbum():
       case routes.editAlbumMeta():
       case routes.createInvitation():
       case routes.getInvitesByAlbum():
@@ -88,11 +88,23 @@ const verifyPermission = (req, res, next) => {
     
                 if (retrieveErr) next(retrieveErr);
                 else {
-    
-                  req.isOwner      = (userObj.user_id === albumObj.user_id);
-                  req.isAdmin      = userObj.is_admin;
-                  req.collabAlbums = [];
-                  next();
+
+                  models.collaborator.checkCollaboration(album_id, userObj.user_id, (collabErr, isCollab) => {
+
+                    console.log('isCollab', isCollab);
+
+                    if (collabErr) next(collabErr);
+                    else {
+
+                      req.isOwner      = (userObj.user_id === albumObj.user_id);
+                      req.isAdmin      = userObj.is_admin;
+                      req.isCollab     = isCollab;
+                      req.collabAlbums = [];
+                      next();
+                      
+                    }
+
+                  });   
     
                 }
     
@@ -126,6 +138,7 @@ const verifyPermission = (req, res, next) => {
         } else next();
         break;
 
+      // check that user is either the creator or the recipient of the invite, and assigns them permission to delete it
       case routes.removeInvitation():
         
         if (email !== null) {
@@ -155,6 +168,7 @@ const verifyPermission = (req, res, next) => {
         } else next(new Error(errors.unauthorized));
         break;
 
+      // check that the user is the recipient of the invite, and assigns them permission to accept it
       case routes.acceptInvitation():
 
         if (email !== null) {
