@@ -484,7 +484,7 @@ router.delete(routes.removeAlbum(), api.auth.verifyToken, api.auth.verifyPermiss
  * 
  */
 // #endregion
-router.get(routes.getUsersAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.album.getUsersAlbum);
+router.get(routes.getAlbum(), api.auth.verifyToken, api.auth.verifyPermission, api.album.getUsersAlbum);
 
 
 // Put HTTP/1.1 200 OK
