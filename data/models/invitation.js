@@ -30,22 +30,30 @@ const createInvitation = (album_id, user_id, invited_user_id, done) => {
                   if (existingInvitation) done(new Error(errors.invitationAlreadyexists));
                   else {
 
-                    // create the invitation
-                    db('invitations')
-                      .insert({ user_id, invited_user_id, album_id })
-                      .then(([invitation_id]) => {
-                        
-                        // retrieve the new invitation, return it to the controller
-                        db('invitations').where('invitation_id', invitation_id)
-                          .first()
-                          .then(newInvite => {
+                    db('collaborators').where({ album_id, user_id: invited_user_id })
+                      .first()
+                      .then(collab => {
 
-                            done(null, newInvite);
+                        if (collab) done(new Error(errors.alreadyCollaborator));
+                        else {
 
-                          }).catch(inviteRetrievalErr => done(inviteRetrievalErr));
+                          // create the invitation
+                          db('invitations')
+                            .insert({ user_id, invited_user_id, album_id })
+                            .then(([invitation_id]) => {
+                              
+                              // retrieve the new invitation, return it to the controller
+                              db('invitations').where('invitation_id', invitation_id)
+                                .first()
+                                .then(newInvite => {
 
-                      }).catch(inviteCreationErr => done(inviteCreationErr));
+                                  done(null, newInvite);
 
+                                }).catch(inviteRetrievalErr => done(inviteRetrievalErr));
+
+                            }).catch(inviteCreationErr => done(inviteCreationErr));
+                        }
+                      }).catch(collabErr => done(collabErr));
                   }
                 }).catch(inviteRetrievalErr => done(inviteRetrievalErr));
               
@@ -148,7 +156,7 @@ const acceptInvite = (invitation_id, done) => {
       if (!invite) done(new Error(invitationDoesNotExist));
       else {
 
-        const { album_id, user_id } = invite;
+        const { album_id, invited_user_id: user_id } = invite;
         db('collaborators').insert({ album_id, user_id })
           .then(([ collaborator_id ]) => {
 
