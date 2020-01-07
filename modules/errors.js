@@ -21,6 +21,7 @@ module.exports = {
   missingAlbums:       'request is missing required albums property',
   missingMedia:        'request is missing required media property',
   missingMediaTitle:   'request is missing required title property',
+  selfInvitation:      'cannot invite self to album',
 
   // Model errors
   userDoesNotExist:        'user does not exist',
@@ -49,5 +50,9 @@ module.exports = {
   mediaTitleExists:        'media title already exists',
   mediaIdDoesNotExist:     'media id does not exist',
   keywordIdDoesNotExist:   'keyword id does not exist',
+  inviteeIdDoesNotExist:   'invitee id does not exist',
+  invitationAlreadyexists: 'an invitation already exists',
+  invitationDoesNotExist:  'invite id does not exist',
+  alreadyCollaborator:     'user is already a collaborator',
 
 };

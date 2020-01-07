@@ -30,6 +30,9 @@ exports.up = function(knex) {
       .inTable('albums')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
+    
+    table.timestamp('created_at')
+      .defaultTo(knex.fn.now());
   });
 };
 

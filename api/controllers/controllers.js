@@ -4,4 +4,5 @@ module.exports = {
   album:  require('./album'),
   upload: require('./upload'),
   media:  require('./media'),
+  invitation: require('./invitation'),
 }
