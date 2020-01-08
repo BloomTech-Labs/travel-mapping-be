@@ -183,7 +183,7 @@ const verifyPermission = (req, res, next) => {
                 else {
 
                   req.isOwner = userObj.user_id === inviteObj.invited_user_id;
-                  res.isAdmin = userObj.is_admin;
+                  req.isAdmin = userObj.is_admin;
                   next();
 
                 }
