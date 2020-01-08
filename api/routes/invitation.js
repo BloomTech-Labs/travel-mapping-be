@@ -27,13 +27,13 @@ const api         = { ...controllers, ...middleware };
  * 
  *  @apiParam (URL Parameters) {Integer} album_id The album ID
  *  @apiParam (Request Body) {Integer} user_id the user making the request
- *  @apiparam (Request Body) {Integer} invited_user_id the user to be invited
+ *  @apiparam (Request Body) {String} invited_email the email of user to be invited
  *  
  *  @apiParamExample {json} Example Request
  *      /albums/4563/invites/create
  *      {
  *          "user_id": 45,
- *          "invited_user_id": 132
+ *          "invited_email": "test@gmail.com"
  *      }
  * 
  *  @apiSuccess {Object[]} invitation the invitation object

@@ -1279,17 +1279,17 @@
           },
           {
             "group": "Request Body",
-            "type": "Integer",
+            "type": "String",
             "optional": false,
-            "field": "invited_user_id",
-            "description": "<p>the user to be invited</p>"
+            "field": "invited_email",
+            "description": "<p>the email of user to be invited</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Example Request",
-          "content": "/albums/4563/invites/create\n{\n    \"user_id\": 45,\n    \"invited_user_id\": 132\n}",
+          "content": "/albums/4563/invites/create\n{\n    \"user_id\": 45,\n    \"invited_email\": \"test@gmail.com\"\n}",
           "type": "json"
         }
       ]
