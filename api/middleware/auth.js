@@ -74,6 +74,7 @@ const verifyPermission = (req, res, next) => {
       case routes.createInvitation():
       case routes.getInvitesByAlbum():
       case routes.getCollaborators():
+      case routes.deleteCollaborator():
         
         const album_id = parseInt(req.params.album_id);
 

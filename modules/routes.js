@@ -41,7 +41,7 @@ module.exports = {
   acceptInvitation: (invite_id) => (typeof invite_id !== 'undefined' ? `/invites/${ invite_id }/accept` : '/invites/:invite_id/accept'),
 
   // Collaborators
-  deleteCollaborator: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/collaborators/remove`: '/albums/:album_id/collaborators/remove'),
+  deleteCollaborator: (album_id, collaborator_id) => (typeof album_id !== 'undefined' && typeof collaborator_id !== 'undefined' ? `/albums/${ album_id }/collaborators/${ collaborator_id }/remove`: '/albums/:album_id/collaborators/:collaborator_id/remove'),
   getCollaborators: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/collaborators`: '/albums/:album_id/collaborators'),
 
 };

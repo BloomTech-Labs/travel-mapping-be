@@ -10,7 +10,7 @@ const api         = { ...controllers, ...middleware };
 
 router.get(routes.getCollaborators(), api.auth.verifyToken, api.auth.verifyPermission, api.collaborator.getCollaborators);
 
-router.delete(routes.deleteCollaborator(), api.auth.verifyToken, api.collaborator.deleteCollaborator);
+router.delete(routes.deleteCollaborator(), api.auth.verifyToken, api.auth.verifyPermission, api.collaborator.deleteCollaborator);
 
 // Error handler
 router.use((err, req, res, next) => {

@@ -31,7 +31,30 @@ const getCollaborators = (req, res, next) => {
 
 const deleteCollaborator = (req, res, next) => {
 
+  const collaborator_id = parseInt(req.params.collaborator_id);
 
+  try {
+
+    if (req.isOwner || req.isAdmin) {
+
+      collaborator.removeCollaborator(collaborator_id, (collabErr, deleted) => {
+
+        if (collabErr) next(collabErr);
+        else if (!deleted) next(new Error(errors.serverError))
+        else {
+
+          res.status(200).json({ deleted_id: collaborator_id });
+
+        }
+
+      });
+
+    } else next(new Error(errors.unauthorized));
+
+  } catch(err) {
+    console.error(err);
+    next(err);
+  }
 
 };
 
