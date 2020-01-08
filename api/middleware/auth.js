@@ -91,8 +91,6 @@ const verifyPermission = (req, res, next) => {
 
                   models.collaborator.checkCollaboration(album_id, userObj.user_id, (collabErr, isCollab) => {
 
-                    console.log('isCollab', isCollab);
-
                     if (collabErr) next(collabErr);
                     else {
 

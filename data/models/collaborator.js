@@ -3,7 +3,7 @@ const errors   = require('../../modules/modules').errors;
 
 const retrieveCollabAlbums = (user_id, done) => {
 
-  db('collaborators').where({ user_id })
+  db('collaborators').where('collaborators.user_id', user_id)
     .join('albums', 'collaborators.album_id', 'albums.album_id')
     .then(albums => {
 
@@ -11,7 +11,7 @@ const retrieveCollabAlbums = (user_id, done) => {
       done(null, albums);
 
     }).catch(err => {
-      console.error(err);
+      console.error('retrieveCollabAlbums', err);
       done(err);
     });
 
