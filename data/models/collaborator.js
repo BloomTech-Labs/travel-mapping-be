@@ -7,13 +7,9 @@ const retrieveCollabAlbums = (user_id, done) => {
     .join('albums', 'collaborators.album_id', 'albums.album_id')
     .then(albums => {
 
-      console.log(albums);
       done(null, albums);
 
-    }).catch(err => {
-      console.error('retrieveCollabAlbums', err);
-      done(err);
-    });
+    }).catch(err => done(err));
 
 };
 
