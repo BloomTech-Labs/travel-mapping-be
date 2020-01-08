@@ -40,4 +40,8 @@ module.exports = {
   removeInvitation: (invite_id) => (typeof invite_id !== 'undefined' ? `/invites/${ invite_id }/remove` : '/invites/:invite_id/remove'),
   acceptInvitation: (invite_id) => (typeof invite_id !== 'undefined' ? `/invites/${ invite_id }/accept` : '/invites/:invite_id/accept'),
 
+  // Collaborators
+  deleteCollaborator: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/collaborators/remove`: '/albums/:album_id/collaborators/remove'),
+  getCollaborators: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/collaborators`: '/albums/:album_id/collaborators'),
+
 };
