@@ -832,7 +832,7 @@ describe('Album endpoint tests', () => {
     it('should respond with a 400 status code when the title already exists', done => {
 
       const { email, password } = Object.assign({}, USERS[0], { password: PASS });
-      const { album_id } = ALBUMS[0];
+      const { album_id } = ALBUMS[1];
       const album = {
         title: 'A title'
       }
@@ -870,7 +870,7 @@ describe('Album endpoint tests', () => {
     it('should respond with an albumTitleExists property when the title already exists', done => {
 
       const { email, password } = Object.assign({}, USERS[0], { password: PASS });
-      const { album_id } = ALBUMS[0];
+      const { album_id } = ALBUMS[1];
       const album = {
         title: 'A title'
       }

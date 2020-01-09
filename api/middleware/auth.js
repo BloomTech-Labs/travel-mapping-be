@@ -73,6 +73,8 @@ const verifyPermission = (req, res, next) => {
       case routes.editAlbumMeta():
       case routes.createInvitation():
       case routes.getInvitesByAlbum():
+      case routes.getCollaborators():
+      case routes.deleteCollaborator():
         
         const album_id = parseInt(req.params.album_id);
 
@@ -90,8 +92,6 @@ const verifyPermission = (req, res, next) => {
                 else {
 
                   models.collaborator.checkCollaboration(album_id, userObj.user_id, (collabErr, isCollab) => {
-
-                    console.log('isCollab', isCollab);
 
                     if (collabErr) next(collabErr);
                     else {
@@ -185,7 +185,7 @@ const verifyPermission = (req, res, next) => {
                 else {
 
                   req.isOwner = userObj.user_id === inviteObj.invited_user_id;
-                  res.isAdmin = userObj.is_admin;
+                  req.isAdmin = userObj.is_admin;
                   next();
 
                 }

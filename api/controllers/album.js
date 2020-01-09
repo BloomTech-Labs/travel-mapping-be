@@ -2,11 +2,15 @@ const validate    = require('../../modules/modules').validate;
 const errors      = require('../../modules/modules').errors;
 const album       = require('../../data/models/models').album;
 const media       = require('../../data/models/models').media;
+const collaborator = require('../../data/models/models').collaborator;
 const utils       = require('../../modules/modules').utils;
 const jwt         = require('jsonwebtoken');
 const environment = process.env.NODE_ENV || 'development';
 const serverHost  = utils.getEnvironmentHost(environment);
-const generateAlbumCover = require('../../modules/coverAlbum').generateAlbumCover
+const {
+  generateCoverUpdated,
+  genCoverPromiseArray
+} = require('../../modules/coverAlbum')
 
 const createAlbum = (req, res, next) => {
 
@@ -51,68 +55,26 @@ const getUsersAlbums = (req, res, next) => {
       if (retrieveErr) next(retrieveErr);
       else {
 
-        // Add cover_url to albums objects
-        media.retrieveUsersMedia(user_id, (retrieveMediaErr, mediaArr) => {
+        collaborator.retrieveCollabAlbums(user_id, async (collabErr, collabArr) => {
 
-          if (retrieveMediaErr) next(retrieveMediaErr);
+          if (collabErr) next(collabErr);
           else {
 
-            albumsArr.forEach(albumObj => {
-
-              albumObj.album_id = parseInt(albumObj.album_id);
-              albumObj.user_id  = parseInt(albumObj.user_id);
-
-              if (albumObj.cover_id === null) {
-
-                if (mediaArr.length === 0) albumObj.cover_url = `${ serverHost }/media/thumbnail/placeholder.jpg`;
-                
-                for (let i = 0; i < mediaArr.length; i++) {
-                  
-                  if (mediaArr[i].albums.includes(albumObj.album_id)) {
-
-                    albumObj.cover_url = `${ serverHost }/users/${ mediaArr[i].user_id }/media/thumbnail/${ mediaArr[i].title }`;
-                    // albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ process.env.CLOUDINARY_SERVER_ACCESS_KEY }/${ mediaArr[i].user_id }/${ mediaArr[i].title }.jpg`;
-                    i = mediaArr.length;
-
-                  } else albumObj.cover_url = `${ serverHost }/media/thumbnail/placeholder.jpg`;
-
-                }
-
-              } else {
-
-                mediaArr.forEach(mediaObj => {
-
-                  if (albumObj.cover_id === mediaObj.media_id) {
-  
-                    albumObj.cover_url = `${ serverHost }/users/${ mediaObj.user_id }/media/thumbnail/${ mediaObj.title }`;
-                    // albumObj.cover_url = `https://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/w_400,h_400,c_thumb/${ process.env.CLOUDINARY_SERVER_ACCESS_KEY }/${ mediaObj.user_id }/${ mediaObj.title }.jpg`;
-  
-                  } else {
-  
-                    albumObj.cover_url = `${ serverHost }/media/thumbnail/placeholder.jpg`;
-  
-                  }
-  
-                });
-
-              }
-
-              delete albumObj.cover_id;
-
-            });
+            albumsArr = albumsArr.concat(collabArr);
+            const withCovers = await genCoverPromiseArray(albumsArr);
 
             if (isOwner || isAdmin) {
-
+              
               // Send all albums.
-              res.status(200).json(albumsArr);
-    
+              res.status(200).json(withCovers);
+              
             } else {
-        
+              
               // Send public albums only.
-              res.status(200).json(albumsArr.filter(albumObj => albumObj.access !== 'private'));
-    
+              res.status(200).json(withCovers.filter(albumObj => albumObj.access !== 'private'));
+              
             }
-
+      
           }
 
         });
@@ -275,10 +237,11 @@ const getAlbum = (req, res, next) => {
         
         else {
 
-          generateAlbumCover(albumObj, (mediaErr, albumWithCover) => {
+          generateCoverUpdated(albumObj, (mediaErr, albumWithCover) => {
 
             if (mediaErr) next(mediaErr);
             else res.status(200).json(albumWithCover);
+
           });
         }
 
@@ -329,7 +292,7 @@ const editAlbumMeta = (req, res, next) => {
 
         const responseHandler = (albumObj) => {
 
-          generateAlbumCover(albumObj, (mediaErr, albumWithCover) => {
+          generateCoverUpdated(albumObj, (mediaErr, albumWithCover) => {
 
             if (mediaErr) next(mediaErr);
             else res.status(200).json(albumWithCover);

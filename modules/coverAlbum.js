@@ -1,4 +1,7 @@
 const media = require('../data/models/media');
+const utils       = require('./utils');
+const environment = process.env.NODE_ENV || 'development';
+const serverHost  = utils.getEnvironmentHost(environment);
 
 // Taken almost verbatim out of the getUserAlbums and AddAlbumMetaData controllers
 // made into its own function here for simplicity and ease of reuse.
@@ -52,6 +55,62 @@ const generateAlbumCover = (albumObj, next) => {
   });
 };
 
+const generateCoverUpdated = (albumObj, done) => {
+
+  media.retrieveAlbumsMedia(albumObj.album_id, (mediaErr, mediaArr) => {
+
+    if (mediaErr) done(mediaErr);
+    else {
+
+      if (albumObj.cover_id) {
+
+        const mediaObj = mediaArr.find(e => e.media_id === albumObj.cover_id);
+        albumObj.cover_url = `${ serverHost }/users/${ mediaObj.user_id }/media/thumbnail/${ mediaObj.title }`;
+
+      } else if (mediaArr.length) {
+
+        albumObj.cover_url = `${ serverHost }/users/${ mediaArr[0].user_id }/media/thumbnail/${ mediaArr[0].title }`;
+
+      } else {
+
+        albumObj.cover_url = `${ serverHost }/media/thumbnail/placeholder.jpg`;
+
+      }
+      
+      done(null, albumObj);
+    }
+
+  });
+
+};
+
+const genCoverPromise = (albumObj) => {
+
+  return new Promise((resolve, reject) => {
+
+    generateCoverUpdated(albumObj, (coverErr, withCover) => {
+
+      if (coverErr) reject(coverErr);
+      else resolve(withCover);
+
+    });
+
+  });
+
+};
+
+genCoverPromiseArray = (albumsArr) => {
+
+  const coverPromises = [];
+  albumsArr.forEach(e => coverPromises.push(genCoverPromise(e)));
+  
+  return Promise.all(coverPromises);
+
+};
+
 module.exports = {
-  generateAlbumCover
+  generateAlbumCover,
+  generateCoverUpdated,
+  genCoverPromise,
+  genCoverPromiseArray,
 };

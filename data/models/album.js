@@ -258,11 +258,13 @@ const updateAlbumById = (album_id, albumObj, done) => {
 
           // Get users albums titles.
           db('albums').where({ user_id })
-            .select('title').then(titleArr => {
+            .select('title', 'album_id').then(titleArr => {
 
               // Check if user already has an album with the title.
               let titleExists = false;
-              titleArr.forEach(titleObj => (titleObj.title.toLowerCase() === title.toLowerCase()) && (titleExists = true));
+              titleArr.forEach(titleObj => {
+                if (titleObj.title.toLowerCase() === title.toLowerCase() && titleObj.album_id != album_id) titleExists = true;
+              });
 
               if (titleExists) done(new Error(errors.albumTitleExists));
               else {

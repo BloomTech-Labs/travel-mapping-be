@@ -5,4 +5,5 @@ module.exports = {
   upload: require('./upload'),
   media:  require('./media'),
   invitation: require('./invitation'),
+  collaborator: require('./collaborator'),
 }

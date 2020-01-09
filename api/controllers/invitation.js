@@ -1,34 +1,41 @@
-const { invitation, collaborator }      = require('../../data/models/models');
+const { invitation, collaborator, user }      = require('../../data/models/models');
 const errors      = require('../../modules/modules').errors;
 
 const createInvitation = (req, res, next) => {
 
   const album_id = parseInt(req.params.album_id);
-  const { user_id, invited_user_id } = req.body;
+  const { user_id, invited_email } = req.body;
 
-  if (!user_id || !invited_user_id || !album_id) next(new Error(errors.invalidProps));
-  else if (user_id === invited_user_id) next(new Error(errors.selfInvitation));
-  else {
+  if (!user_id || !invited_email || !album_id) next(new Error(errors.invalidProps));
 
-    try {
+  user.retrieveUserBy({ email: invited_email }, (userErr, invitedUser) => {
+    
+    if(userErr) next(userErr);
+    else if (user_id === invitedUser.user_id) next(new Error(errors.selfInvitation));
+    else {
 
-      if (req.isOwner || req.isAdmin) {
+      try {
 
-        invitation.createInvitation(album_id, user_id, invited_user_id, (inviteErr, inviteObj) => {
-      
-          if (inviteErr) next(inviteErr);
-          else res.status(201).json(inviteObj);
+        if (req.isOwner || req.isAdmin) {
 
-        });
+          invitation.createInvitation(album_id, user_id, invitedUser.user_id, (inviteErr, inviteObj) => {
+        
+            if (inviteErr) next(inviteErr);
+            else res.status(201).json(inviteObj);
 
+          });
+
+        }
+
+      } catch (err) {
+        console.error(err);
+        next(err);
       }
 
-    } catch (err) {
-      console.error(err);
-      next(err);
     }
 
-  }
+  });
+
 };
 
 const getInvitesByAlbum = (req, res, next) => {
@@ -68,16 +75,12 @@ const getInvitesByUser = (req, res, next) => {
 
     try {
 
-      if (req.isOwner || req.isAdmin) {
+      invitation.getInvitesByUser(user_id, (inviteErr, inviteArr) => {
 
-        invitation.getInvitesByUser(user_id, (inviteErr, inviteArr) => {
+        if (inviteErr) next(inviteErr);
+        else res.status(200).json(inviteArr);
 
-          if (inviteErr) next(inviteErr);
-          else res.status(200).json(inviteArr);
-
-        });
-
-      } else next(new Error(errors.unauthorized));
+      });
 
     } catch (err) {
       console.error(err);
@@ -96,18 +99,13 @@ const getInvitesForUser = (req, res, next) => {
   else {
 
     try {
-
-      if (req.isOwner || req.isAdmin) {
-
       
-        invitation.getInvitesForUser(user_id, (inviteErr, inviteArr) => {
+      invitation.getInvitesForUser(user_id, (inviteErr, inviteArr) => {
 
-          if (inviteErr) next(inviteErr);
-          else res.status(200).json(inviteArr);
+        if (inviteErr) next(inviteErr);
+        else res.status(200).json(inviteArr);
 
-        });
-
-      } else next(new Error(errors.unauthorized));
+      });
 
     } catch (err) {
       console.error(err);
