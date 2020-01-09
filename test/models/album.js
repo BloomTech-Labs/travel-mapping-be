@@ -334,7 +334,7 @@ describe('Testing album models', () => {
 
     it('should pass an error to a callback function when the title already exists', done => {
 
-      const { album_id } = ALBUMS[0];
+      const { album_id } = ALBUMS[1];
       albumData = {
         title: 'A Title',
         description: 'New Description',
