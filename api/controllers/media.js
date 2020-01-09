@@ -141,7 +141,7 @@ const getAlbumsMedia = (req, res, next) => {
       if (retrieveErr) next(retrieveErr);
       else {
 
-        if (req.isAdmin || req.isOwner) {
+        if (req.isAdmin || req.isOwner || req.isCollab) {
 
           // Add image url to media.
           mediaArr.forEach((mediaObj, i) => {
