@@ -436,7 +436,7 @@ router.delete(routes.removeAlbum(), api.auth.verifyToken, api.auth.verifyPermiss
 // GET HTTP/1.1 200 OK
 // #region
 /**
- *  @api {get} /users/:user_id/albums/:album_id Get a specific album
+ *  @api {get} /albums/:album_id Get a specific album
  *  @apiName Get-specific-album
  *  @apiGroup Albums
  *  @apiVersion 0.1.0

@@ -4,21 +4,21 @@ const errors      = require('../../modules/modules').errors;
 const createInvitation = (req, res, next) => {
 
   const album_id = parseInt(req.params.album_id);
-  const { user_id, invited_email } = req.body;
+  const { invited_email } = req.body;
 
-  if (!user_id || !invited_email || !album_id) next(new Error(errors.invalidProps));
+  if (!invited_email || !album_id) next(new Error(errors.invalidProps));
 
   user.retrieveUserBy({ email: invited_email }, (userErr, invitedUser) => {
     
     if(userErr) next(userErr);
-    else if (user_id === invitedUser.user_id) next(new Error(errors.selfInvitation));
+    else if (req.current_user.user_id === invitedUser.user_id) next(new Error(errors.selfInvitation));
     else {
 
       try {
 
         if (req.isOwner || req.isAdmin) {
 
-          invitation.createInvitation(album_id, user_id, invitedUser.user_id, (inviteErr, inviteObj) => {
+          invitation.createInvitation(album_id, req.current_user.user_id, invitedUser.user_id, (inviteErr, inviteObj) => {
         
             if (inviteErr) next(inviteErr);
             else res.status(201).json(inviteObj);

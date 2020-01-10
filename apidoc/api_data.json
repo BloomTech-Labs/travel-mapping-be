@@ -917,7 +917,7 @@
   },
   {
     "type": "get",
-    "url": "/users/:user_id/albums/:album_id",
+    "url": "/albums/:album_id",
     "title": "Get a specific album",
     "name": "Get_specific_album",
     "group": "Albums",
@@ -1504,13 +1504,6 @@
         "Request Body": [
           {
             "group": "Request Body",
-            "type": "Integer",
-            "optional": false,
-            "field": "user_id",
-            "description": "<p>the user making the request</p>"
-          },
-          {
-            "group": "Request Body",
             "type": "String",
             "optional": false,
             "field": "invited_email",
@@ -1521,7 +1514,7 @@
       "examples": [
         {
           "title": "Example Request",
-          "content": "/albums/4563/invites/create\n{\n    \"user_id\": 45,\n    \"invited_email\": \"test@gmail.com\"\n}",
+          "content": "/albums/4563/invites/create\n{\n    \"invited_email\": \"test@gmail.com\"\n}",
           "type": "json"
         }
       ]

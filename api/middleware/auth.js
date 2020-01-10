@@ -99,6 +99,7 @@ const verifyPermission = (req, res, next) => {
                       req.isOwner      = (userObj.user_id === albumObj.user_id);
                       req.isAdmin      = userObj.is_admin;
                       req.isCollab     = isCollab;
+                      req.current_user = userObj;
                       req.collabAlbums = [];
                       next();
                       
