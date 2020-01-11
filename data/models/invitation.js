@@ -75,7 +75,16 @@ const getInvitesByAlbum = (album_id, done) => {
       else {
 
         db('invitations').where({ album_id })
-          .select()
+          .join('users', 'invitations.invited_user_id', '=', 'users.user_id')
+          .select(
+            'invitation_id',
+            'invitations.user_id',
+            'invited_user_id',
+            'album_id',
+            'invitations.created_at',
+            'email as invited_user_email',
+            'display_name as invited_user_name'
+          )
           .then(inviteArr => {
 
             done(null, inviteArr);
@@ -90,8 +99,17 @@ const getInvitesByAlbum = (album_id, done) => {
 
 const getInvitesByUser = (user_id, done) => {
  
-  db('invitations').where({ user_id })
-    .select()  
+  db('invitations').where('invitations.user_id', user_id)
+    .join('users', 'invitations.invited_user_id', '=', 'users.user_id')
+    .select(
+      'invitation_id',
+      'invitations.user_id',
+      'invited_user_id',
+      'album_id',
+      'invitations.created_at',
+      'email as invited_user_email',
+      'display_name as invited_user_name'
+    )
     .then(inviteArr => {
 
       done(null, inviteArr);
@@ -103,7 +121,16 @@ const getInvitesByUser = (user_id, done) => {
 const getInvitesForUser = (invited_user_id, done) => {
 
   db('invitations').where({ invited_user_id })
-    .select()
+    .join('users', 'invitations.user_id', '=', 'users.user_id')
+    .select(
+      'invitation_id',
+      'invitations.user_id',
+      'invited_user_id',
+      'album_id',
+      'invitations.created_at',
+      'email as user_email',
+      'display_name as user_name'
+    )
     .then(inviteArr => {
 
       done(null, inviteArr);
