@@ -289,10 +289,46 @@ const viewMedia = (req, res, next) => {
 
 };
 
+const editMedia = (req, res, next) => {
+
+  const { media_id } = req.params;
+
+  if (req.isOwner || req.isAdmin || req.isCollab) {
+
+
+
+  } else next(new Error(errors.unauthorized));
+
+};
+
+const deleteMedia = (req, res, next) => {
+
+  const { album_id } = req.params;
+  const { media_id } = req.params;
+
+  if (req.isOwner || req.isAdmin || req.isCollab) {
+
+    models.media.deleteAlbumMedia(album_id, media_id, (err) => {
+      
+      if(err) next(err);
+      else {
+
+        res.status(204).end();
+
+      }
+
+    });
+
+  } else next(new Error(errors.unauthorized));
+
+};
+
 module.exports = {
   addAlbumsMedia,
   getAlbumsMedia,
   getUsersMedia,
   viewUsersMedia,
   viewMedia,
+  editMedia,
+  deleteMedia,
 };

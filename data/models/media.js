@@ -488,6 +488,20 @@ const retrieveUsersMedia = (user_id, done) => {
     }).catch(userIdErr => done(userIdErr));
 };
 
+const deleteAlbumMedia = (album_id, media_id, done) => {
+
+  return db('mediaAlbums').where({ album_id, media_id })
+    .del()
+    .then(deleted => {
+
+      if (!deleted) done (new Error(errors.mediaAlbumDoesNotExist));
+      else done(null, deleted);
+
+    })
+    .catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+};
+
 module.exports = {
   createMediaToAlbums,
   createMedia,
@@ -496,4 +510,5 @@ module.exports = {
   createManyMediaMeta,
   retrieveAlbumsMedia,
   retrieveUsersMedia,
+  deleteAlbumMedia,
 };

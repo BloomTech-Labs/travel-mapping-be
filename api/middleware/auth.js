@@ -74,6 +74,8 @@ const verifyPermission = (req, res, next) => {
       case routes.createInvitation():
       case routes.getInvitesByAlbum():
       case routes.getCollaborators():
+      case routes.deleteMedia():
+      case routes.editMedia():
         
         const album_id = parseInt(req.params.album_id);
 
@@ -219,7 +221,7 @@ const verifyPermission = (req, res, next) => {
 
                     if (collabErr) next(collabErr);
                     else {
-                      
+
                       req.isOwner = userObj.user_id === albumObj.user_id || userObj.user_id === collabObj.user_id;
                       req.isAdmin = userObj.is_admin;
                       next();

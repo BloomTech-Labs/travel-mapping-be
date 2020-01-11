@@ -25,9 +25,11 @@ module.exports = {
   getAlbumsMedia: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/media`      : '/albums/:album_id/media'), // Send media that belongs to an album
   addAlbumsMedia: (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media/add`    : '/users/:user_id/media/add'),
   getUsersMedia:  (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media`        : '/users/:user_id/media'),   // Send media that belongs to a user.
-  removeMedia:    (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media/remove` : '/users/:user_id/media/remove'), // Contains an array of media IDs to delete. Only owner and admin can do this.
+  // removeMedia:    (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media/remove` : '/users/:user_id/media/remove'), // Contains an array of media IDs to delete. Only owner and admin can do this.
   viewUsersMedia: (user_id, title, type) => ((typeof user_id !== 'undefined' && typeof title !== 'undefined' && typeof type !== 'undefined') ? `/users/${ user_id }/media/${ type }/${ title }` : '/users/:user_id/media/:type/:title'),
   viewMedia:      (type, title) => (typeof title !== 'undefined' ? `/media/${ type }/${ title }` : '/media/:type/:title'),
+  editMedia:      () => ('/albums/:album_id/media/:media_id/edit'),
+  deleteMedia:    () => ('/albums/:album_id/media/:media_id/remove'),
   
   // Comments
   getAlbumsComments: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/comments` : '/albums/:album_id/comments'),
