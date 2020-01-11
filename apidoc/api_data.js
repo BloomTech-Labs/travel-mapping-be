@@ -1664,7 +1664,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": 2343,\n   \"invited_user_name\": \"test\",\n   \"invited_user_email\": \"test@test.com\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": 2343,\n   \"invited_user_name\": \"test2\",\n   \"invited_user_email\": \"test2@test.com\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}]",
           "type": "json"
         }
       ]
@@ -1882,7 +1882,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": 2343,\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"invited_user_email\": \"test2@test.com\",\n   \"invited_user_name\": \"test2\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": 2343,\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"invited_user_email\": \"test3@test.com\",\n   \"invited_user_name\": \"test3\"\n}]",
           "type": "json"
         }
       ]
@@ -1984,7 +1984,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": \"2343\",\n   \"created_at\": \"2019-11-06 18:42:57\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{  \n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": 2343,\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"user_email\": \"test2@test.com\",\n   \"user_name\": \"test2\"\n}, {\n   \"invitation_id\": 2345\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"invited_user_id\": 2343,\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"user_email\": \"test3@test.com\",\n   \"user_name\": \"test3\"\n}]",
           "type": "json"
         }
       ]

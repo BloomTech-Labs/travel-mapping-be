@@ -93,13 +93,17 @@ router.post(routes.createInvitation(), api.auth.verifyToken, api.auth.verifyPerm
  *        "invitation_id": 2345
  *        "album_id": 4356,
  *        "user_id": 6534,
- *        "invited_user_id": "2343",
+ *        "invited_user_id": 2343,
+ *        "invited_user_name": "test",
+ *        "invited_user_email": "test@test.com",
  *        "created_at": "2019-11-06 18:42:57"
  *     }, {
  *        "invitation_id": 2345
  *        "album_id": 4356,
  *        "user_id": 6534,
- *        "invited_user_id": "2343",
+ *        "invited_user_id": 2343,
+ *        "invited_user_name": "test2",
+ *        "invited_user_email": "test2@test.com",
  *        "created_at": "2019-11-06 18:42:57"
  *     }]
  *  
@@ -145,14 +149,18 @@ router.get(routes.getInvitesByAlbum(), api.auth.verifyToken, api.auth.verifyPerm
  *        "invitation_id": 2345
  *        "album_id": 4356,
  *        "user_id": 6534,
- *        "invited_user_id": "2343",
- *        "created_at": "2019-11-06 18:42:57"
+ *        "invited_user_id": 2343,
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "invited_user_email": "test2@test.com",
+ *        "invited_user_name": "test2"
  *     }, {
  *        "invitation_id": 2345
  *        "album_id": 4356,
  *        "user_id": 6534,
- *        "invited_user_id": "2343",
- *        "created_at": "2019-11-06 18:42:57"
+ *        "invited_user_id": 2343,
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "invited_user_email": "test3@test.com",
+ *        "invited_user_name": "test3"
  *     }]
  *  
  *   @apiError {Object} missingUserId the user_id was missing or not parsed correctly
@@ -197,14 +205,18 @@ router.get(routes.getInvitesByUser(), api.auth.verifyToken, api.auth.verifyPermi
  *        "invitation_id": 2345
  *        "album_id": 4356,
  *        "user_id": 6534,
- *        "invited_user_id": "2343",
- *        "created_at": "2019-11-06 18:42:57"
+ *        "invited_user_id": 2343,
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "user_email": "test2@test.com",
+ *        "user_name": "test2"
  *     }, {
  *        "invitation_id": 2345
  *        "album_id": 4356,
  *        "user_id": 6534,
- *        "invited_user_id": "2343",
- *        "created_at": "2019-11-06 18:42:57"
+ *        "invited_user_id": 2343,
+ *        "created_at": "2019-11-06 18:42:57",
+ *        "user_email": "test3@test.com",
+ *        "user_name": "test3"
  *     }]
  *  
  *   @apiError {Object} missingUserId the user_id was missing or not parsed correctly
@@ -342,6 +354,9 @@ router.use((err, req, res, next) => {
       break;
     case errors.alreadyCollaborator:
       res.status(400).json({ alreadyCollaborator: errors.alreadyCollaborator });
+      break;
+    case errors.emailDoesNotExist:
+      res.status(404).json({ emailDoesNotExist: errors.emailDoesNotExist });
       break;
     case errors.serverError:
       res.status(500).json({ serverError: errors.serverError });
