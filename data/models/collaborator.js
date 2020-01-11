@@ -60,9 +60,23 @@ const getCollaborators = (album_id, done) => {
 
 };
 
+const getCollaboratorById = (collaborator_id, done) => {
+
+  db('collaborators').where({ collaborator_id })
+    .first()
+    .then(collab => {
+
+      done(null, collab);
+
+    })
+    .catch(err => done(err));
+    
+};
+
 module.exports = {
   retrieveCollabAlbums,
   checkCollaboration,
   removeCollaborator,
   getCollaborators,
+  getCollaboratorById,
 };
