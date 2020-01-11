@@ -327,6 +327,21 @@ const keyword = (keyword) => {
 
 };
 
+const removeAlbumMetaData = (metaArr) => {
+
+  let invalid = false;
+
+  metaArr.forEach(e => {
+    if (typeof e !== 'string') {
+      invalid = true;
+    }
+  });
+
+  if (invalid) return errors.invalidProps;
+  else return true;
+
+};
+
 module.exports = {
   registerUserData,
   loginUserData,
@@ -344,4 +359,5 @@ module.exports = {
   mediaCaption,
   addMediaProps,
   keyword,
+  removeAlbumMetaData,
 };

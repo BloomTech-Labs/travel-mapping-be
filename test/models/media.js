@@ -438,7 +438,7 @@ describe('Testing media models', () => {
 
         try {
 
-          expect(retrieveErr).to.be.an('error');
+          expect(retrieveErr).to.an('error');
           done();
 
         } catch (err) {

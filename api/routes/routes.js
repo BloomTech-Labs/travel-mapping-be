@@ -6,6 +6,8 @@ router.use([
   require('./upload'),
   require('./album'),
   require('./media'),
+  require('./invitation'),
+  require('./collaborator'),
 ]);
 
 module.exports = router;

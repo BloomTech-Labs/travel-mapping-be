@@ -258,11 +258,13 @@ const updateAlbumById = (album_id, albumObj, done) => {
 
           // Get users albums titles.
           db('albums').where({ user_id })
-            .select('title').then(titleArr => {
+            .select('title', 'album_id').then(titleArr => {
 
               // Check if user already has an album with the title.
               let titleExists = false;
-              titleArr.forEach(titleObj => (titleObj.title.toLowerCase() === title.toLowerCase()) && (titleExists = true));
+              titleArr.forEach(titleObj => {
+                if (titleObj.title.toLowerCase() === title.toLowerCase() && titleObj.album_id != album_id) titleExists = true;
+              });
 
               if (titleExists) done(new Error(errors.albumTitleExists));
               else {
@@ -326,6 +328,59 @@ const removeAlbumById = (album_id, done) => {
 
 };
 
+const removeAlbumMeta = (album_id, metaToRemove, done) => {
+
+  // Check if album id exists.
+    db('albums').where({ album_id })
+      .select('album_id')
+      .then(albumIdArr => {
+
+        if (albumIdArr.length === 0) done(new Error(errors.albumIdDoesNotExist));
+        else {
+
+          // delete the specified meta
+          db('albumsMeta')
+            .where({ album_id })
+            .whereIn('name', metaToRemove)
+            .del()
+            .then(removedMeta => {
+            
+
+              // get all the remaining meta
+              db('albumsMeta').where({ album_id })
+                .select()
+                .then(updatedMeta => {
+
+                  let metaDataObj;
+                  updatedMeta.forEach(metaObj => (metaDataObj = Object.assign({}, metaDataObj, { [metaObj.name]: metaObj.value } )));
+
+                  // Update the album.
+                  db('albums').update({ updated_at: db.fn.now() })
+                    .where({ album_id })
+                    .then(updateAlbumArr => {
+
+                      // Get the new album.
+                      db('albums').where({ album_id })
+                        .select()
+                        .then(newAlbumArr => {
+
+                          const albumObj = Object.assign({}, newAlbumArr[0], { meta: metaDataObj });
+                          done(null, albumObj);
+
+                        }).catch(newAlbumErr => done(newAlbumErr));
+
+                    }).catch(newAlbumErr => done(newAlbumErr));
+
+                }).catch(newMetaErr => done(newMetaErr))
+
+            }).catch(removeErr => done(removeErr));
+
+        }
+
+      }).catch(albumIdErr => done(albumIdErr));
+
+};
+
 module.exports = {
   createAlbum,
   retrieveUsersAlbums,
@@ -333,4 +388,5 @@ module.exports = {
   createAlbumMeta,
   updateAlbumById,
   removeAlbumById,
+  removeAlbumMeta,
 };

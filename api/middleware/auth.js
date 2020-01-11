@@ -40,6 +40,8 @@ const verifyPermission = (req, res, next) => {
       case routes.createAlbum():
       case routes.removeUser():
       case routes.editUser():
+      case routes.getInvitesByUser():
+      case routes.getInvitesForUser():
 
         if (email !== null) {
 
@@ -67,6 +69,11 @@ const verifyPermission = (req, res, next) => {
       case routes.getAlbumsMedia():
       case routes.removeAlbum():
       case routes.editAlbum():
+      case routes.getAlbum():
+      case routes.editAlbumMeta():
+      case routes.createInvitation():
+      case routes.getInvitesByAlbum():
+      case routes.getCollaborators():
         
         const album_id = parseInt(req.params.album_id);
 
@@ -82,11 +89,22 @@ const verifyPermission = (req, res, next) => {
     
                 if (retrieveErr) next(retrieveErr);
                 else {
-    
-                  req.isOwner      = (userObj.user_id === albumObj.user_id);
-                  req.isAdmin      = userObj.is_admin;
-                  req.collabAlbums = [];
-                  next();
+
+                  models.collaborator.checkCollaboration(album_id, userObj.user_id, (collabErr, isCollab) => {
+
+                    if (collabErr) next(collabErr);
+                    else {
+
+                      req.isOwner      = (userObj.user_id === albumObj.user_id);
+                      req.isAdmin      = userObj.is_admin;
+                      req.isCollab     = isCollab;
+                      req.current_user = userObj;
+                      req.collabAlbums = [];
+                      next();
+                      
+                    }
+
+                  });   
     
                 }
     
@@ -119,6 +137,109 @@ const verifyPermission = (req, res, next) => {
           });
         } else next();
         break;
+
+      // check that user is either the creator or the recipient of the invite, and assigns them permission to delete it
+      case routes.removeInvitation():
+        
+        if (email !== null) {
+          models.user.retrieveUserBy({ email }, (userRetrieveErr, userObj) => {
+
+            if (userRetrieveErr) next(userRetrieveErr);
+            else {
+
+              const invite_id = parseInt(req.params.invite_id);
+              models.invitation.getInviteById(invite_id, (inviteRetrieveErr, inviteObj) => {
+
+                if (inviteRetrieveErr) next(inviteRetrieveErr);
+                else if (!inviteObj) next(new Error(errors.invitationDoesNotExist));
+                else {
+
+                  req.isOwner = userObj.user_id === inviteObj.user_id || userObj.user_id === inviteObj.invited_user_id;
+                  res.isAdmin = userObj.is_admin;
+                  next();
+
+                }
+
+              });
+
+            }
+
+          });
+        } else next(new Error(errors.unauthorized));
+        break;
+
+      // check that the user is the recipient of the invite, and assigns them permission to accept it
+      case routes.acceptInvitation():
+
+        if (email !== null) {
+          models.user.retrieveUserBy({ email }, (userRetrieveErr, userObj) => {
+
+            if (userRetrieveErr) next(userRetrieveErr);
+            else {
+
+              const invite_id = parseInt(req.params.invite_id);
+              models.invitation.getInviteById(invite_id, (inviteRetrieveErr, inviteObj) => {
+
+                if (inviteRetrieveErr) next(inviteRetrieveErr);
+                else if (!inviteObj) next(new Error(errors.invitationDoesNotExist));
+                else {
+
+                  req.isOwner = userObj.user_id === inviteObj.invited_user_id;
+                  req.isAdmin = userObj.is_admin;
+                  next();
+
+                }
+
+              });
+
+            }
+
+          });
+        } else next(new Error(errors.unauthorized));
+        break;
+
+      case routes.deleteCollaborator():
+
+        if (email !== null) {
+
+          const album_id = parseInt(req.params.album_id);
+          const collaborator_id = parseInt(req.params.collaborator_id);
+
+          models.user.retrieveUserBy({ email }, (userErr, userObj) => {
+
+            if (userErr) next(userErr);
+            else {
+
+              models.album.retrieveAlbumById(album_id, (albumErr, albumObj) => {
+
+                if (albumErr) next(albumErr)
+                else {
+
+                  models.collaborator.getCollaboratorById(collaborator_id, (collabErr, collabObj) => {
+
+                    if (collabErr) next(collabErr);
+                    else {
+                      
+                      req.isOwner = userObj.user_id === albumObj.user_id || userObj.user_id === collabObj.user_id;
+                      req.isAdmin = userObj.is_admin;
+                      next();
+
+                    }
+
+                  });
+              
+                }
+
+              });
+
+            }
+
+          });
+
+        } else next(new Error(errors.unauthorized));
+        break;
+
+
       default:
         next(new Error(errors.unauthorized));
         break;
