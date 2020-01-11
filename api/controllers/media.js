@@ -250,7 +250,7 @@ const viewMedia = (req, res, next) => {
 
   const { title, type, }   = req.params;
   const tmpMediaPath       = path.resolve(__dirname, `../../tmp_media/${ title }`);
-  const cloudinaryMediaUrl = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${ type === 'thumbnail' ? 'w_400,h_400,c_thumb/' : '' }${ title }`;
+  const cloudinaryMediaUrl = `http://res.cloudinary.com/${ process.env.CLOUDINARY_CLOUD_NAME }/image/upload/${ type === 'thumbnail' ? 'w_400,h_400,c_thumb/' : '' }${ title }`;
 
   const media = fs.createWriteStream(path.resolve(__dirname, `../../tmp_media/${ title }`));
 
