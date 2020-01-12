@@ -300,7 +300,7 @@ const editMedia = (req, res, next) => {
       if (editErr) next(editErr);
       else {
 
-        res.status(200).json(edited);
+        res.status(200).json({ edited: media_id });
 
       }
 

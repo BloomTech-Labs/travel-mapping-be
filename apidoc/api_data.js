@@ -2669,7 +2669,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "title",
-            "description": "<p>A new title for the media</p>"
+            "description": "<p>A new title for the media CURRENTLY DISABLED. WILL REQUIRE REDESIGN OF MEDIA SCHEMA TO WORK PROPERLY</p>"
           },
           {
             "group": "Request Body",

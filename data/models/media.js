@@ -504,21 +504,21 @@ const deleteAlbumMedia = (album_id, media_id, done) => {
 
 const editMedia = (media_id, updates, done) => {
 
-  const { keywords, meta, ...mediaUpdates } = updates;
+  const { keywords, meta, title, ...mediaUpdates } = updates;
 
   updateMediaObj(media_id, mediaUpdates, (updateErr, updatesWereMade) => {
-    console.log('updateMediaObj done');
+
     if (updateErr) done(updateErr);
     else {
 
       if (keywords) {
 
         updateKeywords(media_id, keywords, (updateErr, currentKeywords) => {
-          console.log('updateKeywords done');
+
           if (updateErr) done(updateErr);
           else {
 
-            finished(null);
+            finishedKeywords(null);
 
           }
 
@@ -526,7 +526,7 @@ const editMedia = (media_id, updates, done) => {
 
       } else {
 
-        finished(null);
+        finishedKeywords(null);
 
       }
 
@@ -534,10 +534,18 @@ const editMedia = (media_id, updates, done) => {
 
   });
 
-  const finished = (err) => {
+  const finishedKeywords = (err) => {
 
     if (err) done(err);
-    else done(null, { edited: media_id });
+    else if (meta) {
+
+      updateMeta(media_id, meta, done);
+
+    }
+    else {
+
+      done(null, { edited: media_id });
+    }
 
   };
 
@@ -565,46 +573,46 @@ const updateMediaObj = (media_id, updates, done) => {
 
 };
 
+// All keyword changes happen here
 const updateKeywords = (media_id, newKeywords, done) => {
 
   getKeywordsArr(media_id, (joinErr, currentKeywords) => {
-    console.log('getKeywordsArr done');
+
     if (joinErr) done(joinErr);
     else {
 
       const diff = getKeywordsDiff(newKeywords, currentKeywords);
-      console.log('getKeywordsDiff done');
       
+      // there are keywords to add
       if (diff.add.length) {
 
         addWhereNotFound(media_id, diff.add, (addErr, added) => {
-          console.log('addWhereNotFound done')
 
           if (addErr) done(addErr);
           else {
 
+            // there are also keywords to remove
             if (diff.remove.length) {
 
-              console.log('dissociate after add', diff.remove);
               removeKeywordAssociations(media_id, diff.remove, done);
 
+            // keywords were added, but none to remove
             } else {
 
-              console.log('none to dissociate');
               done(null, added);
 
             }
-
 
           }
 
         });
 
+      // there are keywords to remove, but none to add
       } else if (diff.remove.length) {
 
-        console.log('dissociate only', diff.remove);
         removeKeywordAssociations(media_id, diff.remove, done);
 
+      // no keywords need to be changed
       } else done(null);
 
     }
@@ -644,16 +652,17 @@ const getKeywordsArr = (media_id, done) => {
 
 };
 
+// if a keyword is not already in the keywords table, create it. then associate it with the provided media_id
 const addWhereNotFound = (media_id, newKeywords, done) => {
 
   db('keywords').whereIn('name', newKeywords)
     .select('keyword_id', 'name')
     .then(found => {
-      console.log('found', found);
+
       const foundIds = found.map(e => e.keyword_id);
-      console.log('foundIds', foundIds);
       const notFound = newKeywords.filter(e => !found.filter(f => e === f.name).length);
       
+      // keywords need to be added AND associated with the media_id
       if (notFound.length) {
 
         const keywordsToAdd = notFound.map(e => ({ name: e }));
@@ -661,21 +670,21 @@ const addWhereNotFound = (media_id, newKeywords, done) => {
         db('keywords').insert(keywordsToAdd)
         .then(addedKeywords => {
 
-          console.log('addedKeywords', addedKeywords, done);
-
           associateKeywords(media_id, [...foundIds, ...addedKeywords]);
 
         }).catch(keywordInsertErr => done(keywordInsertErr));
 
+      // no keywords need to be created
       } else {
 
-        console.log('noneToAdd');
+        // keywords already exist, but need to be associated with the media_id
         if (foundIds.length) {
 
           associateKeywords(media_id, foundIds, done);
 
+        // no keywords need to be changed
         } else {
-          console.log('none to associate');
+
           done(null, 0)
         };
 
@@ -685,14 +694,13 @@ const addWhereNotFound = (media_id, newKeywords, done) => {
 
 };      
 
+// create an association between the media_id and provided list of keywords
 const associateKeywords = (media_id, keywordsToAssociate, done) => {
 
-  console.log('associateKeywords', media_id, keywordsToAssociate);
   const toInsert = keywordsToAssociate.map(e => ({ keyword_id: e, media_id }));
   db('mediaKeywords').insert(toInsert)
     .then(added => {
 
-        console.log('addedMediaKeywords', added);
         done(null, added);
 
     })
@@ -700,17 +708,126 @@ const associateKeywords = (media_id, keywordsToAssociate, done) => {
 
 };
 
+// removed keyword associations with the given media_id
 const removeKeywordAssociations = (media_id, keywordsToDisassociate, done) => {
 
-  const toRemove = keywordsToDisassociate.map(e => ({ media_id, keyword_id: e }));
-  db('mediaKeywords').whereIn(toRemove)
+  const toRemove = keywordsToDisassociate.map(e => ([media_id, e.keyword_id]));
+
+  db('mediaKeywords').whereIn(['media_id', 'keyword_id'], toRemove)
     .del()
     .then(deleted => {
 
-      console.log('deleted associations', deleted);
       done(null, deleted);
 
     }).catch(err => done(err));
+
+};
+
+// All meta updates are controlled from here
+const updateMeta = (media_id, updatedMeta, done) => {
+
+  db('mediaMeta').where({ media_id })
+    .then(existingMeta => {
+
+      const diff = getMetaDiff(existingMeta, updatedMeta);
+      const diffRemoveIds = diff.remove.map(e => e.mediaMeta_id);
+
+      if (diff.add.length) {
+
+        // there is meta to add
+        addMeta(media_id, diff.add, (addMetaErr, addedMeta) => {
+
+          if (addMetaErr) done(addMetaErr);
+          else {
+
+            // there is also meta to remove
+            if (diff.remove.length) {
+
+              removeMeta(diffRemoveIds, (removeMetaErr, removedMeta) => {
+
+                if (removeMetaErr) done(removeMetaErr);
+                else {
+
+                  done(null, removedMeta);
+
+                }
+
+              });
+
+            // meta was added, but none to remove
+            } else {
+
+              done(null);
+
+            }
+
+          }
+
+        });
+
+      // no meta needs to be added, but some must be removed
+      } else if (diff.remove.length) {
+
+        removeMeta(diffRemoveIds, (removeMetaErr, removedMeta) => {
+
+          if (removedMetaErr) done(removeMetaErr);
+          else {
+
+            done(null, removeMeta);
+
+          }
+
+        });
+
+      // there is no meta to add or remove
+      } else {
+
+        done(null);
+
+      }
+
+    })
+
+};
+
+// figure out which meta needs to be created, and what needs to be deleted
+const getMetaDiff = (currentMeta, newMeta) => {
+
+  const add = newMeta.filter(e => !currentMeta.filter(f => e.name === f.name && e.value === f.value).length);
+  const remove = currentMeta.filter(e => !newMeta.filter(f => e.name === f.name && e.value === f.value).length);
+
+  return { add, remove };
+
+};
+
+// toAdd is an array of objects in the form { name: String, value: String }
+const addMeta = (media_id, toAdd, done) => {
+
+  const toInsert = toAdd.map(e => ({ media_id, ...e }));
+  db('mediaMeta').insert(toInsert)
+  .then(inserted => {
+
+      done(null, inserted);
+
+  })
+  .catch(err => done(err));
+
+};
+
+// expect toRemove to be an array of mediaMeta_ids only. Just integers, not objects.
+const removeMeta = (toRemove, done) => {
+
+  db('mediaMeta').whereIn('mediaMeta_id', toRemove)
+    .del()
+    .then(removed => {
+
+        done(null, removed);
+
+    })
+    .catch(err => {
+      done(err);
+    });
+    
 
 };
 

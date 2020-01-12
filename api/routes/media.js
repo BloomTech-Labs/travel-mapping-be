@@ -301,7 +301,7 @@ router.get(routes.getUsersMedia(), api.auth.verifyToken, api.auth.verifyPermissi
  *  @apiParam (URL Parameters) {Integer} media_id The media ID
  *  @apiParam (URL Parameters) {Integer} album_id The album ID
  * 
- *  @apiParam (Request Body) {String} title A new title for the media
+ *  @apiParam (Request Body) {String} title A new title for the media CURRENTLY DISABLED. WILL REQUIRE REDESIGN OF MEDIA SCHEMA TO WORK PROPERLY
  *  @apiparam (Request Body) {String} caption A new caption for the media
  *  @apiParam (Request Body) {String[]} [keywords] A new list of keywords describing the media. keywords undefined or falsy indicates no changes
  *  @apiParam (Request Body) {Object[]} [meta] A new list of meta data objects. meta undefined or falsy indicates no changes
