@@ -280,6 +280,91 @@ router.get(routes.getAlbumsMedia(), api.auth.verifyToken, api.auth.verifyPermiss
 // #endregion
 router.get(routes.getUsersMedia(), api.auth.verifyToken, api.auth.verifyPermission, api.media.getUsersMedia, sentryError);
 
+// HTTP/1.1 200 OK
+// #region
+/**
+ *
+ *  @api {put} /media/{media_id}/edit Edit media
+ *  @apiName Edit-media
+ *  @apiGroup Media
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission admin owner collaborator
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *    {
+ *         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *    }
+ * 
+ *  @apiParam (URL Parameters) {Integer} media_id The media ID to edit
+ * 
+ *  @apiparam (Request Body) {String{2-120}} [title] A title for the media
+ *  @apiparam (Request Body) {Text{0-300}} [caption] A caption for the media
+ * 
+ *  @apiParamExample {json} Example Request
+ *     /media/1/edit
+ *     {
+ *          "title": "A different title"
+ *     }
+ * 
+ *  @apiParamExample {json} Example Request
+ *    /media/1/edit
+ *    {
+ *         "caption": "A different caption"
+ *    }
+ * 
+ *  @apiParamExample {json} Example Request
+ *   /media/1/edit
+ *   {
+ *        "title": "A different title",
+ *        "caption": "A different caption"
+ *   }
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *    HTTP/1.1 200 OK
+ *    {
+ *       "media_id": 1,
+ *       "user_id": 6542,
+ *       "albums": [0, 1, 2, 3],
+ *       "title": "A different title",
+ *       "caption": "A different caption",
+ *       "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+ *       "meta": {
+ *           "Meta Name": "Meta Value"
+ *       },
+ *       "media_url": "http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg",
+ *       "thumbnail_url: "https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg",
+ *       "created_at": "2019-11-06 18:42:57",
+ *       "updated_at": "2019-11-07 05:13:29"
+ *    }
+ * 
+ *   @apiError {Object} noPropsFound No properties were sent with the request
+ *   @apiError {Object} invalidProps The properties on the request body are not valid
+ *   @apiError {Object} userIdDoesNotExist The user_id does not exist in the database
+ *   @apiError {Object} mediaTitleExists The media title already exists
+ *   @apiError {Object} invalidMediaTitle The media title is not valid
+ *   @apiError {Object} invalidMediaDescription The media description is not valid
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample Missing Property
+ *      HTTP/1.1 400
+ *      {
+ *          "invalidProps": "request props not valid"
+ *      }
+ * 
+ *   @apiErrorExample Does Not Exists
+ *      HTTP/1.1 404
+ *      {
+ *          "userIdDoesNotExist": "user id does not exist"
+ *      }
+ * 
+ */
+// #endregion
+router.put(routes.editMedia(), /* api.auth.verifyToken, api.auth.verifyPermission, */ api.media.editMedia, sentryError);
+
 // Route for serving users media from Cloudinary.
 router.get(routes.viewUsersMedia(), /* api.auth.verifyToken, api.auth.verifyPermission, */ api.media.viewUsersMedia, sentryError);
 

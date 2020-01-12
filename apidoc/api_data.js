@@ -2411,6 +2411,172 @@ define({ "api": [
     "groupTitle": "Media"
   },
   {
+    "type": "put",
+    "url": "/media/{media_id}/edit",
+    "title": "Edit media",
+    "name": "Edit_media",
+    "group": "Media",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner collaborator"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "media_id",
+            "description": "<p>The media ID to edit</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "2-120",
+            "optional": true,
+            "field": "title",
+            "description": "<p>A title for the media</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Text",
+            "size": "0-300",
+            "optional": true,
+            "field": "caption",
+            "description": "<p>A caption for the media</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/media/1/edit\n{\n     \"title\": \"A different title\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request",
+          "content": "/media/1/edit\n{\n     \"caption\": \"A different caption\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request",
+          "content": "/media/1/edit\n{\n     \"title\": \"A different title\",\n     \"caption\": \"A different caption\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A different title\",\n   \"caption\": \"A different caption\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Meta Name\": \"Meta Value\"\n   },\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url: \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-07 05:13:29\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "noPropsFound",
+            "description": "<p>No properties were sent with the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidProps",
+            "description": "<p>The properties on the request body are not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "mediaTitleExists",
+            "description": "<p>The media title already exists</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMediaTitle",
+            "description": "<p>The media title is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMediaDescription",
+            "description": "<p>The media description is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Missing Property",
+          "content": "HTTP/1.1 400\n{\n    \"invalidProps\": \"request props not valid\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Does Not Exists",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/media.js",
+    "groupTitle": "Media"
+  },
+  {
     "type": "get",
     "url": "/albums/{album_id}/media",
     "title": "Get an albums media",

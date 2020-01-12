@@ -289,10 +289,17 @@ const viewMedia = (req, res, next) => {
 
 };
 
+const editMedia = (req, res, next) => {
+
+  res.status(200).send('hi')
+
+};
+
 module.exports = {
   addAlbumsMedia,
   getAlbumsMedia,
   getUsersMedia,
   viewUsersMedia,
   viewMedia,
+  editMedia,
 };
