@@ -2615,6 +2615,270 @@
   },
   {
     "type": "put",
+    "url": "/albums/:album_id/media/:media_id/edit",
+    "title": "Get a users media",
+    "name": "edit_media",
+    "group": "Media",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner collaborator"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "media_id",
+            "description": "<p>The media ID</p>"
+          },
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>A new title for the media</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "caption",
+            "description": "<p>A new caption for the media</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String[]",
+            "optional": true,
+            "field": "keywords",
+            "description": "<p>A new list of keywords describing the media. keywords undefined or falsy indicates no changes</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Object[]",
+            "optional": true,
+            "field": "meta",
+            "description": "<p>A new list of meta data objects. meta undefined or falsy indicates no changes</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "meta[name]",
+            "description": "<p>The name of the meta field</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "String",
+            "optional": false,
+            "field": "meta[value]",
+            "description": "<p>The value of the meta field</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/albums/6542/media/3535/edit\n{\n  \"title\": \"A Photo Title\",\n  \"caption\": \"A short caption for a photo\",\n  \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n  \"meta\": [{\n    \"name\": \"Location\",\n    \"value\": \"Mexico\"\n  }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n  \"edited_id\": 34532\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The album ID does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Does Not Exists",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"album id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 500\n{\n    \"serverError\": \"server error\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/media.js",
+    "groupTitle": "Media"
+  },
+  {
+    "type": "delete",
+    "url": "/albums/:album_id/media/:media_id/remove",
+    "title": "Remove a piece of media from an album",
+    "name": "remove_media",
+    "group": "Media",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner collaborator"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "album_id",
+            "description": "<p>The album ID</p>"
+          },
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "media_id",
+            "description": "<p>The media ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/albums/6542/media/23545/remove",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 204 NO CONTENT",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The album ID does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Does Not Exists",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"album id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 500\n{\n    \"serverError\": \"server error\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/media.js",
+    "groupTitle": "Media"
+  },
+  {
+    "type": "put",
     "url": "/users/{user_id}/edit",
     "title": "Edit a user",
     "name": "Edit_user",
