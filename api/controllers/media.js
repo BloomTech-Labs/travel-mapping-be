@@ -292,10 +292,19 @@ const viewMedia = (req, res, next) => {
 const editMedia = (req, res, next) => {
 
   const { media_id } = req.params;
-
+  
   if (req.isOwner || req.isAdmin || req.isCollab) {
 
+    models.media.editMedia(media_id, req.body, (editErr, edited) => {
 
+      if (editErr) next(editErr);
+      else {
+
+        res.status(200).json(edited);
+
+      }
+
+    });
 
   } else next(new Error(errors.unauthorized));
 

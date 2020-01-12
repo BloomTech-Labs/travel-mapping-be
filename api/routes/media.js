@@ -303,13 +303,13 @@ router.get(routes.getUsersMedia(), api.auth.verifyToken, api.auth.verifyPermissi
  * 
  *  @apiParam (Request Body) {String} title A new title for the media
  *  @apiparam (Request Body) {String} caption A new caption for the media
- *  @apiParam (Request Body) {String[]} [keywords] A new list of keywords describing the media
- *  @apiParam (Request Body) {Object[]} [meta] A new list of meta data objects
+ *  @apiParam (Request Body) {String[]} [keywords] A new list of keywords describing the media. keywords undefined or falsy indicates no changes
+ *  @apiParam (Request Body) {Object[]} [meta] A new list of meta data objects. meta undefined or falsy indicates no changes
  *  @apiParam (Request Body) {String} meta[name] The name of the meta field
  *  @apiParam (Request Body) {String} meta[value] The value of the meta field
  * 
  *  @apiParamExample {json} Example Request
- *      /users/6542/media/add
+ *      /albums/6542/media/3535/edit
  *      {
  *        "title": "A Photo Title",
  *        "caption": "A short caption for a photo",

@@ -490,7 +490,7 @@ const retrieveUsersMedia = (user_id, done) => {
 
 const deleteAlbumMedia = (album_id, media_id, done) => {
 
-  return db('mediaAlbums').where({ album_id, media_id })
+  db('mediaAlbums').where({ album_id, media_id })
     .del()
     .then(deleted => {
 
@@ -499,6 +499,218 @@ const deleteAlbumMedia = (album_id, media_id, done) => {
 
     })
     .catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+};
+
+const editMedia = (media_id, updates, done) => {
+
+  const { keywords, meta, ...mediaUpdates } = updates;
+
+  updateMediaObj(media_id, mediaUpdates, (updateErr, updatesWereMade) => {
+    console.log('updateMediaObj done');
+    if (updateErr) done(updateErr);
+    else {
+
+      if (keywords) {
+
+        updateKeywords(media_id, keywords, (updateErr, currentKeywords) => {
+          console.log('updateKeywords done');
+          if (updateErr) done(updateErr);
+          else {
+
+            finished(null);
+
+          }
+
+        });
+
+      } else {
+
+        finished(null);
+
+      }
+
+    }
+
+  });
+
+  const finished = (err) => {
+
+    if (err) done(err);
+    else done(null, { edited: media_id });
+
+  };
+
+};
+
+// pretty simple. if there are updates to be made to indicated row in the media table apply them and return true
+// else return false
+const updateMediaObj = (media_id, updates, done) => {
+
+  if (!Object.keys(updates).length) done(null, false);
+  else {
+   
+    db('media').where({ media_id })
+      .update({...updates, updated_at: db.fn.now()})
+      .then(() => {
+
+        done(null, true);
+
+      })
+      .catch(err => {
+        done(err);
+      });
+
+  }
+
+};
+
+const updateKeywords = (media_id, newKeywords, done) => {
+
+  getKeywordsArr(media_id, (joinErr, currentKeywords) => {
+    console.log('getKeywordsArr done');
+    if (joinErr) done(joinErr);
+    else {
+
+      const diff = getKeywordsDiff(newKeywords, currentKeywords);
+      console.log('getKeywordsDiff done');
+      
+      if (diff.add.length) {
+
+        addWhereNotFound(media_id, diff.add, (addErr, added) => {
+          console.log('addWhereNotFound done')
+
+          if (addErr) done(addErr);
+          else {
+
+            if (diff.remove.length) {
+
+              console.log('dissociate after add', diff.remove);
+              removeAssociations(media_id, diff.remove, done);
+
+            } else {
+
+              console.log('none to dissociate');
+              done(null, added);
+
+            }
+
+
+          }
+
+        });
+
+      } else if (diff.remove.length) {
+
+        console.log('dissociate only', diff.remove);
+        removeAssociations(media_id, diff.remove, done);
+
+      } else done(null);
+
+    }
+
+  });
+
+};
+
+// newKeywords expected in form [String], oldKeywords expected in form [{keyword_id: Integer, name: String}]
+// this doesn't matter at (relatively) small array lengths, but really, really will not scale well to larger sizes.
+// figure out something more efficient if expecting to handle large arrays. Probably switch to objects.
+const getKeywordsDiff = (newKeywords, oldKeywords) => {
+
+  if (!(newKeywords && newKeywords.length)) return false;
+
+  const add = newKeywords.filter(e => !oldKeywords.filter(f => f.name === e).length);
+  const remove = oldKeywords.filter(e => !newKeywords.filter(f => f === e.name).length);
+  
+  return { add, remove };
+
+};
+
+const getKeywordsArr = (media_id, done) => {
+
+  db('media').where('media.media_id', media_id)
+    .join('mediaKeywords', 'media.media_id', '=', 'mediaKeywords.media_id')
+    .join('keywords', 'keywords.keyword_id', '=', 'mediaKeywords.keyword_id')
+    .select('keywords.keyword_id', 'keywords.name')
+    .then(keywordsArr => {
+
+      done(null, keywordsArr);
+
+    })
+    .catch(err => {
+      done(err);
+    });
+
+};
+
+const addWhereNotFound = (media_id, newKeywords, done) => {
+
+  db('keywords').whereIn('name', newKeywords)
+    .select('keyword_id', 'name')
+    .then(found => {
+      console.log('found', found);
+      const foundIds = found.map(e => e.keyword_id);
+      console.log('foundIds', foundIds);
+      const notFound = newKeywords.filter(e => !found.filter(f => e === f.name).length);
+      
+      if (notFound.length) {
+
+        const keywordsToAdd = notFound.map(e => ({ name: e }));
+
+        db('keywords').insert(keywordsToAdd)
+        .then(addedKeywords => {
+
+          console.log('addedKeywords', addedKeywords, done);
+
+          associateKeywords(media_id, [...foundIds, ...addedKeywords]);
+
+        }).catch(keywordInsertErr => done(keywordInsertErr));
+
+      } else {
+
+        console.log('noneToAdd');
+        if (foundIds.length) {
+
+          associateKeywords(media_id, foundIds, done);
+
+        } else {
+          console.log('none to associate');
+          done(null, 0)
+        };
+
+      }
+
+    }).catch(keywordSelectErr => done(keywordSelectErr));
+
+};      
+
+const associateKeywords = (media_id, keywordsToAssociate, done) => {
+
+  console.log('associateKeywords', media_id, keywordsToAssociate);
+  const toInsert = keywordsToAssociate.map(e => ({ keyword_id: e, media_id }));
+  db('mediaKeywords').insert(toInsert)
+    .then(added => {
+
+        console.log('addedMediaKeywords', added);
+        done(null, added);
+
+    })
+    .catch(err => done(err));
+
+};
+
+const removeAssociations = (media_id, keywordsToDisassociate, done) => {
+
+  const toRemove = keywordsToDisassociate.map(e => ({ media_id, keyword_id: e }));
+  db('mediaKeywords').whereIn(toRemove)
+    .del()
+    .then(deleted => {
+
+      console.log('deleted associations', deleted);
+      done(null, deleted);
+
+    }).catch(err => done(err));
 
 };
 
@@ -511,4 +723,41 @@ module.exports = {
   retrieveAlbumsMedia,
   retrieveUsersMedia,
   deleteAlbumMedia,
+  editMedia,
 };
+
+
+
+
+// // accept the results of a join between one media object, and all its keyword ids on mediaKeywords, and all their names on keywords
+// // collect those keywords and return them in an array on the media object.
+// const formatKeywords = (rawMedia) => {
+
+//   const { name, keyword_id, ...rest } = rawMedia[0];
+//   return rawMedia.reduce((acc , e) => {
+
+//     acc.keywords.push({
+//       name: e.name,
+//       keyword_id: e.keyword_id
+//     });
+//     return acc;
+
+//   }, { ...rest, keywords: [] });
+
+// };
+
+// const joinMediaToKeywords = (media_id, done) => {
+
+//   db('media').where('media.media_id', media_id)
+//     .join('mediaKeywords', 'media.media_id', '=', 'mediaKeywords.media_id')
+//     .join('keywords', 'keywords.keyword_id', '=', 'mediaKeywords.keyword_id')
+//     .then(rawMedia => {
+
+//       done(null, rawMedia);
+
+//     })
+//     .catch(err => {
+//       done(err);
+//     });
+
+// };
