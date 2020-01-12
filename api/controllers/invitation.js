@@ -1,5 +1,6 @@
 const { invitation, collaborator, user }      = require('../../data/models/models');
 const errors      = require('../../modules/modules').errors;
+const { genCoverPromiseArray } = require('../../modules/coverAlbum');
 
 const createInvitation = (req, res, next) => {
 
@@ -100,10 +101,15 @@ const getInvitesForUser = (req, res, next) => {
 
     try {
       
-      invitation.getInvitesForUser(user_id, (inviteErr, inviteArr) => {
+      invitation.getInvitesForUser(user_id, async (inviteErr, inviteArr) => {
 
         if (inviteErr) next(inviteErr);
-        else res.status(200).json(inviteArr);
+        else {
+
+          const invitesWithCovers = await genCoverPromiseArray(inviteArr);
+          res.status(200).json(invitesWithCovers);
+
+        }
 
       });
 

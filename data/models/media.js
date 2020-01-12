@@ -488,6 +488,349 @@ const retrieveUsersMedia = (user_id, done) => {
     }).catch(userIdErr => done(userIdErr));
 };
 
+const deleteAlbumMedia = (album_id, media_id, done) => {
+
+  db('mediaAlbums').where({ album_id, media_id })
+    .del()
+    .then(deleted => {
+
+      if (!deleted) done (new Error(errors.mediaAlbumDoesNotExist));
+      else done(null, deleted);
+
+    })
+    .catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+};
+
+const editMedia = (media_id, updates, done) => {
+
+  const { keywords, meta, title, ...mediaUpdates } = updates;
+
+  updateMediaObj(media_id, mediaUpdates, (updateErr, updatesWereMade) => {
+
+    if (updateErr) done(updateErr);
+    else {
+
+      if (keywords) {
+
+        updateKeywords(media_id, keywords, (updateErr, currentKeywords) => {
+
+          if (updateErr) done(updateErr);
+          else {
+
+            finishedKeywords(null);
+
+          }
+
+        });
+
+      } else {
+
+        finishedKeywords(null);
+
+      }
+
+    }
+
+  });
+
+  const finishedKeywords = (err) => {
+
+    if (err) done(err);
+    else if (meta) {
+
+      updateMeta(media_id, meta, done);
+
+    }
+    else {
+
+      done(null, { edited: media_id });
+    }
+
+  };
+
+};
+
+// pretty simple. if there are updates to be made to indicated row in the media table apply them and return true
+// else return false
+const updateMediaObj = (media_id, updates, done) => {
+
+  if (!Object.keys(updates).length) done(null, false);
+  else {
+   
+    db('media').where({ media_id })
+      .update({...updates, updated_at: db.fn.now()})
+      .then(() => {
+
+        done(null, true);
+
+      })
+      .catch(err => {
+        done(err);
+      });
+
+  }
+
+};
+
+// All keyword changes happen here
+const updateKeywords = (media_id, newKeywords, done) => {
+
+  getKeywordsArr(media_id, (joinErr, currentKeywords) => {
+
+    if (joinErr) done(joinErr);
+    else {
+
+      const diff = getKeywordsDiff(newKeywords, currentKeywords);
+      
+      // there are keywords to add
+      if (diff.add.length) {
+
+        addWhereNotFound(media_id, diff.add, (addErr, added) => {
+
+          if (addErr) done(addErr);
+          else {
+
+            // there are also keywords to remove
+            if (diff.remove.length) {
+
+              removeKeywordAssociations(media_id, diff.remove, done);
+
+            // keywords were added, but none to remove
+            } else {
+
+              done(null, added);
+
+            }
+
+          }
+
+        });
+
+      // there are keywords to remove, but none to add
+      } else if (diff.remove.length) {
+
+        removeKeywordAssociations(media_id, diff.remove, done);
+
+      // no keywords need to be changed
+      } else done(null);
+
+    }
+
+  });
+
+};
+
+// newKeywords expected in form [String], oldKeywords expected in form [{keyword_id: Integer, name: String}]
+// this doesn't matter at (relatively) small array lengths, but really, really will not scale well to larger sizes.
+// figure out something more efficient if expecting to handle large arrays. Probably switch to objects.
+const getKeywordsDiff = (newKeywords, oldKeywords) => {
+
+  if (!(newKeywords && newKeywords.length)) return false;
+
+  const add = newKeywords.filter(e => !oldKeywords.filter(f => f.name === e).length);
+  const remove = oldKeywords.filter(e => !newKeywords.filter(f => f === e.name).length);
+  
+  return { add, remove };
+
+};
+
+const getKeywordsArr = (media_id, done) => {
+
+  db('media').where('media.media_id', media_id)
+    .join('mediaKeywords', 'media.media_id', '=', 'mediaKeywords.media_id')
+    .join('keywords', 'keywords.keyword_id', '=', 'mediaKeywords.keyword_id')
+    .select('keywords.keyword_id', 'keywords.name')
+    .then(keywordsArr => {
+
+      done(null, keywordsArr);
+
+    })
+    .catch(err => {
+      done(err);
+    });
+
+};
+
+// if a keyword is not already in the keywords table, create it. then associate it with the provided media_id
+const addWhereNotFound = (media_id, newKeywords, done) => {
+
+  db('keywords').whereIn('name', newKeywords)
+    .select('keyword_id', 'name')
+    .then(found => {
+
+      const foundIds = found.map(e => e.keyword_id);
+      const notFound = newKeywords.filter(e => !found.filter(f => e === f.name).length);
+      
+      // keywords need to be added AND associated with the media_id
+      if (notFound.length) {
+
+        const keywordsToAdd = notFound.map(e => ({ name: e }));
+
+        db('keywords').insert(keywordsToAdd)
+        .then(addedKeywords => {
+
+          associateKeywords(media_id, [...foundIds, ...addedKeywords]);
+
+        }).catch(keywordInsertErr => done(keywordInsertErr));
+
+      // no keywords need to be created
+      } else {
+
+        // keywords already exist, but need to be associated with the media_id
+        if (foundIds.length) {
+
+          associateKeywords(media_id, foundIds, done);
+
+        // no keywords need to be changed
+        } else {
+
+          done(null, 0)
+        };
+
+      }
+
+    }).catch(keywordSelectErr => done(keywordSelectErr));
+
+};      
+
+// create an association between the media_id and provided list of keywords
+const associateKeywords = (media_id, keywordsToAssociate, done) => {
+
+  const toInsert = keywordsToAssociate.map(e => ({ keyword_id: e, media_id }));
+  db('mediaKeywords').insert(toInsert)
+    .then(added => {
+
+        done(null, added);
+
+    })
+    .catch(err => done(err));
+
+};
+
+// removed keyword associations with the given media_id
+const removeKeywordAssociations = (media_id, keywordsToDisassociate, done) => {
+
+  const toRemove = keywordsToDisassociate.map(e => ([media_id, e.keyword_id]));
+
+  db('mediaKeywords').whereIn(['media_id', 'keyword_id'], toRemove)
+    .del()
+    .then(deleted => {
+
+      done(null, deleted);
+
+    }).catch(err => done(err));
+
+};
+
+// All meta updates are controlled from here
+const updateMeta = (media_id, updatedMeta, done) => {
+
+  db('mediaMeta').where({ media_id })
+    .then(existingMeta => {
+
+      const diff = getMetaDiff(existingMeta, updatedMeta);
+      const diffRemoveIds = diff.remove.map(e => e.mediaMeta_id);
+
+      if (diff.add.length) {
+
+        // there is meta to add
+        addMeta(media_id, diff.add, (addMetaErr, addedMeta) => {
+
+          if (addMetaErr) done(addMetaErr);
+          else {
+
+            // there is also meta to remove
+            if (diff.remove.length) {
+
+              removeMeta(diffRemoveIds, (removeMetaErr, removedMeta) => {
+
+                if (removeMetaErr) done(removeMetaErr);
+                else {
+
+                  done(null, removedMeta);
+
+                }
+
+              });
+
+            // meta was added, but none to remove
+            } else {
+
+              done(null);
+
+            }
+
+          }
+
+        });
+
+      // no meta needs to be added, but some must be removed
+      } else if (diff.remove.length) {
+
+        removeMeta(diffRemoveIds, (removeMetaErr, removedMeta) => {
+
+          if (removedMetaErr) done(removeMetaErr);
+          else {
+
+            done(null, removeMeta);
+
+          }
+
+        });
+
+      // there is no meta to add or remove
+      } else {
+
+        done(null);
+
+      }
+
+    })
+
+};
+
+// figure out which meta needs to be created, and what needs to be deleted
+const getMetaDiff = (currentMeta, newMeta) => {
+
+  const add = newMeta.filter(e => !currentMeta.filter(f => e.name === f.name && e.value === f.value).length);
+  const remove = currentMeta.filter(e => !newMeta.filter(f => e.name === f.name && e.value === f.value).length);
+
+  return { add, remove };
+
+};
+
+// toAdd is an array of objects in the form { name: String, value: String }
+const addMeta = (media_id, toAdd, done) => {
+
+  const toInsert = toAdd.map(e => ({ media_id, ...e }));
+  db('mediaMeta').insert(toInsert)
+  .then(inserted => {
+
+      done(null, inserted);
+
+  })
+  .catch(err => done(err));
+
+};
+
+// expect toRemove to be an array of mediaMeta_ids only. Just integers, not objects.
+const removeMeta = (toRemove, done) => {
+
+  db('mediaMeta').whereIn('mediaMeta_id', toRemove)
+    .del()
+    .then(removed => {
+
+        done(null, removed);
+
+    })
+    .catch(err => {
+      done(err);
+    });
+    
+
+};
+
 module.exports = {
   createMediaToAlbums,
   createMedia,
@@ -496,4 +839,42 @@ module.exports = {
   createManyMediaMeta,
   retrieveAlbumsMedia,
   retrieveUsersMedia,
+  deleteAlbumMedia,
+  editMedia,
 };
+
+
+
+
+// // accept the results of a join between one media object, and all its keyword ids on mediaKeywords, and all their names on keywords
+// // collect those keywords and return them in an array on the media object.
+// const formatKeywords = (rawMedia) => {
+
+//   const { name, keyword_id, ...rest } = rawMedia[0];
+//   return rawMedia.reduce((acc , e) => {
+
+//     acc.keywords.push({
+//       name: e.name,
+//       keyword_id: e.keyword_id
+//     });
+//     return acc;
+
+//   }, { ...rest, keywords: [] });
+
+// };
+
+// const joinMediaToKeywords = (media_id, done) => {
+
+//   db('media').where('media.media_id', media_id)
+//     .join('mediaKeywords', 'media.media_id', '=', 'mediaKeywords.media_id')
+//     .join('keywords', 'keywords.keyword_id', '=', 'mediaKeywords.keyword_id')
+//     .then(rawMedia => {
+
+//       done(null, rawMedia);
+
+//     })
+//     .catch(err => {
+//       done(err);
+//     });
+
+// };

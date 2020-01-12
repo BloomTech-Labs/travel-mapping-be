@@ -208,7 +208,10 @@ router.get(routes.getInvitesByUser(), api.auth.verifyToken, api.auth.verifyPermi
  *        "invited_user_id": 2343,
  *        "created_at": "2019-11-06 18:42:57",
  *        "user_email": "test2@test.com",
- *        "user_name": "test2"
+ *        "user_name": "test2",
+ *        "title": "a title",
+ *        "description": "a description",
+ *        "cover_url": "htts://photos.com/yourphoto"
  *     }, {
  *        "invitation_id": 2345
  *        "album_id": 4356,
@@ -216,7 +219,10 @@ router.get(routes.getInvitesByUser(), api.auth.verifyToken, api.auth.verifyPermi
  *        "invited_user_id": 2343,
  *        "created_at": "2019-11-06 18:42:57",
  *        "user_email": "test3@test.com",
- *        "user_name": "test3"
+ *        "user_name": "test3",
+ *        "title": "a title",
+ *        "description": "a description",
+ *        "cover_url": "htts://photos.com/yourphoto"
  *     }]
  *  
  *   @apiError {Object} missingUserId the user_id was missing or not parsed correctly

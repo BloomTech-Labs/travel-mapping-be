@@ -54,6 +54,7 @@ module.exports = {
   invitationAlreadyexists: 'an invitation already exists',
   invitationDoesNotExist:  'invite id does not exist',
   alreadyCollaborator:     'user is already a collaborator',
-  collaboratorDoesNotExist: 'that collaborator does not exist'
+  collaboratorDoesNotExist: 'that collaborator does not exist',
+  mediaAlbumDoesNotExist:  'there is no media of that id in that album',
 
 };
