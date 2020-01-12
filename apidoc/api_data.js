@@ -2616,7 +2616,7 @@ define({ "api": [
   {
     "type": "put",
     "url": "/albums/:album_id/media/:media_id/edit",
-    "title": "Get a users media",
+    "title": "Update a piece of media",
     "name": "edit_media",
     "group": "Media",
     "version": "0.1.0",
