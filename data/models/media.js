@@ -586,7 +586,7 @@ const updateKeywords = (media_id, newKeywords, done) => {
             if (diff.remove.length) {
 
               console.log('dissociate after add', diff.remove);
-              removeAssociations(media_id, diff.remove, done);
+              removeKeywordAssociations(media_id, diff.remove, done);
 
             } else {
 
@@ -603,7 +603,7 @@ const updateKeywords = (media_id, newKeywords, done) => {
       } else if (diff.remove.length) {
 
         console.log('dissociate only', diff.remove);
-        removeAssociations(media_id, diff.remove, done);
+        removeKeywordAssociations(media_id, diff.remove, done);
 
       } else done(null);
 
@@ -700,7 +700,7 @@ const associateKeywords = (media_id, keywordsToAssociate, done) => {
 
 };
 
-const removeAssociations = (media_id, keywordsToDisassociate, done) => {
+const removeKeywordAssociations = (media_id, keywordsToDisassociate, done) => {
 
   const toRemove = keywordsToDisassociate.map(e => ({ media_id, keyword_id: e }));
   db('mediaKeywords').whereIn(toRemove)
