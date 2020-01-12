@@ -284,7 +284,7 @@ router.get(routes.getUsersMedia(), api.auth.verifyToken, api.auth.verifyPermissi
 // #region
 /**
  * 
- *  @api {put} /albums/:album_id/media/:media_id/edit Get a users media
+ *  @api {put} /albums/:album_id/media/:media_id/edit Update a piece of media
  *  @apiName edit-media
  *  @apiGroup Media
  *  @apiVersion 0.1.0
