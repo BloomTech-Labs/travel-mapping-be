@@ -122,14 +122,18 @@ const getInvitesForUser = (invited_user_id, done) => {
 
   db('invitations').where({ invited_user_id })
     .join('users', 'invitations.user_id', '=', 'users.user_id')
+    .join('albums', 'invitations.album_id', '=', 'albums.album_id')
     .select(
       'invitation_id',
       'invitations.user_id',
       'invited_user_id',
-      'album_id',
+      'invitations.album_id',
       'invitations.created_at',
-      'email as user_email',
-      'display_name as user_name'
+      'users.email as user_email',
+      'users.display_name as user_name',
+      'albums.title',
+      'albums.description',
+      'albums.cover_id'
     )
     .then(inviteArr => {
 
