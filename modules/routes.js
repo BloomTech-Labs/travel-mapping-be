@@ -22,9 +22,10 @@ module.exports = {
   editAlbumMeta:    (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/meta/edit`   : '/albums/:album_id/meta/edit'),    // add/remove metadata from an album
 
   // Media
-  getAlbumsMedia: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/media`      : '/albums/:album_id/media'), // Send media that belongs to an album
+  getAlbumsMedia: (album_id) => (typeof album_id !== 'undefined' ? `/albums/${ album_id }/media`      : '/albums/:album_id/media'),      // Send media that belongs to an album
   addAlbumsMedia: (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media/add`    : '/users/:user_id/media/add'),
-  getUsersMedia:  (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media`        : '/users/:user_id/media'),   // Send media that belongs to a user.
+  getUsersMedia:  (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media`        : '/users/:user_id/media'),        // Send media that belongs to a user.
+  editMedia:      (media_id) => (typeof media_id !== 'undefined' ? `/media/${ media_id }/edit`        : '/media/:media_id/edit'),
   removeMedia:    (user_id)  => (typeof user_id  !== 'undefined' ? `/users/${ user_id }/media/remove` : '/users/:user_id/media/remove'), // Contains an array of media IDs to delete. Only owner and admin can do this.
   viewUsersMedia: (user_id, title, type) => ((typeof user_id !== 'undefined' && typeof title !== 'undefined' && typeof type !== 'undefined') ? `/users/${ user_id }/media/${ type }/${ title }` : '/users/:user_id/media/:type/:title'),
   viewMedia:      (type, title) => (typeof title !== 'undefined' ? `/media/${ type }/${ title }` : '/media/:type/:title'),

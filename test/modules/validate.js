@@ -615,6 +615,14 @@ describe('Testing the validation module functions', () => {
 
     });
 
+    it('should return false when the title is less than 2 characters', () => {
+
+      let invalidTitle = '';
+
+      expect(validate.mediaTitle(invalidTitle)).to.equal(false);
+      
+    });
+
     it('should return false when the title is more than 120 characters', () => {
 
       let invalidTitle;

@@ -206,6 +206,192 @@ const MEDIA_META = [{
 
 describe('Testing media models', () => {
 
+  describe('updateMedia model', () => {
+
+    beforeEach('clear data in users, media, keywords', done => {
+      db.select()
+        .from('users')
+        .del()
+        .then(() => {
+        
+          // db.select()
+          //   .from('albums')
+          //   .del()
+          //   .then(()   => {
+
+              db.select()
+                .from('media')
+                .del()
+                .then(() => {
+
+                  db.select()
+                    .from('keywords')
+                    .del()
+                    .then(()   => done())
+                    .catch(err => done(err));
+
+                }).catch(err => done(err));
+
+            // }).catch(err => done(err));
+        
+        }).catch(err => done(err));
+
+      
+    });
+
+    beforeEach('add data to users, albums, and albumsMeta tables', done => {
+
+      db('users').insert(USERS)
+        .then(userData => {
+          
+          db('albums').insert(ALBUMS)
+            .then(albumData => {
+
+              db('albumsMeta').insert(ALBUMS_META)
+                .then(albumsMetaData => {
+                  done()
+                }).catch(albumsMetaErr => done(albumsMetaErr));
+
+            }).catch(err => done(err));
+
+        }).catch(err => done(err));
+
+    });
+
+    beforeEach('create media, keywords, and mediaMeta data', done => {
+
+      db('media').insert(MEDIA)
+        .then(mediaData => {
+
+          db('mediaAlbums').insert(MEDIA_TO_ALBUMS)
+            .then(mediaAlbumsData => {
+
+              db('keywords').insert(KEYWORDS)
+                .then(keywordsData => {
+
+                  db('mediaKeywords').insert(KEYWORDS_TO_MEDIA)
+                    .then(keywordsMediaData => {
+
+                      db('mediaMeta').insert(MEDIA_META)
+                        .then(mediaMetaData => {
+
+                          done();
+
+                        }).catch(mediaMetaErr => done(mediaMetaErr));
+
+                    }).catch(keywordsMediaErr => done(keywordsMediaErr));
+
+                }).catch(keywordsErr => done(keywordsErr));
+
+            }).catch(mediaAlbumsErr => done(mediaAlbumsErr));
+
+        }).catch(mediaErr => done(mediaErr))
+
+    });
+
+    it('should pass null to a callback function', done => {
+
+      const { media_id, } = MEDIA[0];
+      const updateMediaObj = { title: 'A different title', caption: 'A different caption', };
+
+      models.media.updateMedia(media_id, updateMediaObj, (updateMediaErr, media) => {
+
+        try {
+
+          expect(updateMediaErr).to.equal(null);
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the media ID does not exist', done => {
+
+      const updateMediaObj = { title: 'A different title', caption: 'A different caption', };
+
+      models.media.updateMedia(404, updateMediaObj, (updateMediaErr, media) => {
+
+        try {
+
+          expect(updateMediaErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the media title is not valid', done => {
+
+      const { media_id } = MEDIA[0];
+      const updateMediaObj = { title: '', caption: 'A different caption' };
+
+      models.media.updateMedia(media_id, updateMediaObj, (updateMediaErr, media) => {
+
+        try {
+          
+          expect(updateMediaErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an error to a callback function when the media caption is not valid', done => {
+
+      const { media_id } = MEDIA[0];
+      let caption = 'Not Valid';
+      for (let i = 0; !(i > 300); i++) caption += '!';
+      const updateMediaObj = { title: 'A different title', caption };
+
+      models.media.updateMedia(media_id, updateMediaObj, (updateMediaErr, media) => {
+
+        try {
+
+          expect(updateMediaErr).to.be.an('error');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+    it('should pass an object to a callback function that contains properties: media_id, user_id, albums, title, caption, type, created_at, updated_at, keywords, and meta', done => {
+
+      const { media_id }   = MEDIA[1];
+      const updateMediaObj = { title: 'A different title', caption: 'A different caption' };
+
+      models.media.updateMedia(media_id, updateMediaObj, (updateMediaErr, media) => {
+
+        try {
+           
+          expect(media).to.be.an('object').that.has.all.keys('media_id', 'user_id', 'albums', 'title', 'caption', 'type', 'created_at', 'updated_at', 'keywords', 'meta');
+          done();
+
+        } catch (err) {
+          done(err);
+        }
+
+      });
+
+    });
+
+  });
+  
   describe('retrieveUsersMedia', () => {
 
     beforeEach('clear data in users, media, keywords', done => {
@@ -328,7 +514,7 @@ describe('Testing media models', () => {
   });
 
   // #region
-  // /*
+  /*
 
   describe('retrieveAlbumsMedia model', () => {
 
@@ -450,7 +636,6 @@ describe('Testing media models', () => {
     });
 
   });
-
 
   describe('createManyMediaMeta model', () => {
 
@@ -1362,7 +1547,7 @@ describe('Testing media models', () => {
     });
 
   });
-  // */
- // #endregion
+  */
+  // #endregion
 
 });

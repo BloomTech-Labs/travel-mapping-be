@@ -982,11 +982,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Example Response",
-<<<<<<< HEAD
-          "content": "HTTP/1.1 200 OK\n[{\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Mexico\",\n       \"people\": \"Friends\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}, {\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Wedding Photos\",\n   \"description\": \"The everyone was fun at the wedding over there awesome\",\n   \"access\": \"private\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Over There\",\n       \"people\": \"Family\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}]",
-=======
           "content": "HTTP/1.1 200 OK\n{\n   \"album_id\": 4356,\n   \"user_id\": 6534,\n   \"title\": \"Vacation Photos\",\n   \"description\": \"Awesome fun vacation time in the Mexico with all the friends\",\n   \"access\": \"public\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\",\n   \"meta\": {\n       \"location\": \"Mexico\",\n       \"people\": \"Friends\"\n   },\n   \"cover_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/placeholder.jpg\"\n}",
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           "type": "json"
         }
       ]
@@ -1124,91 +1120,6 @@ define({ "api": [
     "groupTitle": "Albums"
   },
   {
-<<<<<<< HEAD
-    "type": "post",
-    "url": "/users/{user_id}/media/add",
-    "title": "Add media to albums",
-    "name": "Add_media",
-    "group": "Media",
-    "version": "0.1.0",
-    "permission": [
-      {
-        "name": "admin owner collaborator"
-      }
-    ],
-    "parameter": {
-      "fields": {
-        "URL Parameters": [
-          {
-            "group": "URL Parameters",
-            "type": "Integer",
-            "optional": false,
-            "field": "user_id",
-            "description": "<p>The users ID</p>"
-          }
-        ],
-        "Request Body": [
-          {
-            "group": "Request Body",
-            "type": "Integer[]",
-            "optional": false,
-            "field": "albums",
-            "description": "<p>A list of album IDs</p>"
-          },
-          {
-            "group": "Request Body",
-            "type": "Object[]",
-            "optional": false,
-            "field": "media",
-            "description": "<p>A list of media objects</p>"
-          },
-          {
-            "group": "Request Body",
-            "type": "String",
-            "size": "2-120",
-            "optional": false,
-            "field": "media[title]",
-            "description": "<p>A title for the media</p>"
-          },
-          {
-            "group": "Request Body",
-            "type": "Text",
-            "size": "0-300",
-            "optional": true,
-            "field": "media[caption]",
-            "description": "<p>A caption for the media</p>"
-          },
-          {
-            "group": "Request Body",
-            "type": "String[]",
-            "size": "2-120",
-            "optional": true,
-            "field": "media[keywords]",
-            "description": "<p>A list of keywords describing the media</p>"
-          },
-          {
-            "group": "Request Body",
-            "type": "Object[]",
-            "optional": true,
-            "field": "media[meta]",
-            "description": "<p>A list of meta data objects</p>"
-          },
-          {
-            "group": "Request Body",
-            "type": "String",
-            "size": "2-120",
-            "optional": false,
-            "field": "meta[name]",
-            "description": "<p>The name of the meta field</p>"
-          },
-          {
-            "group": "Request Body",
-            "type": "String",
-            "size": "2-300",
-            "optional": false,
-            "field": "meta[value]",
-            "description": "<p>The value of the meta field</p>"
-=======
     "type": "delete",
     "url": "/albums/{album_id}/remove",
     "title": "Remove an album",
@@ -1229,35 +1140,11 @@ define({ "api": [
             "optional": false,
             "field": "Authorization",
             "description": "<p>JWT for user auth</p>"
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           }
         ]
       },
       "examples": [
         {
-<<<<<<< HEAD
-          "title": "Example Request",
-          "content": "/users/6542/media/add\n{\n    \"albums\": [0, 1, 2, 3],\n    \"media\": [{\n       \"title\": \"A Photo Title\",\n       \"caption\": \"A short caption for a photo\",\n       \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n       \"meta\": [{\n          \"name\": \"Location\",\n          \"value\": \"Mexico\"\n       }]\n    }, {\n       \"title\": \"A Photo Another Title\",\n       \"caption\": \"Another short caption for a photo\",\n       \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n       \"meta\": [{\n          \"name\": \"People\",\n          \"value\": \"Family\"\n       }, {\n          \"name\": \"Meta Name\",\n          \"value\": \"Meta Value\"\n       }]\n    }]\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "header": {
-      "fields": {
-        "Headers": [
-          {
-            "group": "Headers",
-            "type": "String",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>JWT for user auth</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-=======
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           "title": "Header Example",
           "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
           "type": "json"
@@ -1282,33 +1169,8 @@ define({ "api": [
         "Success 200": [
           {
             "group": "Success 200",
-            "type": "Object[]",
+            "type": "Integer",
             "optional": false,
-            "field": "media",
-            "description": "<p>A list of uploaded media</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Example Response",
-          "content": "HTTP/1.1 201 CREATED\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url: \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-<<<<<<< HEAD
-            "field": "noPropsFound",
-            "description": "<p>No properties were sent with the request</p>"
-          },
-=======
             "field": "album_id",
             "description": "<p>The album ID</p>"
           }
@@ -1325,117 +1187,24 @@ define({ "api": [
     "error": {
       "fields": {
         "Error 4xx": [
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           {
             "group": "Error 4xx",
             "type": "Object",
             "optional": false,
-<<<<<<< HEAD
-            "field": "invalidProps",
-            "description": "<p>The properties on the request body are not valid</p>"
-=======
             "field": "albumIdDoesNotExist",
             "description": "<p>The album_id does not exist in the database</p>"
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           },
           {
             "group": "Error 4xx",
             "type": "Object",
             "optional": false,
-<<<<<<< HEAD
-            "field": "userIdDoesNotExist",
-            "description": "<p>The user_id does not exist in the database</p>"
-=======
             "field": "unauthorized",
             "description": "<p>You are not authorized to make the request</p>"
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           },
           {
             "group": "Error 4xx",
             "type": "Object",
             "optional": false,
-<<<<<<< HEAD
-            "field": "albumIdDoesNotExist",
-            "description": "<p>The album ID does not exist in the database</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "mediaTitleExists",
-            "description": "<p>The media title already exists</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "repeatedMetaName",
-            "description": "<p>The meta object already contains the meta name</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "invalidMediaTitle",
-            "description": "<p>The media title is not valid</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "invalidMediaDescription",
-            "description": "<p>The media description is not valid</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "invalidKeywords",
-            "description": "<p>The keywords are not valid</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "invalidMetaName",
-            "description": "<p>The meta field name is not valid</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "invalidMetaValue",
-            "description": "<p>The meta field value is not valid</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "missingAlbums",
-            "description": "<p>Request body is missing the required albums property</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "missingMedia",
-            "description": "<p>Request body is missing the required media property</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "missingTitle",
-            "description": "<p>Request body is missing the required title property</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "missingMetaName",
-            "description": "<p>Request body is missing the required name property</p>"
-          },
-=======
             "field": "serverError",
             "description": "<p>Internal server error</p>"
           }
@@ -1505,116 +1274,19 @@ define({ "api": [
     "success": {
       "fields": {
         "Success 200": [
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "missingMetaValue",
-            "description": "<p>Request body is missing the required value property</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "unauthorized",
-            "description": "<p>You are not authorized to make the request</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "serverError",
-            "description": "<p>Internal server error</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Missing Property",
-          "content": "HTTP/1.1 400\n{\n    \"missingAlbums\": \"request is missing required albums property\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Does Not Exists",
-          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "api/routes/media.js",
-    "groupTitle": "Media"
-  },
-  {
-    "type": "get",
-    "url": "/albums/{album_id}/media",
-    "title": "Get an albums media",
-    "name": "Get_albums_media",
-    "group": "Media",
-    "version": "0.1.0",
-    "permission": [
-      {
-        "name": "admin owner collaborator"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Headers": [
-          {
-            "group": "Headers",
-            "type": "String",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>JWT for user auth</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header Example",
-          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "parameter": {
-      "fields": {
-        "URL Parameters": [
-          {
-            "group": "URL Parameters",
-            "type": "Integer",
-            "optional": false,
-            "field": "album_id",
-            "description": "<p>The albums ID</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
           {
             "group": "Success 200",
             "type": "Object[]",
             "optional": false,
-<<<<<<< HEAD
-            "field": "media",
-            "description": "<p>A list of the albums media</p>"
-=======
             "field": "collaborators",
             "description": "<p>A list of the album's collaborators</p>"
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           }
         ]
       },
       "examples": [
         {
           "title": "Example Response",
-<<<<<<< HEAD
-          "content": "HTTP/1.1 200 OK\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
-=======
           "content": "HTTP/1.1 200 OK\n[{\n   \"collaborator_id\": 8,\n   \"user_id\": 2,\n   \"album_id\": 1,\n   \"permissions\": \"view\",\n   \"expires_on\": null,\n   \"created_at\": \"2020-01-08 13:45:02\",\n   \"display_name\": \"test2\",\n   \"email\": \"test2@test.com\"\n }]",
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           "type": "json"
         }
       ]
@@ -1627,9 +1299,6 @@ define({ "api": [
             "type": "Object",
             "optional": false,
             "field": "albumIdDoesNotExist",
-<<<<<<< HEAD
-            "description": "<p>The album ID does not exist in the database</p>"
-=======
             "description": "<p>The album_id does not exist in the database</p>"
           },
           {
@@ -1645,18 +1314,13 @@ define({ "api": [
             "optional": false,
             "field": "invalidAlbumAccess",
             "description": "<p>You lack sufficient permissions with that album to perform that action</p>"
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           },
           {
             "group": "Error 4xx",
             "type": "Object",
             "optional": false,
             "field": "unauthorized",
-<<<<<<< HEAD
-            "description": "<p>You are not authorized to make the request</p>"
-=======
             "description": "<p>Not logged in, or not authorized to interact with that album</p>"
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           },
           {
             "group": "Error 4xx",
@@ -1669,37 +1333,12 @@ define({ "api": [
       },
       "examples": [
         {
-<<<<<<< HEAD
-          "title": "Does Not Exists",
-          "content": "HTTP/1.1 404\n{\n    \"albumIdDoesNotExist\": \"album id does not exist\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Server Error",
-          "content": "HTTP/1.1 500\n{\n    \"serverError\": \"server error\"\n}",
-=======
           "title": "Album Does Not Exist",
           "content": "HTTP/1.1 404\n{\n    \"albumIdDoesNotExist\": \"album_id does not exist\"\n}",
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           "type": "json"
         }
       ]
     },
-<<<<<<< HEAD
-    "filename": "api/routes/media.js",
-    "groupTitle": "Media"
-  },
-  {
-    "type": "get",
-    "url": "/users/{user_id}/media",
-    "title": "Get a users media",
-    "name": "Get_users_media",
-    "group": "Media",
-    "version": "0.1.0",
-    "permission": [
-      {
-        "name": "admin owner"
-=======
     "filename": "api/routes/collaborator.js",
     "groupTitle": "Collaborators"
   },
@@ -1713,7 +1352,6 @@ define({ "api": [
     "permission": [
       {
         "name": "owner"
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
       }
     ],
     "header": {
@@ -1722,11 +1360,7 @@ define({ "api": [
           {
             "group": "Headers",
             "type": "String",
-<<<<<<< HEAD
-            "optional": false,
-=======
             "optional": true,
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
             "field": "Authorization",
             "description": "<p>JWT for user auth</p>"
           }
@@ -1747,49 +1381,16 @@ define({ "api": [
             "group": "URL Parameters",
             "type": "Integer",
             "optional": false,
-<<<<<<< HEAD
-            "field": "user_id",
-            "description": "<p>The users ID</p>"
-=======
             "field": "album_id",
             "description": "<p>The album ID</p>"
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           }
         ]
       }
     },
     "success": {
-      "examples": [
-        {
-          "title": "Example Response",
-          "content": "HTTP/1.1 200 OK\n[{\n   \"media_id\": 0,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Title\",\n   \"caption\": \"A short caption for a photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Location\": \"Mexico\",\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n }, {\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A Photo Another Title\",\n   \"caption\": \"A short caption for another photo\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"People\": \"Family\",\n       \"Meta Name\": \"Meta Value\"\n   }\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url\": \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-06 18:42:57\"\n}]",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
       "fields": {
-        "Error 4xx": [
+        "Success 200": [
           {
-<<<<<<< HEAD
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "userIdDoesNotExist",
-            "description": "<p>The album ID does not exist in the database</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-            "field": "unauthorized",
-            "description": "<p>You are not authorized to make the request</p>"
-          },
-          {
-            "group": "Error 4xx",
-            "type": "Object",
-            "optional": false,
-=======
             "group": "Success 200",
             "type": "Integer",
             "optional": false,
@@ -1841,7 +1442,6 @@ define({ "api": [
             "group": "Error 4xx",
             "type": "Object",
             "optional": false,
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
             "field": "serverError",
             "description": "<p>Internal server error</p>"
           }
@@ -1849,8 +1449,6 @@ define({ "api": [
       },
       "examples": [
         {
-<<<<<<< HEAD
-=======
           "title": "Album Does Not Exist",
           "content": "HTTP/1.1 404\n{\n    \"albumIdDoesNotExist\": \"album_id does not exist\"\n}",
           "type": "json"
@@ -2813,6 +2411,172 @@ define({ "api": [
     "groupTitle": "Media"
   },
   {
+    "type": "put",
+    "url": "/media/{media_id}/edit",
+    "title": "Edit media",
+    "name": "Edit_media",
+    "group": "Media",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner collaborator"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "media_id",
+            "description": "<p>The media ID to edit</p>"
+          }
+        ],
+        "Request Body": [
+          {
+            "group": "Request Body",
+            "type": "String",
+            "size": "2-120",
+            "optional": true,
+            "field": "title",
+            "description": "<p>A title for the media</p>"
+          },
+          {
+            "group": "Request Body",
+            "type": "Text",
+            "size": "0-300",
+            "optional": true,
+            "field": "caption",
+            "description": "<p>A caption for the media</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/media/1/edit\n{\n     \"title\": \"A different title\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request",
+          "content": "/media/1/edit\n{\n     \"caption\": \"A different caption\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Example Request",
+          "content": "/media/1/edit\n{\n     \"title\": \"A different title\",\n     \"caption\": \"A different caption\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "HTTP/1.1 200 OK\n{\n   \"media_id\": 1,\n   \"user_id\": 6542,\n   \"albums\": [0, 1, 2, 3],\n   \"title\": \"A different title\",\n   \"caption\": \"A different caption\",\n   \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n   \"meta\": {\n       \"Meta Name\": \"Meta Value\"\n   },\n   \"media_url\": \"http://res.cloudinary.com/dinezno0n/image/upload/6542/A%20Photo%20Title.jpg\",\n   \"thumbnail_url: \"https://res.cloudinary.com/dinezno0n/image/upload/w_400,h_400,c_thumb/0/A%20Photo%20Title.jpg\",\n   \"created_at\": \"2019-11-06 18:42:57\",\n   \"updated_at\": \"2019-11-07 05:13:29\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "noPropsFound",
+            "description": "<p>No properties were sent with the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidProps",
+            "description": "<p>The properties on the request body are not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The user_id does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "mediaTitleExists",
+            "description": "<p>The media title already exists</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMediaTitle",
+            "description": "<p>The media title is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "invalidMediaDescription",
+            "description": "<p>The media description is not valid</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Missing Property",
+          "content": "HTTP/1.1 400\n{\n    \"invalidProps\": \"request props not valid\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Does Not Exists",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"user id does not exist\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/media.js",
+    "groupTitle": "Media"
+  },
+  {
     "type": "get",
     "url": "/albums/{album_id}/media",
     "title": "Get an albums media",
@@ -3001,7 +2765,6 @@ define({ "api": [
       },
       "examples": [
         {
->>>>>>> 89d80b37763402c2a029836ccf4b94e335983dba
           "title": "Does Not Exists",
           "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"album id does not exist\"\n}",
           "type": "json"

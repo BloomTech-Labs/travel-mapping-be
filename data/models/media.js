@@ -488,6 +488,89 @@ const retrieveUsersMedia = (user_id, done) => {
     }).catch(userIdErr => done(userIdErr));
 };
 
+const updateMedia = (media_id, mediaDataObj, done) => {
+  // Takes the media_id, an object containing the media data to update,
+  // and a callback function as parameters. Updates the media in the 
+  // database and passes null and the media object to the callback
+  // function.
+
+  // Check if media_id exists.
+  db('media').where({ media_id })
+    .select('media_id').then(mediaIdArr => {
+
+      const mediaIdExists = (mediaIdArr.length === 1);
+
+      if (!mediaIdExists) done(new Error(errors.mediaIdDoesNotExist))
+      else {
+
+        // Validate media data.
+        const { title, caption } = mediaDataObj;
+        const titleIsValid       = typeof title   !== 'undefined' ? (validate.mediaTitle(title))     : true;
+        const captionIsValid     = typeof caption !== 'undefined' ? (validate.mediaCaption(caption)) : true;
+
+        if (!titleIsValid)        done(new Error(errors.invalidMediaTitle));
+        else if (!captionIsValid) done(new Error(errors.invalidMediaCaption));
+        else {
+
+          // Update media data.
+          db('media').where({ media_id })
+          .update(Object.assign({}, mediaDataObj, { updated_at: db.fn.now() }))
+          .then(updateMediaRes => {
+
+            // Get updated media.
+            db('media').where({ media_id })
+            .select().then(updatedMediaArr => {
+
+              const media    = updatedMediaArr[0];
+              media.albums   = [];
+              media.keywords = [];
+              media.meta     = {};
+
+              // Get associated album IDs.
+              db('mediaAlbums').where({ media_id })
+              .select().then(mediaAlbumsArr => {
+
+                mediaAlbumsArr.forEach(({ album_id }) => media.albums.push(album_id));
+
+                // Get mediaKeywords.
+                db('mediaKeywords').where({ media_id })
+                .select().then(mediaKeywordsArr => {
+
+                  const keywordIdArr = mediaKeywordsArr.map(({ keyword_id }) => keyword_id);
+
+                  // Get associated keywords.
+                  db('keywords').whereIn('keyword_id', keywordIdArr)
+                  .select().then(keywordsArr => {
+
+                    keywordsArr.forEach(({ name }) => media.keywords.push(name));
+
+                    // Get mediaMeta data.
+                    db('mediaMeta').where({ media_id })
+                    .select().then(mediaMetaArr => {
+
+                      mediaMetaArr.forEach(({ name, value }) => media.meta[name] = value);
+                      done(null, media);
+
+                    }).catch(done);
+
+                  }).catch(done);
+
+                }).catch(done);
+
+              }).catch(done);
+
+            }).catch(done);
+
+          }).catch(done);
+
+        }
+
+      }
+
+    }).catch(done);
+
+};
+
 module.exports = {
   createMediaToAlbums,
   createMedia,
@@ -496,4 +579,5 @@ module.exports = {
   createManyMediaMeta,
   retrieveAlbumsMedia,
   retrieveUsersMedia,
+  updateMedia,
 };

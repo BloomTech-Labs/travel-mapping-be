@@ -300,6 +300,7 @@ const mediaTitle = (title) => {
   // as an argument. Returns true or false.
 
   if (typeof title !== 'string') return false;
+  else if (title.length < 2)     return false;
   else if (title.length > 120)   return false;
   else                           return true;
 
