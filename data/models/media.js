@@ -504,6 +504,21 @@ const deleteAlbumMedia = (album_id, media_id, done) => {
 
 const editMedia = (media_id, updates, done) => {
 
+  const finishedKeywords = (err) => {
+
+    if (err) done(err);
+    else if (meta) {
+
+      updateMeta(media_id, meta, done);
+
+    }
+    else {
+
+      done(null, { edited: media_id });
+    }
+
+  };
+
   const { keywords, meta, title, ...mediaUpdates } = updates;
 
   updateMediaObj(media_id, mediaUpdates, (updateErr, updatesWereMade) => {
@@ -534,20 +549,6 @@ const editMedia = (media_id, updates, done) => {
 
   });
 
-  const finishedKeywords = (err) => {
-
-    if (err) done(err);
-    else if (meta) {
-
-      updateMeta(media_id, meta, done);
-
-    }
-    else {
-
-      done(null, { edited: media_id });
-    }
-
-  };
 
 };
 
@@ -831,6 +832,109 @@ const removeMeta = (toRemove, done) => {
 
 };
 
+const isOwnerOrCollaborator = (media_id, user_id, done) => {
+
+  db('mediaAlbums').where({ media_id })
+    .join('albums', 'albums.album_id', '=', 'mediaAlbums.album_id')
+    .leftJoin('collaborators', 'collaborators.album_id', '=', 'albums.album_id')
+    .distinct(['collaborators.user_id as collab_user', 'albums.user_id as album_owner'])
+    .then(res => {
+
+      const legitUsers = res.reduce((acc, e) => {
+
+        if (e.album_owner) acc.owners[e.album_owner] = e.album_owner;
+        if (e.collab_user) acc.collaborators[e.collab_user] = e.collab_user;
+
+        return acc;
+
+      }, { owners: {}, collaborators: {} });
+
+      const isOwner = legitUsers.owners[user_id] === user_id;
+      const isCollab = legitUsers.collaborators[user_id] === user_id;
+
+      done(null, isOwner, isCollab);
+
+    })
+    .catch(err => {
+      done(err);
+    });
+
+};
+
+const getMediaData = (media_id, done) => {
+
+  db('media').where({ media_id })
+    .first()
+    .then(mediaObj => {
+
+      getMediaKeywords(mediaObj, (keywordsErr, withKeywords) => {
+
+        if (keywordsErr) done(keywordsErr);
+        else {
+
+          getMediaMeta(withKeywords, (metaErr, withMeta) => {
+
+            if (metaErr) next(metaErr);
+            else {
+
+              done(null, withMeta);
+
+            }
+
+          });
+
+        }
+
+      });
+
+    })
+    .catch(err => {
+      done(err);
+    });
+
+};
+
+const getMediaKeywords = (mediaObj, done) => {
+
+  db('mediaKeywords').where('media_id', mediaObj.media_id)
+    .join('keywords', 'keywords.keyword_id', '=', 'mediaKeywords.keyword_id')
+    .select(
+      'keywords.name'
+    )
+    .then(res => {
+
+      const keywords = res.map(e => e.name);
+      mediaObj.keywords = keywords;
+
+      done(null, mediaObj);
+
+    })
+    .catch(err => {
+      done(err);
+    })
+
+};
+
+const getMediaMeta = (mediaObj, done) => {
+
+  db('mediaMeta').where('media_id', mediaObj.media_id)
+    .select(
+      'name',
+      'value'
+    )
+    .then(res => {
+
+      mediaObj.meta = res;
+
+      done(null, mediaObj);
+
+    })
+    .catch(err => {
+      done(err);
+    });
+
+};
+
 module.exports = {
   createMediaToAlbums,
   createMedia,
@@ -841,6 +945,8 @@ module.exports = {
   retrieveUsersMedia,
   deleteAlbumMedia,
   editMedia,
+  isOwnerOrCollaborator,
+  getMediaData,
 };
 
 

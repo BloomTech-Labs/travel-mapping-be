@@ -284,7 +284,7 @@ router.get(routes.getUsersMedia(), api.auth.verifyToken, api.auth.verifyPermissi
 // #region
 /**
  * 
- *  @api {put} /albums/:album_id/media/:media_id/edit Update a piece of media
+ *  @api {put} /media/data/:media_id/edit Update a piece of media
  *  @apiName edit-media
  *  @apiGroup Media
  *  @apiVersion 0.1.0
@@ -392,6 +392,70 @@ router.put(routes.editMedia(), api.auth.verifyToken, api.auth.verifyPermission, 
  */
 // #endregion
 router.delete(routes.deleteMedia(), api.auth.verifyToken, api.auth.verifyPermission, api.media.deleteMedia, sentryError);
+
+
+// HTTP/1.1 200 OK
+// #region
+/**
+ * 
+ *  @api {get} /media/data/:media_id/view get specifc media info
+ *  @apiName get-individual-media
+ *  @apiGroup Media
+ *  @apiVersion 0.1.0
+ * 
+ *  @apiPermission admin owner collaborator
+ * 
+ *  @apiHeader (Headers) {String} Authorization JWT for user auth
+ * 
+ *  @apiHeaderExample {json} Header Example
+ *     {
+ *          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw"
+ *     }
+ * 
+ *  @apiParam (URL Parameters) {Integer} media_id The media ID
+ * 
+ *  @apiParamExample {json} Example Request
+ *      /media/data/23545/view
+ * 
+ *  @apiSuccessExample {json} Example Response
+ *     HTTP/1.1 200 OK
+ * 
+ *   {
+ *     "media_id": 99,
+ *     "user_id": 222,
+ *     "title": "photo",
+ *     "caption": "a caption2",
+ *     "type": "photo",
+ *     "created_at": "2020-01-09 09:19:45",
+ *     "updated_at": "2020-01-12 05:02:39",
+ *     "keywords": ["keyword-one", "keyword-two", "keyword-three"],
+ *     "meta": {
+ *       "People": "Family",
+ *       "Meta Name": "Meta Value"
+ *     }
+ *     "media_url": "http://localhost:4000/users/222/media/original/photo",
+ *     "thumbnail_url": "http://localhost:4000/users/222/media/thumbnail/photo"
+ *   }
+ * 
+ *   @apiError {Object} userIdDoesNotExist The album ID does not exist in the database
+ *   @apiError {Object} unauthorized You are not authorized to make the request
+ *   @apiError {Object} serverError Internal server error
+ * 
+ *   @apiErrorExample Does Not Exists
+ *      HTTP/1.1 404
+ *      {
+ *          "userIdDoesNotExist": "album id does not exist"
+ *      }
+ * 
+ *   @apiErrorExample Server Error
+ *      HTTP/1.1 500
+ *      {
+ *          "serverError": "server error"
+ *      }
+ * 
+ */
+// #endregion
+router.get(routes.getMediaData(), api.auth.verifyToken, api.auth.verifyPermission, api.media.getMediaData, sentryError);
 
 // Route for serving users media from Cloudinary.
 router.get(routes.viewUsersMedia(), /* api.auth.verifyToken, api.auth.verifyPermission, */ api.media.viewUsersMedia, sentryError);
