@@ -2615,7 +2615,7 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/albums/:album_id/media/:media_id/edit",
+    "url": "/media/data/:media_id/edit",
     "title": "Update a piece of media",
     "name": "edit_media",
     "group": "Media",
@@ -2721,6 +2721,109 @@ define({ "api": [
         {
           "title": "Example Response",
           "content": "HTTP/1.1 200 OK\n{\n  \"edited_id\": 34532\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "userIdDoesNotExist",
+            "description": "<p>The album ID does not exist in the database</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "unauthorized",
+            "description": "<p>You are not authorized to make the request</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "serverError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Does Not Exists",
+          "content": "HTTP/1.1 404\n{\n    \"userIdDoesNotExist\": \"album id does not exist\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Server Error",
+          "content": "HTTP/1.1 500\n{\n    \"serverError\": \"server error\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/routes/media.js",
+    "groupTitle": "Media"
+  },
+  {
+    "type": "get",
+    "url": "/media/data/:media_id/view",
+    "title": "get specifc media info",
+    "name": "get_individual_media",
+    "group": "Media",
+    "version": "0.1.0",
+    "permission": [
+      {
+        "name": "admin owner collaborator"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Headers": [
+          {
+            "group": "Headers",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT for user auth</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header Example",
+          "content": "{\n     \"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiIsInCI6IkpXVCJ9.eyJkaXNwbGF5X25hbWUiOeU5hbWUiLCJlbWFpbCI6Im15TmFtZUBtYWlsLmNvbSIsImlhdCI6MTMzQ0ODQ3OH0.XcgH1HUKKxcB80xVUWrLBELvO1D5RQ4azF6ibBw\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "URL Parameters": [
+          {
+            "group": "URL Parameters",
+            "type": "Integer",
+            "optional": false,
+            "field": "media_id",
+            "description": "<p>The media ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example Request",
+          "content": "/media/data/23545/view",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Example Response",
+          "content": "  HTTP/1.1 200 OK\n\n{\n  \"media_id\": 99,\n  \"user_id\": 222,\n  \"title\": \"photo\",\n  \"caption\": \"a caption2\",\n  \"type\": \"photo\",\n  \"created_at\": \"2020-01-09 09:19:45\",\n  \"updated_at\": \"2020-01-12 05:02:39\",\n  \"keywords\": [\"keyword-one\", \"keyword-two\", \"keyword-three\"],\n  \"meta\": {\n    \"People\": \"Family\",\n    \"Meta Name\": \"Meta Value\"\n  }\n  \"media_url\": \"http://localhost:4000/users/222/media/original/photo\",\n  \"thumbnail_url\": \"http://localhost:4000/users/222/media/thumbnail/photo\"\n}",
           "type": "json"
         }
       ]

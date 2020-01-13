@@ -332,6 +332,31 @@ const deleteMedia = (req, res, next) => {
 
 };
 
+const getMediaData = (req, res, next) => {
+
+  const { media_id } = req.params;
+
+  if (req.isAdmin || req.isOwner || req.isCollab) {
+
+    models.media.getMediaData(media_id, (mediaErr, mediaObj) => {
+
+      if (mediaErr) next(mediaErr);
+      else {
+
+        mediaObj.media_url = `${ serverHost }/users/${ mediaObj.user_id }/media/original/${ mediaObj.title }`;
+        mediaObj.thumbnail_url = `${ serverHost }/users/${ mediaObj.user_id }/media/thumbnail/${ mediaObj.title }`;
+
+        res.status(200).json(mediaObj);
+
+      }
+
+    });
+
+  } else next(new Error(errors.unauthorized));
+  
+
+};
+
 module.exports = {
   addAlbumsMedia,
   getAlbumsMedia,
@@ -340,4 +365,5 @@ module.exports = {
   viewMedia,
   editMedia,
   deleteMedia,
+  getMediaData,
 };

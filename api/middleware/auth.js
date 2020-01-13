@@ -75,7 +75,6 @@ const verifyPermission = (req, res, next) => {
       case routes.getInvitesByAlbum():
       case routes.getCollaborators():
       case routes.deleteMedia():
-      case routes.editMedia():
         
         const album_id = parseInt(req.params.album_id);
 
@@ -241,6 +240,39 @@ const verifyPermission = (req, res, next) => {
         } else next(new Error(errors.unauthorized));
         break;
 
+      case routes.getMediaData():
+      case routes.editMedia():
+
+        if (email !== null) {
+
+          const media_id = parseInt(req.params.media_id);
+
+          models.user.retrieveUserBy({ email }, (userErr, userObj) => {
+
+            if (userErr) next(userErr);
+            else {
+
+              models.media.isOwnerOrCollaborator(media_id, userObj.user_id, (mediaErr, isOwner, isCollab) => {
+
+                if (mediaErr) next(mediaErr);
+                else {
+
+                  req.isAdmin = userObj.isAdmin;
+                  req.isOwner = isOwner;
+                  req.isCollab = isCollab;
+
+                  next();
+
+                }
+
+              });
+
+            }
+
+          });
+
+        } else next(new Error(errors.unauthorized));
+        break;
 
       default:
         next(new Error(errors.unauthorized));
