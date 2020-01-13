@@ -6,6 +6,40 @@ const salt     = parseInt(process.env.PASS_SALT) || 10;
 
 describe('Testing the validation module functions', () => {
 
+  describe('editMediaProps function', () => {
+
+    it('should return true when all valid props are passed', () => {
+
+      const mediaObj = { title: 'A title', caption: 'A Caption' };
+
+      expect(validate.updateMediaProps(mediaObj)).to.equal(true);
+
+    });
+
+    it(`should return ${ errors.invalidProps } when invalid props are passed`, () => {
+
+      const mediaObj = { title: 'A Title', captions: 'An invalid Caption' };
+
+      expect(validate.updateMediaProps(mediaObj)).to.equal(errors.invalidProps);
+
+    });
+
+    it(`should return ${ errors.tooManyProps } when too many props are passed`, () => {
+
+      const mediaObj = { title: 'A Title', caption: 'A Caption', notValid: 'Invalid Prop' };
+
+      expect(validate.updateMediaProps(mediaObj)).to.equal(errors.tooManyProps);
+
+    });
+
+    it(`should return ${ errors.noPropsFound } when no props are passed`, () => {
+
+      expect(validate.updateMediaProps({})).to.equal(errors.noPropsFound);
+
+    });
+
+  });
+
   describe('editAlbumData function', () => {
 
     it('should return true when all valid props are passed', () => {
@@ -620,7 +654,7 @@ describe('Testing the validation module functions', () => {
       let invalidTitle = '';
 
       expect(validate.mediaTitle(invalidTitle)).to.equal(false);
-      
+
     });
 
     it('should return false when the title is more than 120 characters', () => {

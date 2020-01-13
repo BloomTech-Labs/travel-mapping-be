@@ -514,7 +514,7 @@ describe('Testing media models', () => {
   });
 
   // #region
-  /*
+  // /*
 
   describe('retrieveAlbumsMedia model', () => {
 
@@ -1547,7 +1547,7 @@ describe('Testing media models', () => {
     });
 
   });
-  */
+  // */
   // #endregion
 
 });

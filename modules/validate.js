@@ -140,8 +140,8 @@ const editAlbumProps = (albumObj) => {
 
 const addMediaProps = (mediaObj) => {
   // Verifies that the media data object contains the required properties.
-  // Takes a media data object as an argument. Returns true if the data
-  // is valid or an error message describing the invalid data.
+  // Takes a media data object as an argument. Returns true if the props
+  // are valid or an error message describing the invalid data.
 
   const validBodyProps  = ['albums', 'media'];
   const validMediaProps = ['title', 'caption', 'keywords', 'meta'];
@@ -199,6 +199,29 @@ const addMediaProps = (mediaObj) => {
   else if (missingValue)  return errors.missingMetaValue;
   else if (tooManyProps)  return errors.tooManyProps;
   else                    return true;
+
+};
+
+const updateMediaProps = (mediaObj) => {
+  // Verifies that the media object contains valid properties.
+  // Takes a media object as an argument. Returns true if the props
+  // are valid or an error message describing the invalid data.
+
+  const validBodyProps  = ['title', 'caption'];
+  const bodyProps       = Object.keys(mediaObj);
+
+  let tooManyProps = false;
+  let noPropsFound = false;
+  let invalidProps = false;
+
+  bodyProps.forEach(prop => (!validBodyProps.includes(prop)) && (invalidProps = true));
+  tooManyProps = (bodyProps.length  > 2);
+  noPropsFound = (bodyProps.length == 0);
+
+  if (tooManyProps)      return errors.tooManyProps;
+  else if (invalidProps) return errors.invalidProps;
+  else if (noPropsFound) return errors.noPropsFound;
+  else                   return true;
 
 };
 
@@ -300,7 +323,7 @@ const mediaTitle = (title) => {
   // as an argument. Returns true or false.
 
   if (typeof title !== 'string') return false;
-  else if (title.length < 2)     return false;
+  else if (title.length < 2)     return false
   else if (title.length > 120)   return false;
   else                           return true;
 
@@ -361,4 +384,5 @@ module.exports = {
   addMediaProps,
   keyword,
   removeAlbumMetaData,
+  updateMediaProps,
 };
